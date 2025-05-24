@@ -1,0 +1,407 @@
+{
+  "Therizinosaur": {
+    "top_stats": {
+      "health": 35,
+      "stamina": 37,
+      "weight": 36,
+      "melee": 45,
+      "food": 37,
+      "oxygen": 38
+    },
+    "mutation_thresholds": {
+      "health": 4
+    },
+    "stud": {
+      "health": 35,
+      "stamina": 23,
+      "melee": 45
+    }
+  },
+  "Pteranodon": {
+    "top_stats": {
+      "health": 47,
+      "stamina": 39,
+      "weight": 40,
+      "melee": 41,
+      "food": 43,
+      "oxygen": 41
+    },
+    "mutation_thresholds": {},
+    "stud": {
+      "health": 47,
+      "stamina": 39,
+      "melee": 41
+    }
+  },
+  "Woolly Rhino": {
+    "top_stats": {
+      "health": 35,
+      "stamina": 36,
+      "weight": 32,
+      "melee": 47,
+      "food": 33,
+      "oxygen": 27
+    },
+    "mutation_thresholds": {},
+    "stud": {
+      "health": 35,
+      "melee": 47
+    }
+  },
+  "Carcharodontosaurus": {
+    "top_stats": {
+      "health": 35,
+      "stamina": 38,
+      "weight": 39,
+      "melee": 51,
+      "food": 41,
+      "oxygen": 38
+    },
+    "mutation_thresholds": {
+      "melee": 2
+    },
+    "stud": {
+      "health": 35,
+      "stamina": 38,
+      "melee": 51
+    }
+  },
+  "Aberrant Ovis": {
+    "top_stats": {
+      "health": 10,
+      "stamina": 10,
+      "weight": 9,
+      "melee": 14,
+      "food": 16,
+      "oxygen": 10
+    },
+    "mutation_thresholds": {},
+    "stud": {}
+  },
+  "Carbonemys": {
+    "top_stats": {
+      "health": 57,
+      "stamina": 42,
+      "weight": 46,
+      "melee": 49,
+      "food": 42,
+      "oxygen": 72
+    },
+    "mutation_thresholds": {
+      "health": 8
+    },
+    "stud": {
+      "health": 57
+    }
+  },
+  "Basilisk": {
+    "top_stats": {
+      "health": 40,
+      "stamina": 38,
+      "weight": 41,
+      "melee": 46,
+      "food": 39
+    },
+    "mutation_thresholds": {},
+    "stud": {
+      "health": 40,
+      "stamina": 38,
+      "melee": 36
+    }
+  },
+  "Karkinos": {
+    "top_stats": {
+      "health": 42,
+      "stamina": 38,
+      "weight": 43,
+      "melee": 42,
+      "food": 41
+    },
+    "mutation_thresholds": {},
+    "stud": {
+      "health": 42,
+      "stamina": 38,
+      "melee": 42
+    }
+  },
+  "Paraceratherium": {
+    "top_stats": {
+      "health": 48,
+      "stamina": 27,
+      "weight": 40,
+      "melee": 31,
+      "food": 36,
+      "oxygen": 24
+    },
+    "mutation_thresholds": {},
+    "stud": {
+      "health": 46
+    }
+  },
+  "Stegosaurus": {
+    "top_stats": {
+      "health": 51,
+      "stamina": 40,
+      "weight": 37,
+      "melee": 48,
+      "food": 36,
+      "oxygen": 38
+    },
+    "mutation_thresholds": {
+      "health": 2
+    },
+    "stud": {
+      "health": 51,
+      "stamina": 40
+    }
+  },
+  "Spino": {
+    "top_stats": {
+      "health": 57,
+      "stamina": 27,
+      "weight": 30,
+      "melee": 26,
+      "food": 16,
+      "oxygen": 35
+    },
+    "mutation_thresholds": {},
+    "stud": {
+      "health": 57,
+      "stamina": 27,
+      "melee": 26
+    }
+  },
+  "Basilosaurus": {
+    "top_stats": {
+      "health": 48,
+      "stamina": 46,
+      "weight": 56,
+      "melee": 40,
+      "food": 42
+    },
+    "mutation_thresholds": {},
+    "stud": {
+      "health": 48
+    }
+  },
+  "Triceratops": {
+    "top_stats": {
+      "health": 54,
+      "stamina": 31,
+      "weight": 35,
+      "melee": 20,
+      "food": 37,
+      "oxygen": 33
+    },
+    "mutation_thresholds": {},
+    "stud": {
+      "health": 54
+    }
+  },
+  "Fire Wyvern": {
+    "top_stats": {
+      "health": 24,
+      "stamina": 30,
+      "weight": 32,
+      "melee": 40,
+      "food": 27,
+      "oxygen": 35
+    },
+    "mutation_thresholds": {
+      "health": 2
+    },
+    "stud": {
+      "health": 24,
+      "stamina": 30,
+      "melee": 40
+    }
+  },
+  "Deinosuchus": {
+    "top_stats": {
+      "health": 43,
+      "stamina": 49,
+      "weight": 34,
+      "melee": 49,
+      "food": 46
+    },
+    "mutation_thresholds": {},
+    "stud": {
+      "health": 43,
+      "melee": 49
+    }
+  },
+  "Giganotosaurus": {
+    "top_stats": {
+      "health": 57,
+      "stamina": 18,
+      "weight": 27,
+      "melee": 46,
+      "food": 27,
+      "oxygen": 16
+    },
+    "mutation_thresholds": {},
+    "stud": {}
+  },
+  "Managarmr": {
+    "top_stats": {
+      "health": 41,
+      "stamina": 37,
+      "weight": 29,
+      "melee": 46,
+      "food": 31,
+      "oxygen": 32
+    },
+    "mutation_thresholds": {},
+    "stud": {
+      "health": 41,
+      "stamina": 37,
+      "melee": 46
+    }
+  },
+  "Cs  Tek Stegosaurus 223": {
+    "top_stats": {
+      "health": 59,
+      "stamina": 45,
+      "weight": 6,
+      "melee": 40,
+      "food": 32,
+      "oxygen": 38
+    },
+    "mutation_thresholds": {},
+    "stud": {}
+  },
+  "Ovis": {
+    "top_stats": {
+      "health": 50,
+      "stamina": 25,
+      "weight": 24,
+      "melee": 33,
+      "food": 36,
+      "oxygen": 41
+    },
+    "mutation_thresholds": {},
+    "stud": {
+      "health": 50
+    }
+  },
+  "Tusoteuthis": {
+    "top_stats": {
+      "health": 54,
+      "stamina": 42,
+      "weight": 20,
+      "melee": 56,
+      "food": 37,
+      "oxygen": 4
+    },
+    "mutation_thresholds": {},
+    "stud": {}
+  },
+  "Cs  Ovis": {
+    "top_stats": {
+      "health": 50,
+      "stamina": 25,
+      "weight": 24,
+      "melee": 33,
+      "food": 36,
+      "oxygen": 41
+    },
+    "mutation_thresholds": {},
+    "stud": {}
+  },
+  "Cs  Paraceratherium 126": {
+    "top_stats": {
+      "health": 46,
+      "stamina": 21,
+      "weight": 2,
+      "melee": 31,
+      "food": 19,
+      "oxygen": 18
+    },
+    "mutation_thresholds": {},
+    "stud": {}
+  },
+  "Cs  Paraceratherium 109": {
+    "top_stats": {
+      "health": 10,
+      "stamina": 27,
+      "weight": 2,
+      "melee": 31,
+      "food": 30,
+      "oxygen": 8
+    },
+    "mutation_thresholds": {},
+    "stud": {}
+  },
+  "Cs  Paraceratherium 120": {
+    "top_stats": {
+      "health": 46,
+      "stamina": 3,
+      "weight": 2,
+      "melee": 31,
+      "food": 19,
+      "oxygen": 18
+    },
+    "mutation_thresholds": {},
+    "stud": {}
+  },
+  "Cs  Paraceratherium 119": {
+    "top_stats": {
+      "health": 11,
+      "stamina": 21,
+      "weight": 18,
+      "melee": 31,
+      "food": 19,
+      "oxygen": 18
+    },
+    "mutation_thresholds": {},
+    "stud": {}
+  },
+  "Cs  Paraceratherium 186": {
+    "top_stats": {
+      "health": 46,
+      "stamina": 27,
+      "weight": 40,
+      "melee": 31,
+      "food": 19,
+      "oxygen": 18
+    },
+    "mutation_thresholds": {},
+    "stud": {}
+  },
+  "Cs  Paraceratherium 124": {
+    "top_stats": {
+      "health": 46,
+      "stamina": 3,
+      "weight": 18,
+      "melee": 19,
+      "food": 19,
+      "oxygen": 18
+    },
+    "mutation_thresholds": {},
+    "stud": {}
+  },
+  "Cs  Paraceratherium 138": {
+    "top_stats": {
+      "health": 46,
+      "stamina": 21,
+      "weight": 2,
+      "melee": 31,
+      "food": 19,
+      "oxygen": 18
+    },
+    "mutation_thresholds": {},
+    "stud": {}
+  },
+  "Cs  Paraceratherium 113": {
+    "top_stats": {
+      "health": 46,
+      "stamina": 27,
+      "weight": 2,
+      "melee": 31,
+      "food": 1,
+      "oxygen": 3
+    },
+    "mutation_thresholds": {},
+    "stud": {}
+  }
+}

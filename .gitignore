@@ -1,0 +1,16 @@
+# Python env
+.venv/
+__pycache__/
+*.pyc
+
+# Node.js
+node_modules/
+
+# IDEs
+.vscode/
+.idea/
+
+# Env files
+.env
+dump_structure.pyc
+project_tree.txt

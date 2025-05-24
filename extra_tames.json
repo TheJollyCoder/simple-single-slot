@@ -1,0 +1,15 @@
+{
+  "Maeguana": {
+    "stud": {
+      "health": 45,
+      "Melee": 48
+    },
+    "mutation_thresholds": {}
+  },
+  "Reaper": {
+    "stud": {
+      "Melee": 38
+    },
+    "mutation_thresholds": {}
+  }
+}

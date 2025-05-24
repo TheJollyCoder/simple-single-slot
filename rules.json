@@ -1,0 +1,912 @@
+{
+  "Giganotosaurus": {
+    "modes": [
+      "mutations",
+      "all_females",
+      "stat_merge",
+      "top_stat_females",
+      "war"
+    ],
+    "mutation_stats": [
+      "melee"
+    ],
+    "stat_merge_stats": [
+      "melee"
+    ],
+    "top_stat_females_stats": [
+      "melee"
+    ],
+    "war_stats": [
+      "melee"
+    ]
+  },
+  "Tapejara": {
+    "modes": [
+      "mutations",
+      "all_females",
+      "stat_merge",
+      "top_stat_females"
+    ],
+    "mutation_stats": [
+      "health"
+    ],
+    "stat_merge_stats": [
+      "health",
+      "stamina",
+      "melee"
+    ],
+    "top_stat_females_stats": [
+      "health",
+      "stamina",
+      "melee"
+    ],
+    "war_stats": [
+      "health",
+      "stamina",
+      "melee"
+    ]
+  },
+  "Terror Bird": {
+    "modes": [
+      "mutations",
+      "all_females",
+      "stat_merge",
+      "top_stat_females"
+    ],
+    "mutation_stats": [
+      "health"
+    ],
+    "stat_merge_stats": [
+      "health",
+      "stamina",
+      "melee"
+    ],
+    "top_stat_females_stats": [
+      "health",
+      "stamina",
+      "melee"
+    ],
+    "war_stats": [
+      "health",
+      "stamina",
+      "melee"
+    ]
+  },
+  "Yutyrannus": {
+    "modes": [
+      "mutations",
+      "all_females",
+      "stat_merge",
+      "top_stat_females"
+    ],
+    "mutation_stats": [
+      "health"
+    ],
+    "stat_merge_stats": [
+      "health"
+    ],
+    "top_stat_females_stats": [
+      "health"
+    ],
+    "war_stats": [
+      "health"
+    ]
+  },
+  "Daeodon": {
+    "modes": [
+      "mutations",
+      "all_females",
+      "stat_merge",
+      "top_stat_females",
+      "war"
+    ],
+    "mutation_stats": [
+      "health",
+      "food"
+    ],
+    "stat_merge_stats": [
+      "health",
+      "food"
+    ],
+    "top_stat_females_stats": [
+      "health",
+      "food"
+    ],
+    "war_stats": [
+      "health",
+      "food"
+    ]
+  },
+  "Managarmr": {
+    "modes": [
+      "mutations",
+      "all_females",
+      "stat_merge",
+      "top_stat_females",
+      "war"
+    ],
+    "mutation_stats": [
+      "health",
+      "stamina",
+      "melee"
+    ],
+    "stat_merge_stats": [
+      "health",
+      "stamina",
+      "melee"
+    ],
+    "top_stat_females_stats": [
+      "health",
+      "stamina",
+      "melee"
+    ],
+    "war_stats": [
+      "health",
+      "stamina",
+      "melee"
+    ]
+  },
+  "Tusoteuthis": {
+    "modes": [
+      "mutations",
+      "all_females",
+      "stat_merge",
+      "top_stat_females",
+      "war"
+    ],
+    "mutation_stats": [
+      "health",
+      "melee"
+    ],
+    "stat_merge_stats": [
+      "health",
+      "stamina",
+      "melee"
+    ],
+    "top_stat_females_stats": [
+      "health",
+      "stamina",
+      "melee"
+    ],
+    "war_stats": [
+      "health",
+      "stamina",
+      "melee"
+    ]
+  },
+  "Snow Owl": {
+    "modes": [
+      "mutations",
+      "all_females",
+      "stat_merge",
+      "top_stat_females"
+    ],
+    "mutation_stats": [
+      "health"
+    ],
+    "stat_merge_stats": [
+      "health",
+      "stamina"
+    ],
+    "top_stat_females_stats": [
+      "health",
+      "stamina"
+    ],
+    "war_stats": [
+      "health",
+      "stamina"
+    ]
+  },
+  "Spino": {
+    "modes": [
+      "mutations",
+      "all_females",
+      "stat_merge",
+      "top_stat_females"
+    ],
+    "mutation_stats": [
+      "health",
+      "melee"
+    ],
+    "stat_merge_stats": [
+      "health",
+      "stamina",
+      "melee"
+    ],
+    "top_stat_females_stats": [
+      "health",
+      "stamina",
+      "melee"
+    ],
+    "war_stats": [
+      "health",
+      "stamina",
+      "melee"
+    ]
+  },
+  "Lightning Wyvern": {
+    "modes": [
+      "mutations",
+      "all_females",
+      "stat_merge",
+      "top_stat_females"
+    ],
+    "mutation_stats": [
+      "health",
+      "melee"
+    ],
+    "stat_merge_stats": [
+      "health",
+      "stamina",
+      "melee"
+    ],
+    "top_stat_females_stats": [
+      "health",
+      "stamina",
+      "melee"
+    ],
+    "war_stats": [
+      "health",
+      "stamina",
+      "melee"
+    ]
+  },
+  "Basilisk": {
+    "modes": [
+      "mutations",
+      "all_females",
+      "stat_merge",
+      "top_stat_females",
+      "war"
+    ],
+    "mutation_stats": [
+      "melee"
+    ],
+    "stat_merge_stats": [
+      "health",
+      "stamina",
+      "melee"
+    ],
+    "top_stat_females_stats": [
+      "health",
+      "stamina",
+      "melee"
+    ],
+    "war_stats": [
+      "health",
+      "stamina",
+      "melee"
+    ]
+  },
+  "Fire Wyvern": {
+    "modes": [
+      "mutations",
+      "all_females",
+      "stat_merge",
+      "top_stat_females",
+      "war"
+    ],
+    "mutation_stats": [
+      "health",
+      "melee"
+    ],
+    "stat_merge_stats": [
+      "health",
+      "stamina",
+      "melee"
+    ],
+    "top_stat_females_stats": [
+      "health",
+      "stamina",
+      "melee"
+    ],
+    "war_stats": [
+      "health",
+      "stamina",
+      "melee"
+    ]
+  },
+  "Stegosaurus": {
+    "modes": [
+      "mutations",
+      "all_females",
+      "stat_merge",
+      "top_stat_females",
+      "war"
+    ],
+    "mutation_stats": [
+      "health"
+    ],
+    "stat_merge_stats": [
+      "health",
+      "stamina"
+    ],
+    "top_stat_females_stats": [
+      "health",
+      "stamina"
+    ],
+    "war_stats": [
+      "health",
+      "stamina"
+    ]
+  },
+  "Triceratops": {
+    "modes": [
+      "mutations",
+      "all_females",
+      "stat_merge",
+      "top_stat_females"
+    ],
+    "mutation_stats": [
+      "health"
+    ],
+    "stat_merge_stats": [
+      "health"
+    ],
+    "top_stat_females_stats": [
+      "health"
+    ],
+    "war_stats": [
+      "health"
+    ]
+  },
+  "Carcharodontosaurus": {
+    "modes": [
+      "mutations",
+      "stat_merge",
+      "top_stat_females",
+      "war"
+    ],
+    "mutation_stats": [
+      "melee"
+    ],
+    "stat_merge_stats": [
+      "health",
+      "stamina",
+      "melee"
+    ],
+    "top_stat_females_stats": [
+      "health",
+      "stamina",
+      "melee"
+    ],
+    "war_stats": [
+      "health",
+      "stamina",
+      "melee"
+    ]
+  },
+  "Paraceratherium": {
+    "modes": [
+      "mutations",
+      "all_females",
+      "stat_merge",
+      "top_stat_females",
+      "war"
+    ],
+    "mutation_stats": [
+      "health"
+    ],
+    "stat_merge_stats": [
+      "health"
+    ],
+    "top_stat_females_stats": [
+      "health"
+    ],
+    "war_stats": [
+      "health"
+    ]
+  },
+  "Therizinosaur": {
+    "modes": [
+      "mutations",
+      "stat_merge",
+      "top_stat_females"
+    ],
+    "mutation_stats": [
+      "health",
+      "melee"
+    ],
+    "stat_merge_stats": [
+      "health",
+      "melee"
+    ],
+    "top_stat_females_stats": [
+      "health",
+      "melee"
+    ],
+    "war_stats": [
+      "health",
+      "melee"
+    ]
+  },
+  "Carnotaurus": {
+    "modes": [
+      "mutations",
+      "all_females",
+      "stat_merge",
+      "top_stat_females"
+    ],
+    "mutation_stats": [
+      "health",
+      "melee"
+    ],
+    "stat_merge_stats": [
+      "health",
+      "melee"
+    ],
+    "top_stat_females_stats": [
+      "health",
+      "melee"
+    ],
+    "war_stats": [
+      "health",
+      "melee"
+    ]
+  },
+  "Carbonemys": {
+    "modes": [
+      "mutations",
+      "stat_merge"
+    ],
+    "mutation_stats": [
+      "health"
+    ],
+    "stat_merge_stats": [
+      "health"
+    ],
+    "top_stat_females_stats": [
+      "health"
+    ],
+    "war_stats": [
+      "health"
+    ]
+  },
+  "Rex": {
+    "modes": [
+      "mutations",
+      "all_females",
+      "stat_merge",
+      "top_stat_females",
+      "war"
+    ],
+    "mutation_stats": [
+      "health",
+      "melee"
+    ],
+    "stat_merge_stats": [
+      "health",
+      "melee"
+    ],
+    "top_stat_females_stats": [
+      "health",
+      "melee"
+    ],
+    "war_stats": [
+      "health",
+      "melee"
+    ]
+  },
+  "Poison Wyvern": {
+    "modes": [
+      "mutations",
+      "stat_merge",
+      "top_stat_females"
+    ],
+    "mutation_stats": [
+      "health",
+      "melee"
+    ],
+    "stat_merge_stats": [
+      "health",
+      "melee"
+    ],
+    "top_stat_females_stats": [
+      "health",
+      "melee"
+    ],
+    "war_stats": [
+      "health",
+      "melee"
+    ]
+  },
+  "Thylacoleo": {
+    "modes": [
+      "mutations",
+      "stat_merge",
+      "top_stat_females"
+    ],
+    "mutation_stats": [
+      "health"
+    ],
+    "stat_merge_stats": [
+      "health",
+      "melee"
+    ],
+    "top_stat_females_stats": [
+      "health",
+      "melee"
+    ],
+    "war_stats": [
+      "health",
+      "melee"
+    ]
+  },
+  "Mantis": {
+    "modes": [
+      "mutations",
+      "all_females",
+      "stat_merge",
+      "top_stat_females"
+    ],
+    "mutation_stats": [
+      "health",
+      "melee"
+    ],
+    "stat_merge_stats": [
+      "health",
+      "melee"
+    ],
+    "top_stat_females_stats": [
+      "health",
+      "melee"
+    ],
+    "war_stats": [
+      "health",
+      "melee"
+    ]
+  },
+  "Megatherium": {
+    "modes": [
+      "mutations",
+      "stat_merge",
+      "top_stat_females"
+    ],
+    "mutation_stats": [
+      "health",
+      "melee"
+    ],
+    "stat_merge_stats": [
+      "health",
+      "melee"
+    ],
+    "top_stat_females_stats": [
+      "health",
+      "melee"
+    ],
+    "war_stats": [
+      "health",
+      "melee"
+    ]
+  },
+  "Rock Drake": {
+    "modes": [
+      "mutations",
+      "stat_merge",
+      "top_stat_females"
+    ],
+    "mutation_stats": [
+      "health",
+      "melee"
+    ],
+    "stat_merge_stats": [
+      "health",
+      "stamina",
+      "melee"
+    ],
+    "top_stat_females_stats": [
+      "health",
+      "stamina",
+      "melee"
+    ],
+    "war_stats": [
+      "health",
+      "stamina",
+      "melee"
+    ]
+  },
+  "Ovis": {
+    "modes": [
+      "mutations",
+      "all_females",
+      "stat_merge",
+      "top_stat_females"
+    ],
+    "mutation_stats": [
+      "health"
+    ],
+    "stat_merge_stats": [
+      "health"
+    ],
+    "top_stat_females_stats": [
+      "health"
+    ],
+    "war_stats": [
+      "health"
+    ]
+  },
+  "Baryonyx": {
+    "modes": [
+      "mutations",
+      "stat_merge",
+      "top_stat_females"
+    ],
+    "mutation_stats": [
+      "health",
+      "melee"
+    ],
+    "stat_merge_stats": [
+      "health",
+      "melee"
+    ],
+    "top_stat_females_stats": [
+      "health",
+      "melee"
+    ],
+    "war_stats": [
+      "health",
+      "melee"
+    ]
+  },
+  "Megalodon": {
+    "modes": [
+      "mutations",
+      "stat_merge",
+      "top_stat_females"
+    ],
+    "mutation_stats": [
+      "health"
+    ],
+    "stat_merge_stats": [
+      "health",
+      "melee"
+    ],
+    "top_stat_females_stats": [
+      "health",
+      "melee"
+    ],
+    "war_stats": [
+      "health",
+      "melee"
+    ]
+  },
+  "Karkinos": {
+    "modes": [
+      "mutations",
+      "all_females",
+      "stat_merge",
+      "top_stat_females",
+      "war"
+    ],
+    "mutation_stats": [
+      "health"
+    ],
+    "stat_merge_stats": [
+      "health",
+      "stamina",
+      "melee"
+    ],
+    "top_stat_females_stats": [
+      "health",
+      "stamina",
+      "melee"
+    ],
+    "war_stats": [
+      "health",
+      "stamina",
+      "melee"
+    ]
+  },
+  "Pteranodon": {
+    "modes": [
+      "mutations",
+      "all_females",
+      "stat_merge",
+      "top_stat_females"
+    ],
+    "mutation_stats": [
+      "health"
+    ],
+    "stat_merge_stats": [
+      "health",
+      "stamina",
+      "melee"
+    ],
+    "top_stat_females_stats": [
+      "health",
+      "stamina",
+      "melee"
+    ],
+    "war_stats": [
+      "health",
+      "stamina",
+      "melee"
+    ]
+  },
+  "Xiphactinus": {
+    "modes": [
+      "mutations",
+      "stat_merge",
+      "top_stat_females"
+    ],
+    "mutation_stats": [
+      "health",
+      "melee"
+    ],
+    "stat_merge_stats": [
+      "health",
+      "melee"
+    ],
+    "top_stat_females_stats": [
+      "health",
+      "melee"
+    ],
+    "war_stats": [
+      "health",
+      "melee"
+    ]
+  },
+  "Mosasaurus": {
+    "modes": [
+      "mutations",
+      "all_females",
+      "stat_merge",
+      "top_stat_females"
+    ],
+    "mutation_stats": [
+      "health",
+      "melee"
+    ],
+    "stat_merge_stats": [
+      "health",
+      "melee"
+    ],
+    "top_stat_females_stats": [
+      "health",
+      "melee"
+    ],
+    "war_stats": [
+      "health",
+      "melee"
+    ]
+  },
+  "Basilosaurus": {
+    "modes": [
+      "mutations",
+      "all_females",
+      "stat_merge",
+      "top_stat_females",
+      "war"
+    ],
+    "mutation_stats": [
+      "health"
+    ],
+    "stat_merge_stats": [
+      "health"
+    ],
+    "top_stat_females_stats": [
+      "health"
+    ],
+    "war_stats": [
+      "health"
+    ]
+  },
+  "Dunkleosteus": {
+    "modes": [
+      "mutations",
+      "stat_merge",
+      "top_stat_females"
+    ],
+    "mutation_stats": [
+      "health",
+      "melee"
+    ],
+    "stat_merge_stats": [
+      "health",
+      "melee"
+    ],
+    "top_stat_females_stats": [
+      "health",
+      "melee"
+    ],
+    "war_stats": [
+      "health",
+      "melee"
+    ]
+  },
+  "Woolly Rhino": {
+    "modes": [
+      "mutations",
+      "stat_merge",
+      "top_stat_females",
+      "war"
+    ],
+    "mutation_stats": [
+      "health",
+      "melee"
+    ],
+    "stat_merge_stats": [
+      "health",
+      "melee"
+    ],
+    "top_stat_females_stats": [
+      "health",
+      "melee"
+    ],
+    "war_stats": [
+      "health",
+      "melee"
+    ]
+  },
+  "Aberrant Ovis": {
+    "modes": [
+      "mutations",
+      "stat_merge",
+      "top_stat_females"
+    ],
+    "mutation_stats": [
+      "health"
+    ],
+    "stat_merge_stats": [
+      "health"
+    ],
+    "top_stat_females_stats": [
+      "health"
+    ],
+    "war_stats": [
+      "health"
+    ]
+  },
+  "Deinosuchus": {
+    "modes": [
+      "mutations",
+      "all_females",
+      "stat_merge",
+      "top_stat_females"
+    ],
+    "mutation_stats": [
+      "health",
+      "melee"
+    ],
+    "stat_merge_stats": [
+      "health",
+      "melee"
+    ],
+    "top_stat_females_stats": [
+      "health",
+      "melee"
+    ],
+    "war_stats": [
+      "health",
+      "melee"
+    ]
+  },
+  "Cs  Tek Stegosaurus 223": {
+    "modes": [
+      "mutations",
+      "all_females",
+      "stat_merge",
+      "top_stat_females",
+      "war"
+    ],
+    "mutation_stats": [
+      "health",
+      "melee"
+    ],
+    "stat_merge_stats": [
+      "health",
+      "stamina",
+      "melee"
+    ],
+    "top_stat_females_stats": [
+      "health",
+      "stamina",
+      "melee"
+    ],
+    "war_stats": [
+      "health",
+      "stamina",
+      "melee"
+    ]
+  }
+}

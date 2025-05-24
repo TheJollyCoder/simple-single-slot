@@ -1,0 +1,129 @@
+{
+  "slot_x": 1231,
+  "slot_y": 286,
+  "destroy_offsets": [
+    13,
+    267
+  ],
+  "destroy_this_offsets": [
+    124,
+    277
+  ],
+  "popup_delay": 0.25,
+  "action_delay": 0.05,
+  "hotkey_scan": "F8",
+  "debug_mode": false,
+  "drop_all_button": [
+    495,
+    196
+  ],
+  "drop_all_confirm": [
+    498,
+    195
+  ],
+  "food_slots": [
+    [
+      602,
+      1020
+    ],
+    [
+      686,
+      1011
+    ],
+    [
+      759,
+      1017
+    ]
+  ],
+  "species_roi": {
+    "x": 1275,
+    "y": 243,
+    "w": 241,
+    "h": 28
+  },
+  "stat_rois": {
+    "health": {
+      "x": 1313,
+      "y": 472,
+      "w": 73,
+      "h": 36
+    },
+    "stamina": {
+      "x": 1441,
+      "y": 472,
+      "w": 71,
+      "h": 34
+    },
+    "weight": {
+      "x": 1316,
+      "y": 504,
+      "w": 71,
+      "h": 31
+    },
+    "melee": {
+      "x": 1441,
+      "y": 503,
+      "w": 68,
+      "h": 34
+    },
+    "food": {
+      "x": 1443,
+      "y": 532,
+      "w": 62,
+      "h": 29
+    },
+    "oxygen": {
+      "x": 1316,
+      "y": 531,
+      "w": 68,
+      "h": 31
+    }
+  },
+  "ocr": {
+    "tesseract_cmd": "tesseract",
+    "oem": 3,
+    "psm": 7
+  },
+  "stat_list_mode": "mutation",
+  "default_species_template": {
+    "modes": [
+      "mutations",
+      "all_females",
+      "stat_merge",
+      "top_stat_females",
+      "war"
+    ],
+    "mutation_stats": [
+      "health",
+      "stamina",
+      "weight",
+      "melee",
+      "oxygen",
+      "food"
+    ],
+    "stat_merge_stats": [
+      "health",
+      "stamina",
+      "weight",
+      "melee",
+      "oxygen",
+      "food"
+    ],
+    "top_stat_females_stats": [
+      "health",
+      "stamina",
+      "weight",
+      "melee",
+      "oxygen",
+      "food"
+    ],
+    "war_stats": [
+      "health",
+      "stamina",
+      "weight",
+      "melee",
+      "oxygen",
+      "food"
+    ]
+  }
+}
