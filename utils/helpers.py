@@ -1,3 +1,2 @@
-def refresh_species_dropdown(app):
-    if hasattr(app, "species_dropdown"):
-        app.species_dropdown["values"] = list(app.rules.keys())
+def refresh_species_list(rules: dict) -> list[str]:
+    return sorted(rules.keys())
