@@ -2,71 +2,69 @@ import json
 import tkinter as tk
 from tkinter import messagebox
 
-class SpeciesTab(tk.Frame):
-    def __init__(self, parent, config):
-        super().__init__(parent)
-        self.config = config
-        self.rules = config.rules
-        self.current = None
+ALL_MODES = ["mutations", "all_females", "stat_merge", "top_stat_females", "war"]
+ALL_STATS = ["health", "stamina", "weight", "melee", "oxygen", "food"]
 
-        # Species list
-        self.species_list = tk.Listbox(self, exportselection=False)
-        self.species_list.grid(row=0, column=0, sticky="ns", padx=5, pady=5)
-        for sp in sorted(self.rules.keys()):
-            self.species_list.insert("end", sp)
-        self.species_list.bind("<<ListboxSelect>>", self.on_select)
+def build_species_tab(app):
+    cfg   = app.config
+    rules = cfg.rules
 
-        # Details panel
-        df = tk.Frame(self)
-        df.grid(row=0, column=1, sticky="nsew", padx=5, pady=5)
-        df.columnconfigure(1, weight=1)
+    # Species selector
+    tk.Label(app.tab_species, text="Select Species:").grid(row=0, column=0, sticky="w", padx=5, pady=5)
+    app.species_var = tk.StringVar()
+    menu = tk.OptionMenu(app.tab_species, app.species_var, *sorted(rules.keys()))
+    menu.grid(row=0, column=1, sticky="w")
+    row = 1
 
-        tk.Label(df, text="Modes (comma)").grid(row=0, column=0, sticky="w")
-        self.modes_entry = tk.Entry(df)
-        self.modes_entry.grid(row=0, column=1, sticky="ew")
+    def load_species(name):
+        spec = rules.get(name, {})
+        for mode in ALL_MODES:
+            app.mode_vars[mode].set(mode in spec.get("modes", []))
+        for stat in ALL_STATS:
+            app.mut_stat_vars[stat].set(stat in spec.get("mut_stats", []))
+            app.top_stat_vars[stat].set(stat in spec.get("top_stats", []))
 
-        tk.Label(df, text="Mut Stats (comma)").grid(row=1, column=0, sticky="w")
-        self.mut_entry = tk.Entry(df)
-        self.mut_entry.grid(row=1, column=1, sticky="ew")
-
-        tk.Label(df, text="Top Stats (comma)").grid(row=2, column=0, sticky="w")
-        self.top_entry = tk.Entry(df)
-        self.top_entry.grid(row=2, column=1, sticky="ew")
-
-        tk.Button(df, text="Save Species", command=self.save_species).grid(
-            row=3, column=0, columnspan=2, pady=10
-        )
-
-        self.columnconfigure(1, weight=1)
-
-    def on_select(self, event):
-        sel = self.species_list.curselection()
-        if not sel:
+    def save_species():
+        name = app.species_var.get()
+        if not name:
+            messagebox.showerror("Error", "No species selected.")
             return
-        sp = self.species_list.get(sel[0])
-        self.current = sp
-        data = self.rules.get(sp, {})
-        self.modes_entry.delete(0, "end")
-        self.modes_entry.insert(0, ",".join(data.get("modes", [])))
-        self.mut_entry.delete(0, "end")
-        self.mut_entry.insert(0, ",".join(data.get("mut_stats", [])))
-        self.top_entry.delete(0, "end")
-        self.top_entry.insert(0, ",".join(data.get("top_stats", [])))
+        spec = rules.setdefault(name, {})
+        spec["modes"]     = [m for m in ALL_MODES if app.mode_vars[m].get()]
+        spec["mut_stats"] = [s for s in ALL_STATS if app.mut_stat_vars[s].get()]
+        spec["top_stats"] = [s for s in ALL_STATS if app.top_stat_vars[s].get()]
 
-    def save_species(self):
-        if not self.current:
-            return
-        modes = [m.strip() for m in self.modes_entry.get().split(",") if m.strip()]
-        mut   = [s.strip() for s in self.mut_entry.get().split(",") if s.strip()]
-        top   = [s.strip() for s in self.top_entry.get().split(",") if s.strip()]
+        with open(cfg.rules_path, "w", encoding="utf-8") as f:
+            json.dump(rules, f, indent=2)
+        messagebox.showinfo("Saved", f"Species '{name}' settings saved.")
 
-        self.rules[self.current]["modes"]    = modes
-        self.rules[self.current]["mut_stats"] = mut
-        self.rules[self.current]["top_stats"] = top
+    # Mode checkboxes
+    tk.Label(app.tab_species, text="Enabled Modes:").grid(row=row, column=0, sticky="w", pady=(5,0))
+    col = 1
+    for mode in ALL_MODES:
+        cb = tk.Checkbutton(app.tab_species, text=mode, variable=app.mode_vars[mode])
+        cb.grid(row=row, column=col, sticky="w", padx=2)
+        col += 1
+    row += 1
 
-        try:
-            with open(self.config.rules_path, "w", encoding="utf-8") as f:
-                json.dump(self.rules, f, indent=2)
-            messagebox.showinfo("Saved", f"Configuration for {self.current} saved.")
-        except Exception:
-            messagebox.showerror("Error", f"Could not save {self.current}.")
+    # Mutation stats
+    tk.Label(app.tab_species, text="Mutation Stats:").grid(row=row, column=0, sticky="nw", pady=(10,0))
+    mf = tk.Frame(app.tab_species); mf.grid(row=row, column=1, sticky="w")
+    for i, stat in enumerate(ALL_STATS):
+        cb = tk.Checkbutton(mf, text=stat, variable=app.mut_stat_vars[stat])
+        cb.grid(row=i//3, column=i%3, sticky="w", padx=5, pady=2)
+    row += 1
+
+    # Top stats
+    tk.Label(app.tab_species, text="Top Stats:").grid(row=row, column=0, sticky="nw", pady=(10,0))
+    tf = tk.Frame(app.tab_species); tf.grid(row=row, column=1, sticky="w")
+    for i, stat in enumerate(ALL_STATS):
+        cb = tk.Checkbutton(tf, text=stat, variable=app.top_stat_vars[stat])
+        cb.grid(row=i//3, column=i%3, sticky="w", padx=5, pady=2)
+    row += 1
+
+    # Load & Save buttons
+    tk.Button(app.tab_species, text="Load", command=lambda: load_species(app.species_var.get())) \
+      .grid(row=row, column=0, pady=10)
+    tk.Button(app.tab_species, text="Save", command=save_species) \
+      .grid(row=row, column=1, pady=10)

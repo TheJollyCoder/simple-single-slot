@@ -3,7 +3,6 @@ import threading
 import time
 import tkinter as tk
 from tkinter import ttk
-
 import keyboard
 
 from config.config import Config
@@ -12,77 +11,107 @@ from tracking.progress_tracker import ProgressTracker
 from logic.breeding_logic import should_keep_egg
 from utils.logger import get_logger
 
-from .global_tab import GlobalTab
-from .species_tab import SpeciesTab
-from .tools_tab import ToolsTab
-from .test_tab import TestTab
+from gui.global_tab import build_global_tab
+from gui.species_tab import build_species_tab
+from gui.tools_tab import build_tools_tab
+from gui.test_tab import build_test_tab
 
 log = get_logger("gui")
 
 class SettingsEditor(tk.Tk):
+    ALL_MODES = ["mutations", "all_females", "stat_merge", "top_stat_females", "war"]
+    ALL_STATS = ["health", "stamina", "weight", "melee", "oxygen", "food"]
+
     def __init__(self):
         super().__init__()
-        self.title("Ark Breeding Settings Editor")
-        self.geometry("900x600")
+        self.title("ARK Breeding Config Editor")
+        self.geometry("800x600")
 
-        # Initialize configuration and progress tracker
-        config_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "config"))
-        self.config = Config(config_dir)
+        # load configuration and tracker
+        project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        self.config = Config(project_root)
         self.tracker = ProgressTracker(self.config)
+
+        # state flags
         self.live_running = False
+        self.scanning_paused = False
 
-        # Create tabbed interface
-        self.notebook = ttk.Notebook(self)
-        self.notebook.pack(fill="both", expand=True)
+        # prepare per-species UI vars
+        self.mode_vars = {mode: tk.BooleanVar() for mode in self.ALL_MODES}
+        self.mut_stat_vars = {stat: tk.BooleanVar() for stat in self.ALL_STATS}
+        self.top_stat_vars = {stat: tk.BooleanVar() for stat in self.ALL_STATS}
 
-        self.global_tab  = GlobalTab(self.notebook, self.config)
-        self.species_tab = SpeciesTab(self.notebook, self.config)
-        self.tools_tab   = ToolsTab(self.notebook, self.config)
-        self.test_tab    = TestTab(self.notebook, self.config)
+        # build the tabbed interface
+        self.create_tabs()
 
-        self.notebook.add(self.global_tab,  text="Global Settings")
-        self.notebook.add(self.species_tab, text="Species Config")
-        self.notebook.add(self.tools_tab,   text="Tools & Defaults")
-        self.notebook.add(self.test_tab,    text="Test Control")
+        # hotkeys
+        keyboard.add_hotkey(self.config.settings.get("hotkey_scan", "F8"), self.toggle_live)
+        keyboard.add_hotkey("escape", self.quit_app)
 
-        # Hotkeys for live scanning
-        keyboard.add_hotkey("F8", self.toggle_live)
-        keyboard.add_hotkey("F9", self.pause_live)
+    def create_tabs(self):
+        notebook = ttk.Notebook(self)
+        notebook.pack(expand=True, fill=tk.BOTH)
+
+        self.tab_global  = ttk.Frame(notebook); notebook.add(self.tab_global,  text="Global Settings")
+        self.tab_species = ttk.Frame(notebook); notebook.add(self.tab_species, text="Species Config")
+        self.tab_tools   = ttk.Frame(notebook); notebook.add(self.tab_tools,   text="Defaults & Tools")
+        self.tab_test    = ttk.Frame(notebook); notebook.add(self.tab_test,    text="Script Control")
+
+        build_global_tab(self)
+        build_species_tab(self)
+        build_tools_tab(self)
+        build_test_tab(self)
 
     def toggle_live(self):
         if not self.live_running:
             self.live_running = True
             threading.Thread(target=self.run_loop, daemon=True).start()
+            log.info("▶️ Live scanning started")
         else:
             self.live_running = False
-
-    def pause_live(self):
-        self.live_running = False
+            log.info("⏹ Live scanning stopped")
 
     def run_loop(self):
         while self.live_running:
+            if self.scanning_paused:
+                time.sleep(0.1)
+                continue
             try:
-                slot = scan_slot(self.config)
-                if slot != "no_egg":
-                    sp  = slot["species"]
-                    sex = "male" if "male" in sp.lower() else "female"
-                    keep, reasons = should_keep_egg(slot, sp, sex, self.config)
+                result = scan_slot(self.config)
+                if result == "no_egg":
+                    time.sleep(self.config.settings.get("scan_loop_delay", 0.5))
+                    continue
 
-                    x, y = (self.config.settings["slot_x"], self.config.settings["slot_y"])
-                    if keep:
-                        input_queue.put(("double_click", (x, y)))
-                        self.tracker.update_top_stats(sp, slot["stats"])
-                        self.tracker.update_mutation_thresholds(sp, slot["stats"], sex)
-                        self.tracker.update_stud(sp, slot["stats"], sex)
-                    else:
-                        input_queue.put(("right_click", (x, y)))
+                species_raw = result["species"]
+                stats       = result["stats"]
+                sex         = "female" if "female" in species_raw.lower() else "male"
+                species     = self.tracker.normalize_species(species_raw)
 
-                    self.tracker.save()
+                keep, reasons = should_keep_egg(result, species, sex, self.config)
+                x, y = self.config.settings["slot_x"], self.config.settings["slot_y"]
 
-                time.sleep(self.config.settings.get("scan_interval", 0.5))
+                if keep:
+                    input_queue.put(("double_click", (x, y)))
+                    log.info(f"✔ Kept egg: {species_raw}")
+                    self.tracker.update_top_stats(species, stats)
+                    self.tracker.update_mutation_thresholds(species, stats, sex)
+                    self.tracker.update_stud(species, stats, sex)
+                else:
+                    input_queue.put(("right_click", (x, y)))
+                    log.info(f"✖ Destroyed egg: {species_raw}")
+
+                self.tracker.save()
+                time.sleep(self.config.settings.get("scan_loop_delay", 0.5))
+
             except Exception:
-                log.exception("Live-scan loop error")
+                log.exception("Error in live scan loop")
+                self.live_running = False
                 break
+
+    def quit_app(self):
+        self.live_running = False
+        self.destroy()
+
 
 if __name__ == "__main__":
     app = SettingsEditor()

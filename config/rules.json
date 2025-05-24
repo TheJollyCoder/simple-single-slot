@@ -7,16 +7,10 @@
       "top_stat_females",
       "war"
     ],
-    "mutation_stats": [
+    "mut_stats": [
       "melee"
     ],
-    "stat_merge_stats": [
-      "melee"
-    ],
-    "top_stat_females_stats": [
-      "melee"
-    ],
-    "war_stats": [
+    "top_stats": [
       "melee"
     ]
   },
@@ -27,23 +21,13 @@
       "stat_merge",
       "top_stat_females"
     ],
-    "mutation_stats": [
+    "mut_stats": [
       "health"
     ],
-    "stat_merge_stats": [
+    "top_stats": [
       "health",
-      "stamina",
-      "melee"
-    ],
-    "top_stat_females_stats": [
-      "health",
-      "stamina",
-      "melee"
-    ],
-    "war_stats": [
-      "health",
-      "stamina",
-      "melee"
+      "melee",
+      "stamina"
     ]
   },
   "Terror Bird": {
@@ -53,23 +37,13 @@
       "stat_merge",
       "top_stat_females"
     ],
-    "mutation_stats": [
+    "mut_stats": [
       "health"
     ],
-    "stat_merge_stats": [
+    "top_stats": [
       "health",
-      "stamina",
-      "melee"
-    ],
-    "top_stat_females_stats": [
-      "health",
-      "stamina",
-      "melee"
-    ],
-    "war_stats": [
-      "health",
-      "stamina",
-      "melee"
+      "melee",
+      "stamina"
     ]
   },
   "Yutyrannus": {
@@ -79,16 +53,10 @@
       "stat_merge",
       "top_stat_females"
     ],
-    "mutation_stats": [
+    "mut_stats": [
       "health"
     ],
-    "stat_merge_stats": [
-      "health"
-    ],
-    "top_stat_females_stats": [
-      "health"
-    ],
-    "war_stats": [
+    "top_stats": [
       "health"
     ]
   },
@@ -100,21 +68,13 @@
       "top_stat_females",
       "war"
     ],
-    "mutation_stats": [
+    "mut_stats": [
       "health",
       "food"
     ],
-    "stat_merge_stats": [
-      "health",
-      "food"
-    ],
-    "top_stat_females_stats": [
-      "health",
-      "food"
-    ],
-    "war_stats": [
-      "health",
-      "food"
+    "top_stats": [
+      "food",
+      "health"
     ]
   },
   "Managarmr": {
@@ -125,25 +85,15 @@
       "top_stat_females",
       "war"
     ],
-    "mutation_stats": [
+    "mut_stats": [
       "health",
       "stamina",
       "melee"
     ],
-    "stat_merge_stats": [
+    "top_stats": [
       "health",
-      "stamina",
-      "melee"
-    ],
-    "top_stat_females_stats": [
-      "health",
-      "stamina",
-      "melee"
-    ],
-    "war_stats": [
-      "health",
-      "stamina",
-      "melee"
+      "melee",
+      "stamina"
     ]
   },
   "Tusoteuthis": {
@@ -154,24 +104,14 @@
       "top_stat_females",
       "war"
     ],
-    "mutation_stats": [
+    "mut_stats": [
       "health",
       "melee"
     ],
-    "stat_merge_stats": [
+    "top_stats": [
       "health",
-      "stamina",
-      "melee"
-    ],
-    "top_stat_females_stats": [
-      "health",
-      "stamina",
-      "melee"
-    ],
-    "war_stats": [
-      "health",
-      "stamina",
-      "melee"
+      "melee",
+      "stamina"
     ]
   },
   "Snow Owl": {
@@ -181,18 +121,10 @@
       "stat_merge",
       "top_stat_females"
     ],
-    "mutation_stats": [
+    "mut_stats": [
       "health"
     ],
-    "stat_merge_stats": [
-      "health",
-      "stamina"
-    ],
-    "top_stat_females_stats": [
-      "health",
-      "stamina"
-    ],
-    "war_stats": [
+    "top_stats": [
       "health",
       "stamina"
     ]
@@ -204,24 +136,14 @@
       "stat_merge",
       "top_stat_females"
     ],
-    "mutation_stats": [
+    "mut_stats": [
       "health",
       "melee"
     ],
-    "stat_merge_stats": [
+    "top_stats": [
       "health",
-      "stamina",
-      "melee"
-    ],
-    "top_stat_females_stats": [
-      "health",
-      "stamina",
-      "melee"
-    ],
-    "war_stats": [
-      "health",
-      "stamina",
-      "melee"
+      "melee",
+      "stamina"
     ]
   },
   "Lightning Wyvern": {
@@ -231,24 +153,14 @@
       "stat_merge",
       "top_stat_females"
     ],
-    "mutation_stats": [
+    "mut_stats": [
       "health",
       "melee"
     ],
-    "stat_merge_stats": [
+    "top_stats": [
       "health",
-      "stamina",
-      "melee"
-    ],
-    "top_stat_females_stats": [
-      "health",
-      "stamina",
-      "melee"
-    ],
-    "war_stats": [
-      "health",
-      "stamina",
-      "melee"
+      "melee",
+      "stamina"
     ]
   },
   "Basilisk": {
@@ -259,23 +171,13 @@
       "top_stat_females",
       "war"
     ],
-    "mutation_stats": [
+    "mut_stats": [
       "melee"
     ],
-    "stat_merge_stats": [
+    "top_stats": [
       "health",
-      "stamina",
-      "melee"
-    ],
-    "top_stat_females_stats": [
-      "health",
-      "stamina",
-      "melee"
-    ],
-    "war_stats": [
-      "health",
-      "stamina",
-      "melee"
+      "melee",
+      "stamina"
     ]
   },
   "Fire Wyvern": {
@@ -286,24 +188,14 @@
       "top_stat_females",
       "war"
     ],
-    "mutation_stats": [
+    "mut_stats": [
       "health",
       "melee"
     ],
-    "stat_merge_stats": [
+    "top_stats": [
       "health",
-      "stamina",
-      "melee"
-    ],
-    "top_stat_females_stats": [
-      "health",
-      "stamina",
-      "melee"
-    ],
-    "war_stats": [
-      "health",
-      "stamina",
-      "melee"
+      "melee",
+      "stamina"
     ]
   },
   "Stegosaurus": {
@@ -314,18 +206,10 @@
       "top_stat_females",
       "war"
     ],
-    "mutation_stats": [
+    "mut_stats": [
       "health"
     ],
-    "stat_merge_stats": [
-      "health",
-      "stamina"
-    ],
-    "top_stat_females_stats": [
-      "health",
-      "stamina"
-    ],
-    "war_stats": [
+    "top_stats": [
       "health",
       "stamina"
     ]
@@ -337,16 +221,10 @@
       "stat_merge",
       "top_stat_females"
     ],
-    "mutation_stats": [
+    "mut_stats": [
       "health"
     ],
-    "stat_merge_stats": [
-      "health"
-    ],
-    "top_stat_females_stats": [
-      "health"
-    ],
-    "war_stats": [
+    "top_stats": [
       "health"
     ]
   },
@@ -357,23 +235,13 @@
       "top_stat_females",
       "war"
     ],
-    "mutation_stats": [
+    "mut_stats": [
       "melee"
     ],
-    "stat_merge_stats": [
+    "top_stats": [
       "health",
-      "stamina",
-      "melee"
-    ],
-    "top_stat_females_stats": [
-      "health",
-      "stamina",
-      "melee"
-    ],
-    "war_stats": [
-      "health",
-      "stamina",
-      "melee"
+      "melee",
+      "stamina"
     ]
   },
   "Paraceratherium": {
@@ -384,16 +252,10 @@
       "top_stat_females",
       "war"
     ],
-    "mutation_stats": [
+    "mut_stats": [
       "health"
     ],
-    "stat_merge_stats": [
-      "health"
-    ],
-    "top_stat_females_stats": [
-      "health"
-    ],
-    "war_stats": [
+    "top_stats": [
       "health"
     ]
   },
@@ -403,19 +265,11 @@
       "stat_merge",
       "top_stat_females"
     ],
-    "mutation_stats": [
+    "mut_stats": [
       "health",
       "melee"
     ],
-    "stat_merge_stats": [
-      "health",
-      "melee"
-    ],
-    "top_stat_females_stats": [
-      "health",
-      "melee"
-    ],
-    "war_stats": [
+    "top_stats": [
       "health",
       "melee"
     ]
@@ -427,19 +281,11 @@
       "stat_merge",
       "top_stat_females"
     ],
-    "mutation_stats": [
+    "mut_stats": [
       "health",
       "melee"
     ],
-    "stat_merge_stats": [
-      "health",
-      "melee"
-    ],
-    "top_stat_females_stats": [
-      "health",
-      "melee"
-    ],
-    "war_stats": [
+    "top_stats": [
       "health",
       "melee"
     ]
@@ -449,16 +295,10 @@
       "mutations",
       "stat_merge"
     ],
-    "mutation_stats": [
+    "mut_stats": [
       "health"
     ],
-    "stat_merge_stats": [
-      "health"
-    ],
-    "top_stat_females_stats": [
-      "health"
-    ],
-    "war_stats": [
+    "top_stats": [
       "health"
     ]
   },
@@ -470,19 +310,11 @@
       "top_stat_females",
       "war"
     ],
-    "mutation_stats": [
+    "mut_stats": [
       "health",
       "melee"
     ],
-    "stat_merge_stats": [
-      "health",
-      "melee"
-    ],
-    "top_stat_females_stats": [
-      "health",
-      "melee"
-    ],
-    "war_stats": [
+    "top_stats": [
       "health",
       "melee"
     ]
@@ -493,19 +325,11 @@
       "stat_merge",
       "top_stat_females"
     ],
-    "mutation_stats": [
+    "mut_stats": [
       "health",
       "melee"
     ],
-    "stat_merge_stats": [
-      "health",
-      "melee"
-    ],
-    "top_stat_females_stats": [
-      "health",
-      "melee"
-    ],
-    "war_stats": [
+    "top_stats": [
       "health",
       "melee"
     ]
@@ -516,18 +340,10 @@
       "stat_merge",
       "top_stat_females"
     ],
-    "mutation_stats": [
+    "mut_stats": [
       "health"
     ],
-    "stat_merge_stats": [
-      "health",
-      "melee"
-    ],
-    "top_stat_females_stats": [
-      "health",
-      "melee"
-    ],
-    "war_stats": [
+    "top_stats": [
       "health",
       "melee"
     ]
@@ -539,19 +355,11 @@
       "stat_merge",
       "top_stat_females"
     ],
-    "mutation_stats": [
+    "mut_stats": [
       "health",
       "melee"
     ],
-    "stat_merge_stats": [
-      "health",
-      "melee"
-    ],
-    "top_stat_females_stats": [
-      "health",
-      "melee"
-    ],
-    "war_stats": [
+    "top_stats": [
       "health",
       "melee"
     ]
@@ -562,19 +370,11 @@
       "stat_merge",
       "top_stat_females"
     ],
-    "mutation_stats": [
+    "mut_stats": [
       "health",
       "melee"
     ],
-    "stat_merge_stats": [
-      "health",
-      "melee"
-    ],
-    "top_stat_females_stats": [
-      "health",
-      "melee"
-    ],
-    "war_stats": [
+    "top_stats": [
       "health",
       "melee"
     ]
@@ -585,24 +385,14 @@
       "stat_merge",
       "top_stat_females"
     ],
-    "mutation_stats": [
+    "mut_stats": [
       "health",
       "melee"
     ],
-    "stat_merge_stats": [
+    "top_stats": [
       "health",
-      "stamina",
-      "melee"
-    ],
-    "top_stat_females_stats": [
-      "health",
-      "stamina",
-      "melee"
-    ],
-    "war_stats": [
-      "health",
-      "stamina",
-      "melee"
+      "melee",
+      "stamina"
     ]
   },
   "Ovis": {
@@ -612,16 +402,10 @@
       "stat_merge",
       "top_stat_females"
     ],
-    "mutation_stats": [
+    "mut_stats": [
       "health"
     ],
-    "stat_merge_stats": [
-      "health"
-    ],
-    "top_stat_females_stats": [
-      "health"
-    ],
-    "war_stats": [
+    "top_stats": [
       "health"
     ]
   },
@@ -631,19 +415,11 @@
       "stat_merge",
       "top_stat_females"
     ],
-    "mutation_stats": [
+    "mut_stats": [
       "health",
       "melee"
     ],
-    "stat_merge_stats": [
-      "health",
-      "melee"
-    ],
-    "top_stat_females_stats": [
-      "health",
-      "melee"
-    ],
-    "war_stats": [
+    "top_stats": [
       "health",
       "melee"
     ]
@@ -654,18 +430,10 @@
       "stat_merge",
       "top_stat_females"
     ],
-    "mutation_stats": [
+    "mut_stats": [
       "health"
     ],
-    "stat_merge_stats": [
-      "health",
-      "melee"
-    ],
-    "top_stat_females_stats": [
-      "health",
-      "melee"
-    ],
-    "war_stats": [
+    "top_stats": [
       "health",
       "melee"
     ]
@@ -678,23 +446,13 @@
       "top_stat_females",
       "war"
     ],
-    "mutation_stats": [
+    "mut_stats": [
       "health"
     ],
-    "stat_merge_stats": [
+    "top_stats": [
       "health",
-      "stamina",
-      "melee"
-    ],
-    "top_stat_females_stats": [
-      "health",
-      "stamina",
-      "melee"
-    ],
-    "war_stats": [
-      "health",
-      "stamina",
-      "melee"
+      "melee",
+      "stamina"
     ]
   },
   "Pteranodon": {
@@ -704,23 +462,13 @@
       "stat_merge",
       "top_stat_females"
     ],
-    "mutation_stats": [
+    "mut_stats": [
       "health"
     ],
-    "stat_merge_stats": [
+    "top_stats": [
       "health",
-      "stamina",
-      "melee"
-    ],
-    "top_stat_females_stats": [
-      "health",
-      "stamina",
-      "melee"
-    ],
-    "war_stats": [
-      "health",
-      "stamina",
-      "melee"
+      "melee",
+      "stamina"
     ]
   },
   "Xiphactinus": {
@@ -729,19 +477,11 @@
       "stat_merge",
       "top_stat_females"
     ],
-    "mutation_stats": [
+    "mut_stats": [
       "health",
       "melee"
     ],
-    "stat_merge_stats": [
-      "health",
-      "melee"
-    ],
-    "top_stat_females_stats": [
-      "health",
-      "melee"
-    ],
-    "war_stats": [
+    "top_stats": [
       "health",
       "melee"
     ]
@@ -753,19 +493,11 @@
       "stat_merge",
       "top_stat_females"
     ],
-    "mutation_stats": [
+    "mut_stats": [
       "health",
       "melee"
     ],
-    "stat_merge_stats": [
-      "health",
-      "melee"
-    ],
-    "top_stat_females_stats": [
-      "health",
-      "melee"
-    ],
-    "war_stats": [
+    "top_stats": [
       "health",
       "melee"
     ]
@@ -778,16 +510,10 @@
       "top_stat_females",
       "war"
     ],
-    "mutation_stats": [
+    "mut_stats": [
       "health"
     ],
-    "stat_merge_stats": [
-      "health"
-    ],
-    "top_stat_females_stats": [
-      "health"
-    ],
-    "war_stats": [
+    "top_stats": [
       "health"
     ]
   },
@@ -797,19 +523,11 @@
       "stat_merge",
       "top_stat_females"
     ],
-    "mutation_stats": [
+    "mut_stats": [
       "health",
       "melee"
     ],
-    "stat_merge_stats": [
-      "health",
-      "melee"
-    ],
-    "top_stat_females_stats": [
-      "health",
-      "melee"
-    ],
-    "war_stats": [
+    "top_stats": [
       "health",
       "melee"
     ]
@@ -821,19 +539,11 @@
       "top_stat_females",
       "war"
     ],
-    "mutation_stats": [
+    "mut_stats": [
       "health",
       "melee"
     ],
-    "stat_merge_stats": [
-      "health",
-      "melee"
-    ],
-    "top_stat_females_stats": [
-      "health",
-      "melee"
-    ],
-    "war_stats": [
+    "top_stats": [
       "health",
       "melee"
     ]
@@ -844,16 +554,10 @@
       "stat_merge",
       "top_stat_females"
     ],
-    "mutation_stats": [
+    "mut_stats": [
       "health"
     ],
-    "stat_merge_stats": [
-      "health"
-    ],
-    "top_stat_females_stats": [
-      "health"
-    ],
-    "war_stats": [
+    "top_stats": [
       "health"
     ]
   },
@@ -864,48 +568,12 @@
       "stat_merge",
       "top_stat_females"
     ],
-    "mutation_stats": [
+    "mut_stats": [
       "health",
       "melee"
     ],
-    "stat_merge_stats": [
+    "top_stats": [
       "health",
-      "melee"
-    ],
-    "top_stat_females_stats": [
-      "health",
-      "melee"
-    ],
-    "war_stats": [
-      "health",
-      "melee"
-    ]
-  },
-  "Cs  Tek Stegosaurus 223": {
-    "modes": [
-      "mutations",
-      "all_females",
-      "stat_merge",
-      "top_stat_females",
-      "war"
-    ],
-    "mutation_stats": [
-      "health",
-      "melee"
-    ],
-    "stat_merge_stats": [
-      "health",
-      "stamina",
-      "melee"
-    ],
-    "top_stat_females_stats": [
-      "health",
-      "stamina",
-      "melee"
-    ],
-    "war_stats": [
-      "health",
-      "stamina",
       "melee"
     ]
   }
