@@ -125,5 +125,13 @@
       "oxygen",
       "food"
     ]
+  },
+  "scan_loop_delay": 0.25,
+  "log_levels": {
+    "scanner": "INFO",
+    "ocr_helpers": "INFO",
+    "tracker": "INFO",
+    "logic": "INFO",
+    "gui": "DEBUG"
   }
 }

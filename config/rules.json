@@ -159,8 +159,8 @@
     ],
     "top_stats": [
       "health",
-      "melee",
-      "stamina"
+      "stamina",
+      "melee"
     ]
   },
   "Basilisk": {
@@ -176,8 +176,8 @@
     ],
     "top_stats": [
       "health",
-      "melee",
-      "stamina"
+      "stamina",
+      "melee"
     ]
   },
   "Fire Wyvern": {
@@ -293,7 +293,9 @@
   "Carbonemys": {
     "modes": [
       "mutations",
-      "stat_merge"
+      "stat_merge",
+      "top_stat_females",
+      "war"
     ],
     "mut_stats": [
       "health"

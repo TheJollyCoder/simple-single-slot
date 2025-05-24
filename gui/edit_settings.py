@@ -27,9 +27,10 @@ class SettingsEditor(tk.Tk):
         self.title("ARK Breeding Config Editor")
         self.geometry("800x600")
 
-        # load configuration and tracker
-        project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        self.config = Config(project_root)
+        # point Config at the config/ directory
+        repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        config_dir = os.path.join(repo_root, "config")
+        self.config = Config(config_dir)
         self.tracker = ProgressTracker(self.config)
 
         # state flags
@@ -46,6 +47,7 @@ class SettingsEditor(tk.Tk):
 
         # hotkeys
         keyboard.add_hotkey(self.config.settings.get("hotkey_scan", "F8"), self.toggle_live)
+        keyboard.add_hotkey("F9", self.toggle_pause)
         keyboard.add_hotkey("escape", self.quit_app)
 
     def create_tabs(self):
@@ -73,7 +75,7 @@ class SettingsEditor(tk.Tk):
 
     def run_loop(self):
         while self.live_running:
-            if self.scanning_paused:
+            if getattr(self, "scanning_paused", False):
                 time.sleep(0.1)
                 continue
             try:
@@ -111,6 +113,11 @@ class SettingsEditor(tk.Tk):
     def quit_app(self):
         self.live_running = False
         self.destroy()
+    def toggle_pause(self):
+        """Pause/resume the live scan loop (F9)."""
+        self.scanning_paused = not getattr(self, "scanning_paused", False)
+        state = "Paused" if self.scanning_paused else "Resumed"
+        log.info(f"⏸ {state}")
 
 
 if __name__ == "__main__":

@@ -4,7 +4,7 @@ import cv2
 import numpy as np
 import pyautogui
 from config.config import Config
-from ocr_helpers import baseline_up, enhance_and_ocr, normalize_stat_text
+from scan.ocr_helpers import baseline_up, enhance_and_ocr, normalize_stat_text
 from utils.logger import get_logger
 from queue import Queue
 import threading
@@ -21,7 +21,14 @@ def _input_worker():
             if cmd == "move":
                 pyautogui.moveTo(*args)
             elif cmd == "click":
-                pyautogui.click(*args)
+                # args can be (x, y) or (x, y, delay)
+                if len(args) == 2:
+                    x, y = args
+                    pyautogui.click(x, y)
+                else:
+                    x, y, delay = args
+                    pyautogui.click(x, y)
+                    time.sleep(delay)
             elif cmd == "double_click":
                 pyautogui.doubleClick(*args)
             elif cmd == "right_click":
