@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import scrolledtext
 import time
+import subprocess
 from scanner import scan_slot
 
 # Prevent pytest from treating this UI module as a test
@@ -32,6 +33,7 @@ def build_test_tab(app):
     tk.Button(app.tab_test, text="Force KEEP (Real Logic)", command=app.keep_egg).pack(pady=5)
     tk.Button(app.tab_test, text="Force DESTROY (Real Logic)", command=app.destroy_egg).pack(pady=5)
     tk.Button(app.tab_test, text="Multi-Egg Scan Test", command=lambda: multi_egg_test(app)).pack(pady=10)
+    tk.Button(app.tab_test, text="Verify Rules (CLI)", command=verify_rules_cli).pack(pady=5)
 
 
 
@@ -136,3 +138,10 @@ def multi_egg_test(app):
             import pyautogui
             pyautogui.doubleClick(app.settings["slot_x"], app.settings["slot_y"])
             print("→ Egg auto-kept via double-click")
+
+def verify_rules_cli():
+    try:
+        subprocess.run(["python", "verify_rules.py"], check=False)
+    except Exception as e:
+        print(f"Error running verify_rules.py: {e}")
+
