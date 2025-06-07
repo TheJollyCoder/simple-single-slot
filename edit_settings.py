@@ -7,6 +7,12 @@ import pyautogui
 import keyboard
 import tkinter as tk
 from tkinter import ttk, messagebox
+from pathlib import Path
+from logger import get_logger
+
+log = get_logger("edit_settings")
+
+BASE_DIR = Path(__file__).resolve().parent
 
 from scanner import scan_slot
 from breeding_logic import should_keep_egg
@@ -21,9 +27,9 @@ from tabs.species_tab import build_species_tab
 from tabs.tools_tab import build_tools_tab
 from tabs.test_tab import build_test_tab
 
-SETTINGS_FILE = "settings.json"
-RULES_FILE    = "rules.json"
-PROGRESS_FILE = "breeding_progress.json"
+SETTINGS_FILE = BASE_DIR / "settings.json"
+RULES_FILE    = BASE_DIR / "rules.json"
+PROGRESS_FILE = BASE_DIR / "breeding_progress.json"
 
 DEFAULT_MODES = ["mutations", "all_females", "stat_merge", "top_stat_females", "war"]
 ALL_STATS     = ["health", "stamina", "weight", "melee", "food", "oxygen"]
@@ -101,7 +107,7 @@ class SettingsEditor(tk.Tk):
     def start_live_run(self):
         """Begin background live‐scan loop (F8)."""
         if getattr(self, "live_running", False):
-            print("⚠️ Already running.")
+            log.info("⚠️ Already running.")
             return
 
         # reset summary each run
@@ -110,7 +116,7 @@ class SettingsEditor(tk.Tk):
         self.scanning_paused = False
 
         def run_loop():
-            print("▶️ Live scanning started (F8 to run, F9 to pause/resume, ESC to exit)")
+            log.info("▶️ Live scanning started (F8 to run, F9 to pause/resume, ESC to exit)")
             while self.live_running:
                 if self.scanning_paused:
                     time.sleep(0.1)
@@ -118,7 +124,7 @@ class SettingsEditor(tk.Tk):
 
                 scan = scan_slot(self.settings)
                 if scan == "no_egg":
-                    print("→ No egg detected.")
+                    log.info("→ No egg detected.")
                     time.sleep(self.settings.get("scan_loop_delay", 0.5))
                     continue
 
@@ -173,17 +179,17 @@ class SettingsEditor(tk.Tk):
                 })
                 save_progress(progress)
                 # print UI feedback
-                print(f"→ {egg}: {decision.upper()}")
+                log.info(f"→ {egg}: {decision.upper()}")
                 for k, v in reasons.items():
                     if k != "_debug" and v:
-                        print(f"  ✔ {k}")
+                        log.info(f"  ✔ {k}")
                 if "_debug" in reasons:
                     for k, v in reasons["_debug"].items():
-                        print(f"    debug[{k}]: {v}")
+                        log.info(f"    debug[{k}]: {v}")
 
                 if decision == "keep":
                     pyautogui.doubleClick(self.settings["slot_x"], self.settings["slot_y"])
-                    print("✔ Egg auto-kept via double-click")
+                    log.info("✔ Egg auto-kept via double-click")
                 else:
                     x, y   = self.settings["slot_x"], self.settings["slot_y"]
                     dx, dy       = self.settings["destroy_offsets"]
@@ -193,17 +199,17 @@ class SettingsEditor(tk.Tk):
                     pyautogui.moveTo(x + dx, y + dy)
                     time.sleep(0.3)
                     pyautogui.moveTo(x + dx2, y + dy2); pyautogui.click()
-                    print("✖ Egg destroyed via right-click chain")
+                    log.info("✖ Egg destroyed via right-click chain")
 
                 time.sleep(self.settings.get("scan_loop_delay", 0.5))
 
             self.live_running = False
-            print("⏹ Scanning stopped.")
+            log.info("⏹ Scanning stopped.")
 
         # pause/resume toggle
         def toggle_pause():
             self.scanning_paused = not self.scanning_paused
-            print("⏸ Paused" if self.scanning_paused else "▶️ Resumed")
+            log.info("⏸ Paused" if self.scanning_paused else "▶️ Resumed")
 
         threading.Thread(target=run_loop, daemon=True).start()
         keyboard.add_hotkey("f9", toggle_pause)
@@ -211,7 +217,7 @@ class SettingsEditor(tk.Tk):
     def keep_egg(self):
         """Button: force KEEP via real logic."""
         pyautogui.doubleClick(self.settings["slot_x"], self.settings["slot_y"])
-        print("✔ KEEP action invoked")
+        log.info("✔ KEEP action invoked")
 
     def destroy_egg(self):
         """Button: force DESTROY via real logic."""
@@ -223,12 +229,12 @@ class SettingsEditor(tk.Tk):
         pyautogui.moveTo(x + dx, y + dy)
         time.sleep(0.3)
         pyautogui.moveTo(x + dx2, y + dy2); pyautogui.click()
-        print("✖ DESTROY action invoked")
+        log.info("✖ DESTROY action invoked")
 
     def quit(self):
         """On ESC: write summary.log then close."""
-        print("🛑 ESC pressed — quitting application.")
-        with open("summary.log", "w", encoding="utf-8") as f:
+        log.info("🛑 ESC pressed — quitting application.")
+        with open(BASE_DIR / "summary.log", "w", encoding="utf-8") as f:
             f.write("=== STUDS UPDATED (tracked only) ===\n")
             for species, stats in self._summary["studs"]:
                 tracked = self.rules.get(species, {}).get("stat_merge_stats", [])
@@ -244,7 +250,7 @@ class SettingsEditor(tk.Tk):
                 parts = [f"{val}{stat[0].upper()}" for stat, val in thresh.items()]
                 f.write(" ".join(parts) + f" {species}\n")
 
-        print("✅ Summary written to summary.log")
+        log.info("✅ Summary written to summary.log")
         self.destroy()
 
 if __name__ == "__main__":

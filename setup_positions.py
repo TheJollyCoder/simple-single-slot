@@ -1,14 +1,19 @@
 #!/usr/bin/env python3
 import os, json, time
 import cv2, numpy as np, pyautogui, keyboard
+from pathlib import Path
+from logger import get_logger
 
-SETTINGS_FILE = "settings.json"
+log = get_logger("setup_positions")
+
+BASE_DIR = Path(__file__).resolve().parent
+SETTINGS_FILE = BASE_DIR / "settings.json"
 
 def wait_and_record(prompt):
-    print(prompt)
+    log.info(prompt)
     keyboard.wait("f9")
     x, y = pyautogui.position()
-    print(f"  → recorded: ({x}, {y})\n")
+    log.info("  → recorded: (%d, %d)\n", x, y)
     time.sleep(0.2)
     return x, y
 
@@ -23,11 +28,11 @@ def draw_roi(prompt, img):
     roi = cv2.selectROI(prompt, img, showCrosshair=False, fromCenter=False)
     cv2.destroyWindow(prompt)
     x, y, w, h = map(int, roi)
-    print(f"  → ROI = {{'x':{x}, 'y':{y}, 'w':{w}, 'h':{h}}}\n")
+    log.info("  → ROI = {'x':%d, 'y':%d, 'w':%d, 'h':%d}\n", x, y, w, h)
     return {"x": x, "y": y, "w": w, "h": h}
 
 def main():
-    print("=== Ark Single-Slot Scanner Calibration ===\n")
+    log.info("=== Ark Single-Slot Scanner Calibration ===\n")
 
     # 1) Egg slot
     slot_x, slot_y = wait_and_record("1) Hover over an EGG SLOT and press F9")
@@ -46,7 +51,7 @@ def main():
     destroy_this_offsets = [this_x - slot_x, this_y - slot_y]
 
     # 4) Open stats popup
-    print("4) Opening stats popup…")
+    log.info("4) Opening stats popup…")
     pyautogui.click(slot_x, slot_y)
     time.sleep(0.5)
 
@@ -113,7 +118,7 @@ def main():
     with open(SETTINGS_FILE, "w", encoding="utf-8") as f:
         json.dump(cfg, f, indent=2)
 
-    print(f"\n✅ Calibration complete — saved to {SETTINGS_FILE}")
+    log.info("\n✅ Calibration complete — saved to %s", SETTINGS_FILE)
 
 if __name__ == "__main__":
     main()

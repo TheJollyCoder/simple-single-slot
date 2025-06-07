@@ -5,9 +5,11 @@ import json
 import os
 import re
 from difflib import get_close_matches
+from pathlib import Path
 
-PROGRESS_FILE = "breeding_progress.json"
-RULES_FILE    = "rules.json"
+BASE_DIR = Path(__file__).resolve().parent
+PROGRESS_FILE = BASE_DIR / "breeding_progress.json"
+RULES_FILE    = BASE_DIR / "rules.json"
 
 def load_progress():
     if os.path.exists(PROGRESS_FILE):

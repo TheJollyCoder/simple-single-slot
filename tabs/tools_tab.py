@@ -2,7 +2,10 @@ import tkinter as tk
 from tkinter import messagebox
 import json
 import subprocess
+from pathlib import Path
 from utils.helpers import refresh_species_dropdown
+
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 ALL_STATS = ["health", "stamina", "weight", "melee", "oxygen", "food"]
 DEFAULT_MODES = ["mutations", "all_females", "stat_merge", "top_stat_females", "war"]
@@ -65,7 +68,8 @@ def refresh_species(app):
         if species not in app.rules:
             app.rules[species] = default.copy()
             new_added += 1
-    with open("rules.json", "w", encoding="utf-8") as f:
+    rules_file = BASE_DIR / "rules.json"
+    with rules_file.open("w", encoding="utf-8") as f:
         json.dump(app.rules, f, indent=2)
     from utils.helpers import refresh_species_dropdown
     refresh_species_dropdown(app)
@@ -77,7 +81,8 @@ def save_all(app):
     app.settings["action_delay"] = app.action_delay_var.get()
     app.settings["scan_loop_delay"] = app.scan_loop_delay_var.get()
     app.settings["debug_mode"] = {k: v.get() for k, v in app.debug_vars.items()}
-    with open("settings.json", "w", encoding="utf-8") as f:
+    settings_file = BASE_DIR / "settings.json"
+    with settings_file.open("w", encoding="utf-8") as f:
         json.dump(app.settings, f, indent=2)
     messagebox.showinfo("Saved", "All settings saved.")
 
@@ -89,6 +94,7 @@ def set_defaults(app):
         "top_stat_females_stats": [stat for stat, var in app.default_stat_vars.items() if var.get()],
         "war_stats": [stat for stat, var in app.default_stat_vars.items() if var.get()]
     }
-    with open("settings.json", "w", encoding="utf-8") as f:
+    settings_file = BASE_DIR / "settings.json"
+    with settings_file.open("w", encoding="utf-8") as f:
         json.dump(app.settings, f, indent=2)
     messagebox.showinfo("Defaults Saved", "Defaults for new species saved.")

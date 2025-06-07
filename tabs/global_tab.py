@@ -1,4 +1,7 @@
 import tkinter as tk
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 def build_global_tab(app):
     row = 0
@@ -33,7 +36,8 @@ def build_global_tab(app):
         app.settings["action_delay"] = app.action_delay_var.get()
         app.settings["scan_loop_delay"] = app.scan_loop_delay_var.get()
         app.settings["debug_mode"] = {k: v.get() for k, v in app.debug_vars.items()}
-        with open("settings.json", "w", encoding="utf-8") as f:
+        settings_file = BASE_DIR / "settings.json"
+        with settings_file.open("w", encoding="utf-8") as f:
             import json
             json.dump(app.settings, f, indent=2)
         tk.messagebox.showinfo("Saved", "Global settings saved.")

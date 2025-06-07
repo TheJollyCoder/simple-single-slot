@@ -1,6 +1,8 @@
 import tkinter as tk
 import pyautogui
-import time
+from logger import get_logger
+
+log = get_logger("test_tab")
 from scanner import scan_slot
 from breeding_logic import should_keep_egg
 from progress_tracker import (
@@ -23,12 +25,12 @@ def build_test_tab(app):
 
 def test_scan_egg(app):
     if getattr(app, "scanning_paused", False):
-        print("🔁 Scanning is paused. Press F9 to resume.")
+        log.info("🔁 Scanning is paused. Press F9 to resume.")
         return
 
     scan = scan_slot(app.settings)
     if scan == "no_egg":
-        print("→ No egg detected.")
+        log.info("→ No egg detected.")
         return
 
     egg = scan["species"]
@@ -39,10 +41,6 @@ def test_scan_egg(app):
     config = app.rules.get(normalized, app.settings.get("default_species_template", {}))
     progress = load_progress()
 
-    update_top_stats(egg, stats, progress)
-    update_mutation_thresholds(egg, stats, config, progress, sex)
-    if sex == "male":
-        update_stud(egg, stats, config, progress)
 
     scan.update({
         "egg": egg,
@@ -56,35 +54,35 @@ def test_scan_egg(app):
     decision, reasons = should_keep_egg(scan, config, progress)
     save_progress(progress)
 
-    print(f"→ Scanned Egg: {egg} | DECISION: {decision.upper()}")
+    log.info(f"→ Scanned Egg: {egg} | DECISION: {decision.upper()}")
     for k, v in reasons.items():
         if k != "_debug" and v:
-            print(f"  ✔ {k}")
+            log.info(f"  ✔ {k}")
     if "_debug" in reasons:
         for k, v in reasons["_debug"].items():
-            print(f"    debug[{k}]: {v}")
+            log.info(f"    debug[{k}]: {v}")
 
     if decision == "keep":
         pyautogui.doubleClick(app.settings["slot_x"], app.settings["slot_y"])
-        print("✔ Egg auto-kept via double-click")
+        log.info("✔ Egg auto-kept via double-click")
 
 def multi_egg_test(app):
     try:
         count = int(input("How many eggs to scan for test? "))
     except:
-        print("Invalid number.")
+        log.info("Invalid number.")
         return
-    print(f"Scanning {count} eggs...")
+    log.info(f"Scanning {count} eggs...")
     progress = load_progress()
 
     for i in range(1, count + 1):
         if getattr(app, "scanning_paused", False):
-            print(f"🔁 Skipping scan {i}, scanning is paused.")
+            log.info(f"🔁 Skipping scan {i}, scanning is paused.")
             continue
 
         scan = scan_slot(app.settings)
         if scan == "no_egg":
-            print(f"Egg {i}: no egg found.")
+            log.info(f"Egg {i}: no egg found.")
             continue
 
         egg = scan["species"]
@@ -93,10 +91,6 @@ def multi_egg_test(app):
         normalized = normalize_species_name(egg)
 
         config = app.rules.get(normalized, app.settings.get("default_species_template", {}))
-        update_top_stats(egg, stats, progress)
-        update_mutation_thresholds(egg, stats, config, progress, sex)
-        if sex == "male":
-            update_stud(egg, stats, config, progress)
 
         scan.update({
             "egg": egg,
@@ -110,13 +104,13 @@ def multi_egg_test(app):
         decision, reasons = should_keep_egg(scan, config, progress)
         save_progress(progress)
 
-        print(f"Egg {i}: {egg} | DECISION: {decision.upper()}")
+        log.info(f"Egg {i}: {egg} | DECISION: {decision.upper()}")
         for k, v in reasons.items():
             if k != "_debug" and v:
-                print(f"  ✔ {k}")
+                log.info(f"  ✔ {k}")
         if "_debug" in reasons:
             for k, v in reasons["_debug"].items():
-                print(f"    debug[{k}]: {v}")
+                log.info(f"    debug[{k}]: {v}")
         if decision == "keep":
             pyautogui.doubleClick(app.settings["slot_x"], app.settings["slot_y"])
-            print("→ Egg auto-kept via double-click")
+            log.info("→ Egg auto-kept via double-click")
