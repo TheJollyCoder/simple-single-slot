@@ -20,7 +20,7 @@ def build_test_tab(app):
 
     app.btn_start = ttk.Button(app.tab_test, text="Start Live Scanning (F8)", command=app.start_live_run)
     app.btn_start.pack(pady=5)
-    add_tooltip(app.btn_start, "Begin automated scanning using hotkey settings")
+    add_tooltip(app.btn_start, "Start the automated scan loop using current settings")
 
     app.btn_pause = ttk.Button(
         app.tab_test,
@@ -29,7 +29,7 @@ def build_test_tab(app):
         state="disabled",
     )
     app.btn_pause.pack(pady=5)
-    add_tooltip(app.btn_pause, "Temporarily halt the live scan loop")
+    add_tooltip(app.btn_pause, "Pause the live scanning loop")
 
     app.btn_resume = ttk.Button(
         app.tab_test,
@@ -38,11 +38,11 @@ def build_test_tab(app):
         state="disabled",
     )
     app.btn_resume.pack(pady=5)
-    add_tooltip(app.btn_resume, "Resume scanning if paused")
+    add_tooltip(app.btn_resume, "Resume scanning after a pause")
 
     btn = ttk.Button(app.tab_test, text="Scan Egg", command=lambda: test_scan_egg(app))
     btn.pack(pady=5)
-    add_tooltip(btn, "Single manual scan of the configured slot")
+    add_tooltip(btn, "Perform one manual scan of the configured slot")
 
     # scrolling log viewer
     app.log_widget = scrolledtext.ScrolledText(app.tab_test, height=15, state="disabled")
@@ -51,13 +51,13 @@ def build_test_tab(app):
     ttk.Label(app.tab_test, text="Testing Utilities", font=(FONT[0], FONT[1], "bold")).pack(pady=(20, 2))
     btn = ttk.Button(app.tab_test, text="Force KEEP (Real Logic)", command=app.keep_egg)
     btn.pack(pady=5)
-    add_tooltip(btn, "Invoke keep logic directly")
+    add_tooltip(btn, "Force the keep logic on the current egg")
     btn = ttk.Button(app.tab_test, text="Force DESTROY (Real Logic)", command=app.destroy_egg)
     btn.pack(pady=5)
-    add_tooltip(btn, "Invoke destroy logic directly")
+    add_tooltip(btn, "Force the destroy logic on the current egg")
     btn = ttk.Button(app.tab_test, text="Multi-Egg Scan Test", command=lambda: multi_egg_test(app))
     btn.pack(pady=10)
-    add_tooltip(btn, "Run multiple scans for debugging")
+    add_tooltip(btn, "Run repeated scans for debugging")
 
 
 
