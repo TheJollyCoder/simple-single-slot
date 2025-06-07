@@ -74,6 +74,10 @@ class SettingsEditor(tk.Tk):
         # build all tabs
         self.create_tabs()
 
+        # status label at bottom
+        self.status_lbl = ttk.Label(self, text="Ready")
+        self.status_lbl.pack(side="bottom", fill="x")
+
         # hotkeys
         self.update_hotkeys(initial=True)
 
@@ -118,6 +122,11 @@ class SettingsEditor(tk.Tk):
             pass
         print(msg)
 
+    def update_status(self, msg: str):
+        """Update status label text."""
+        if hasattr(self, "status_lbl"):
+            self.status_lbl["text"] = msg
+
     def update_hotkeys(self, initial: bool = False):
         """Refresh global hotkeys based on current settings."""
         for h in getattr(self, "_hotkey_handles", []):
@@ -137,6 +146,7 @@ class SettingsEditor(tk.Tk):
         else:
             self.scanning_paused = bool(value)
         self.log_message("⏸ Paused" if self.scanning_paused else "▶️ Resumed")
+        self.update_status("Paused" if self.scanning_paused else "Running")
         if hasattr(self, "btn_pause") and hasattr(self, "btn_resume"):
             if self.scanning_paused:
                 self.btn_pause.config(state="disabled")
@@ -155,6 +165,7 @@ class SettingsEditor(tk.Tk):
         self._summary = {"studs": [], "mutations": []}
         self.live_running = True
         self.scanning_paused = False
+        self.update_status("Running")
 
         def run_loop():
             self.log_message("▶️ Live scanning started (F8 to run, F9 to pause/resume, ESC to exit)")
@@ -254,6 +265,7 @@ class SettingsEditor(tk.Tk):
 
             self.live_running = False
             self.log_message("⏹ Scanning stopped.")
+            self.update_status("Stopped")
             if hasattr(self, "btn_start"):
                 self.btn_start.config(state="normal")
             if hasattr(self, "btn_pause") and hasattr(self, "btn_resume"):
@@ -288,6 +300,7 @@ class SettingsEditor(tk.Tk):
     def quit(self):
         """On ESC: write summary.log then close."""
         self.log_message("🛑 ESC pressed — quitting application.")
+        self.update_status("Stopped")
         with open("summary.log", "w", encoding="utf-8") as f:
             f.write("=== STUDS UPDATED (tracked only) ===\n")
             for species, stats in self._summary["studs"]:
