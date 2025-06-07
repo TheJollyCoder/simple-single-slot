@@ -59,6 +59,11 @@ class SettingsEditor(tk.Tk):
         super().__init__()
         self.title("ARK Breeding Config Editor")
 
+        # global ttk style/theme
+        self.style = ttk.Style(self)
+        self.style.theme_use(settings.get("theme", "clam"))
+        settings["theme"] = self.style.theme_use()
+
         # menus
         menu = tk.Menu(self)
         file_menu = tk.Menu(menu, tearoff=False)
@@ -114,6 +119,7 @@ class SettingsEditor(tk.Tk):
     def save_all(self):
         """Save settings.json and rules.json from GUI state."""
         self.save_geometry()
+        self.settings["theme"] = self.style.theme_use()
         with open(SETTINGS_FILE, "w", encoding="utf-8") as f:
             json.dump(self.settings, f, indent=2)
         with open(RULES_FILE, "w", encoding="utf-8") as f:
