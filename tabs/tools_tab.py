@@ -1,5 +1,6 @@
 import tkinter as tk
-from tkinter import ttk, messagebox
+from tkinter import ttk
+from utils.dialogs import show_error, show_info
 import json
 import subprocess
 from utils.helpers import refresh_species_dropdown, add_tooltip
@@ -78,7 +79,7 @@ def run_calibration():
     try:
         subprocess.run(["python", "setup_positions.py"], check=True)
     except Exception as e:
-        messagebox.showerror("Error", str(e))
+        show_error("Error", str(e))
 
 def refresh_species(app):
     from progress_tracker import load_progress
@@ -93,7 +94,7 @@ def refresh_species(app):
         json.dump(app.rules, f, indent=2)
     from utils.helpers import refresh_species_dropdown
     refresh_species_dropdown(app)
-    messagebox.showinfo("Refreshed", f"Added {new_added} new species.")
+    show_info("Refreshed", f"Added {new_added} new species.")
 
 def save_all(app):
     app.settings["hotkey_scan"] = app.hotkey_var.get()
@@ -103,7 +104,7 @@ def save_all(app):
     app.settings["debug_mode"] = {k: v.get() for k, v in app.debug_vars.items()}
     with open("settings.json", "w", encoding="utf-8") as f:
         json.dump(app.settings, f, indent=2)
-    messagebox.showinfo("Saved", "All settings saved.")
+    show_info("Saved", "All settings saved.")
 
 def set_defaults(app):
     app.settings["default_species_template"] = {
@@ -115,4 +116,4 @@ def set_defaults(app):
     }
     with open("settings.json", "w", encoding="utf-8") as f:
         json.dump(app.settings, f, indent=2)
-    messagebox.showinfo("Defaults Saved", "Defaults for new species saved.")
+    show_info("Defaults Saved", "Defaults for new species saved.")

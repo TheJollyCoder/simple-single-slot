@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+from utils.dialogs import show_info
 
 from utils.helpers import add_tooltip
 
@@ -64,7 +65,7 @@ def build_global_tab(app):
         with open("settings.json", "w", encoding="utf-8") as f:
             import json
             json.dump(app.settings, f, indent=2)
-        tk.messagebox.showinfo("Saved", "Global settings saved.")
+        show_info("Saved", "Global settings saved.")
         if hasattr(app, "update_hotkeys"):
             app.update_hotkeys()
 
