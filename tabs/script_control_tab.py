@@ -1,7 +1,10 @@
 import tkinter as tk
-import pyautogui
+from tkinter import scrolledtext
 import time
 from scanner import scan_slot
+
+# Prevent pytest from treating this UI module as a test
+__test__ = False
 from breeding_logic import should_keep_egg
 from progress_tracker import (
     load_progress, save_progress,
@@ -11,8 +14,19 @@ from progress_tracker import (
 
 def build_test_tab(app):
     tk.Label(app.tab_test, text="Main Scripts", font=("Segoe UI", 10, "bold")).pack(pady=(10, 2))
-    tk.Button(app.tab_test, text="Start Live Scanning (F8)", command=app.start_live_run).pack(pady=5)
+
+    app.btn_start = tk.Button(app.tab_test, text="Start Live Scanning (F8)", command=app.start_live_run)
+    app.btn_start.pack(pady=5)
+    app.btn_pause = tk.Button(app.tab_test, text="Pause Scanning", command=lambda: app.toggle_pause(True), state="disabled")
+    app.btn_pause.pack(pady=5)
+    app.btn_resume = tk.Button(app.tab_test, text="Resume Scanning", command=lambda: app.toggle_pause(False), state="disabled")
+    app.btn_resume.pack(pady=5)
+
     tk.Button(app.tab_test, text="Scan Egg", command=lambda: test_scan_egg(app)).pack(pady=5)
+
+    # scrolling log viewer
+    app.log_widget = scrolledtext.ScrolledText(app.tab_test, height=15, state="disabled")
+    app.log_widget.pack(fill="both", expand=True, padx=5, pady=5)
 
     tk.Label(app.tab_test, text="Testing Utilities", font=("Segoe UI", 10, "bold")).pack(pady=(20, 2))
     tk.Button(app.tab_test, text="Force KEEP (Real Logic)", command=app.keep_egg).pack(pady=5)
@@ -65,6 +79,7 @@ def test_scan_egg(app):
             print(f"    debug[{k}]: {v}")
 
     if decision == "keep":
+        import pyautogui
         pyautogui.doubleClick(app.settings["slot_x"], app.settings["slot_y"])
         print("✔ Egg auto-kept via double-click")
 
@@ -118,5 +133,6 @@ def multi_egg_test(app):
             for k, v in reasons["_debug"].items():
                 print(f"    debug[{k}]: {v}")
         if decision == "keep":
+            import pyautogui
             pyautogui.doubleClick(app.settings["slot_x"], app.settings["slot_y"])
             print("→ Egg auto-kept via double-click")

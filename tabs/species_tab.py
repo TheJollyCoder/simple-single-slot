@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 import json
 from progress_tracker import normalize_species_name
+from utils.helpers import refresh_species_dropdown
 
 DEFAULT_MODES = ["mutations", "all_females", "stat_merge", "top_stat_females", "war"]
 ALL_STATS = ["health", "stamina", "weight", "melee", "oxygen", "food"]
@@ -60,6 +61,9 @@ def build_species_tab(app):
     tk.Button(app.tab_species, text="Save Species Config", command=lambda: save_species_config(app)).grid(
         row=row, column=0, pady=10
     )
+    tk.Button(app.tab_species, text="Delete Species", command=lambda: delete_species(app)).grid(
+        row=row, column=1, pady=10
+    )
 
     def on_species_select(event):
         new = app.selected_species.get()
@@ -108,3 +112,18 @@ def save_species_config(app):
     with open("rules.json", "w", encoding="utf-8") as f:
         json.dump(app.rules, f, indent=2)
     messagebox.showinfo("Saved", f"Settings for {s} updated.")
+
+def delete_species(app):
+    s = app.selected_species.get()
+    if not s:
+        messagebox.showwarning("No species", "Select a species first.")
+        return
+    if not messagebox.askyesno("Confirm", f"Delete configuration for {s}?"):
+        return
+    if s in app.rules:
+        del app.rules[s]
+        with open("rules.json", "w", encoding="utf-8") as f:
+            json.dump(app.rules, f, indent=2)
+    app.selected_species.set("")
+    app._last_species = None
+    refresh_species_dropdown(app)

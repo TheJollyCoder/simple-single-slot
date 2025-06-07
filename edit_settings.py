@@ -19,7 +19,7 @@ from progress_tracker import (
 from tabs.global_tab import build_global_tab
 from tabs.species_tab import build_species_tab
 from tabs.tools_tab import build_tools_tab
-from tabs.test_tab import build_test_tab
+from tabs.script_control_tab import build_test_tab
 
 SETTINGS_FILE = "settings.json"
 RULES_FILE    = "rules.json"
@@ -72,8 +72,7 @@ class SettingsEditor(tk.Tk):
         self.create_tabs()
 
         # hotkeys
-        keyboard.add_hotkey(self.settings.get("hotkey_scan", "F8"), self.start_live_run)
-        keyboard.add_hotkey("esc", self.quit)
+        self.update_hotkeys(initial=True)
 
     def save_all(self):
         """Save settings.json and rules.json from GUI state."""
@@ -98,10 +97,49 @@ class SettingsEditor(tk.Tk):
         build_tools_tab(self)
         build_test_tab(self)
 
+    def log_message(self, msg: str):
+        """Write a line to both stdout and the GUI log viewer."""
+        try:
+            if hasattr(self, "log_widget"):
+                self.log_widget.configure(state="normal")
+                self.log_widget.insert("end", msg + "\n")
+                self.log_widget.see("end")
+                self.log_widget.configure(state="disabled")
+        except Exception:
+            pass
+        print(msg)
+
+    def update_hotkeys(self, initial: bool = False):
+        """Refresh global hotkeys based on current settings."""
+        for h in getattr(self, "_hotkey_handles", []):
+            try:
+                keyboard.remove_hotkey(h)
+            except Exception:
+                pass
+        self._hotkey_handles = []
+        scan_key = self.settings.get("hotkey_scan", "F8")
+        self._hotkey_handles.append(keyboard.add_hotkey(scan_key, self.start_live_run))
+        self._hotkey_handles.append(keyboard.add_hotkey("esc", self.quit))
+
+    def toggle_pause(self, value=None):
+        """Pause or resume scanning."""
+        if value is None:
+            self.scanning_paused = not getattr(self, "scanning_paused", False)
+        else:
+            self.scanning_paused = bool(value)
+        self.log_message("⏸ Paused" if self.scanning_paused else "▶️ Resumed")
+        if hasattr(self, "btn_pause") and hasattr(self, "btn_resume"):
+            if self.scanning_paused:
+                self.btn_pause.config(state="disabled")
+                self.btn_resume.config(state="normal")
+            else:
+                self.btn_pause.config(state="normal")
+                self.btn_resume.config(state="disabled")
+
     def start_live_run(self):
         """Begin background live‐scan loop (F8)."""
         if getattr(self, "live_running", False):
-            print("⚠️ Already running.")
+            self.log_message("⚠️ Already running.")
             return
 
         # reset summary each run
@@ -110,7 +148,7 @@ class SettingsEditor(tk.Tk):
         self.scanning_paused = False
 
         def run_loop():
-            print("▶️ Live scanning started (F8 to run, F9 to pause/resume, ESC to exit)")
+            self.log_message("▶️ Live scanning started (F8 to run, F9 to pause/resume, ESC to exit)")
             while self.live_running:
                 if self.scanning_paused:
                     time.sleep(0.1)
@@ -118,7 +156,7 @@ class SettingsEditor(tk.Tk):
 
                 scan = scan_slot(self.settings)
                 if scan == "no_egg":
-                    print("→ No egg detected.")
+                    self.log_message("→ No egg detected.")
                     time.sleep(self.settings.get("scan_loop_delay", 0.5))
                     continue
 
@@ -173,17 +211,17 @@ class SettingsEditor(tk.Tk):
                 })
                 save_progress(progress)
                 # print UI feedback
-                print(f"→ {egg}: {decision.upper()}")
+                self.log_message(f"→ {egg}: {decision.upper()}")
                 for k, v in reasons.items():
                     if k != "_debug" and v:
-                        print(f"  ✔ {k}")
+                        self.log_message(f"  ✔ {k}")
                 if "_debug" in reasons:
                     for k, v in reasons["_debug"].items():
-                        print(f"    debug[{k}]: {v}")
+                        self.log_message(f"    debug[{k}]: {v}")
 
                 if decision == "keep":
                     pyautogui.doubleClick(self.settings["slot_x"], self.settings["slot_y"])
-                    print("✔ Egg auto-kept via double-click")
+                    self.log_message("✔ Egg auto-kept via double-click")
                 else:
                     x, y   = self.settings["slot_x"], self.settings["slot_y"]
                     dx, dy       = self.settings["destroy_offsets"]
@@ -193,25 +231,30 @@ class SettingsEditor(tk.Tk):
                     pyautogui.moveTo(x + dx, y + dy)
                     time.sleep(0.3)
                     pyautogui.moveTo(x + dx2, y + dy2); pyautogui.click()
-                    print("✖ Egg destroyed via right-click chain")
+                    self.log_message("✖ Egg destroyed via right-click chain")
 
                 time.sleep(self.settings.get("scan_loop_delay", 0.5))
 
             self.live_running = False
-            print("⏹ Scanning stopped.")
-
-        # pause/resume toggle
-        def toggle_pause():
-            self.scanning_paused = not self.scanning_paused
-            print("⏸ Paused" if self.scanning_paused else "▶️ Resumed")
-
+            self.log_message("⏹ Scanning stopped.")
+            if hasattr(self, "btn_start"):
+                self.btn_start.config(state="normal")
+            if hasattr(self, "btn_pause") and hasattr(self, "btn_resume"):
+                self.btn_pause.config(state="disabled")
+                self.btn_resume.config(state="disabled")
+        # pause/resume toggle handled globally
         threading.Thread(target=run_loop, daemon=True).start()
-        keyboard.add_hotkey("f9", toggle_pause)
+        keyboard.add_hotkey("f9", self.toggle_pause)
+        if hasattr(self, "btn_start"):
+            self.btn_start.config(state="disabled")
+        if hasattr(self, "btn_pause") and hasattr(self, "btn_resume"):
+            self.btn_pause.config(state="normal")
+            self.btn_resume.config(state="disabled")
 
     def keep_egg(self):
         """Button: force KEEP via real logic."""
         pyautogui.doubleClick(self.settings["slot_x"], self.settings["slot_y"])
-        print("✔ KEEP action invoked")
+        self.log_message("✔ KEEP action invoked")
 
     def destroy_egg(self):
         """Button: force DESTROY via real logic."""
@@ -223,11 +266,11 @@ class SettingsEditor(tk.Tk):
         pyautogui.moveTo(x + dx, y + dy)
         time.sleep(0.3)
         pyautogui.moveTo(x + dx2, y + dy2); pyautogui.click()
-        print("✖ DESTROY action invoked")
+        self.log_message("✖ DESTROY action invoked")
 
     def quit(self):
         """On ESC: write summary.log then close."""
-        print("🛑 ESC pressed — quitting application.")
+        self.log_message("🛑 ESC pressed — quitting application.")
         with open("summary.log", "w", encoding="utf-8") as f:
             f.write("=== STUDS UPDATED (tracked only) ===\n")
             for species, stats in self._summary["studs"]:
@@ -244,7 +287,7 @@ class SettingsEditor(tk.Tk):
                 parts = [f"{val}{stat[0].upper()}" for stat, val in thresh.items()]
                 f.write(" ".join(parts) + f" {species}\n")
 
-        print("✅ Summary written to summary.log")
+        self.log_message("✅ Summary written to summary.log")
         self.destroy()
 
 if __name__ == "__main__":

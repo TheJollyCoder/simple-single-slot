@@ -11,7 +11,7 @@ def build_global_tab(app):
         tk.Label(app.tab_global, text=delay_key).grid(row=row, column=0, sticky="w")
         var = tk.DoubleVar(value=app.settings.get(delay_key, 0.25))
         setattr(app, f"{delay_key}_var", var)
-        tk.Entry(app.tab_global, textvariable=var).grid(row=row, column=1, sticky="w")
+        tk.Spinbox(app.tab_global, textvariable=var, from_=0.0, to=5.0, increment=0.05, width=6).grid(row=row, column=1, sticky="w")
         row += 1
 
     tk.Label(app.tab_global, text="Per-Module Debug:").grid(row=row, column=0, sticky="w")
@@ -37,5 +37,7 @@ def build_global_tab(app):
             import json
             json.dump(app.settings, f, indent=2)
         tk.messagebox.showinfo("Saved", "Global settings saved.")
+        if hasattr(app, "update_hotkeys"):
+            app.update_hotkeys()
 
     tk.Button(app.tab_global, text="Save Settings", command=save_all).grid(row=row, column=0, pady=10)
