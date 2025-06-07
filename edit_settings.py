@@ -21,6 +21,7 @@ from tabs.global_tab import build_global_tab
 from tabs.species_tab import build_species_tab
 from tabs.tools_tab import build_tools_tab
 from tabs.script_control_tab import build_test_tab
+from tabs.progress_tab import build_progress_tab
 from utils.config_validator import validate_configs
 
 SETTINGS_FILE = "settings.json"
@@ -96,12 +97,14 @@ class SettingsEditor(tk.Tk):
         self.tab_global  = ttk.Frame(tabs); tabs.add(self.tab_global,  text="Global Settings")
         self.tab_species = ttk.Frame(tabs); tabs.add(self.tab_species, text="Species Config")
         self.tab_tools   = ttk.Frame(tabs); tabs.add(self.tab_tools,   text="Defaults & Tools")
+        self.tab_progress = ttk.Frame(tabs); tabs.add(self.tab_progress, text="Progress")
         self.tab_test    = ttk.Frame(tabs); tabs.add(self.tab_test,    text="Script Control")
 
         build_global_tab(self)
         build_species_tab(self)
         build_tools_tab(self)
         build_test_tab(self)
+        build_progress_tab(self)
 
     def log_message(self, msg: str):
         """Write a line to both stdout and the GUI log viewer."""
