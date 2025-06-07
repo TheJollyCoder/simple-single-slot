@@ -1,7 +1,10 @@
 import tkinter as tk
-from tkinter import scrolledtext
+from tkinter import ttk, scrolledtext
 import time
 from scanner import scan_slot
+from utils.helpers import add_tooltip
+
+FONT = ("Segoe UI", 10)
 
 # Prevent pytest from treating this UI module as a test
 __test__ = False
@@ -13,25 +16,48 @@ from progress_tracker import (
 )
 
 def build_test_tab(app):
-    tk.Label(app.tab_test, text="Main Scripts", font=("Segoe UI", 10, "bold")).pack(pady=(10, 2))
+    ttk.Label(app.tab_test, text="Main Scripts", font=(FONT[0], FONT[1], "bold")).pack(pady=(10, 2))
 
-    app.btn_start = tk.Button(app.tab_test, text="Start Live Scanning (F8)", command=app.start_live_run)
+    app.btn_start = ttk.Button(app.tab_test, text="Start Live Scanning (F8)", command=app.start_live_run)
     app.btn_start.pack(pady=5)
-    app.btn_pause = tk.Button(app.tab_test, text="Pause Scanning", command=lambda: app.toggle_pause(True), state="disabled")
-    app.btn_pause.pack(pady=5)
-    app.btn_resume = tk.Button(app.tab_test, text="Resume Scanning", command=lambda: app.toggle_pause(False), state="disabled")
-    app.btn_resume.pack(pady=5)
+    add_tooltip(app.btn_start, "Begin automated scanning using hotkey settings")
 
-    tk.Button(app.tab_test, text="Scan Egg", command=lambda: test_scan_egg(app)).pack(pady=5)
+    app.btn_pause = ttk.Button(
+        app.tab_test,
+        text="Pause Scanning",
+        command=lambda: app.toggle_pause(True),
+        state="disabled",
+    )
+    app.btn_pause.pack(pady=5)
+    add_tooltip(app.btn_pause, "Temporarily halt the live scan loop")
+
+    app.btn_resume = ttk.Button(
+        app.tab_test,
+        text="Resume Scanning",
+        command=lambda: app.toggle_pause(False),
+        state="disabled",
+    )
+    app.btn_resume.pack(pady=5)
+    add_tooltip(app.btn_resume, "Resume scanning if paused")
+
+    btn = ttk.Button(app.tab_test, text="Scan Egg", command=lambda: test_scan_egg(app))
+    btn.pack(pady=5)
+    add_tooltip(btn, "Single manual scan of the configured slot")
 
     # scrolling log viewer
     app.log_widget = scrolledtext.ScrolledText(app.tab_test, height=15, state="disabled")
     app.log_widget.pack(fill="both", expand=True, padx=5, pady=5)
 
-    tk.Label(app.tab_test, text="Testing Utilities", font=("Segoe UI", 10, "bold")).pack(pady=(20, 2))
-    tk.Button(app.tab_test, text="Force KEEP (Real Logic)", command=app.keep_egg).pack(pady=5)
-    tk.Button(app.tab_test, text="Force DESTROY (Real Logic)", command=app.destroy_egg).pack(pady=5)
-    tk.Button(app.tab_test, text="Multi-Egg Scan Test", command=lambda: multi_egg_test(app)).pack(pady=10)
+    ttk.Label(app.tab_test, text="Testing Utilities", font=(FONT[0], FONT[1], "bold")).pack(pady=(20, 2))
+    btn = ttk.Button(app.tab_test, text="Force KEEP (Real Logic)", command=app.keep_egg)
+    btn.pack(pady=5)
+    add_tooltip(btn, "Invoke keep logic directly")
+    btn = ttk.Button(app.tab_test, text="Force DESTROY (Real Logic)", command=app.destroy_egg)
+    btn.pack(pady=5)
+    add_tooltip(btn, "Invoke destroy logic directly")
+    btn = ttk.Button(app.tab_test, text="Multi-Egg Scan Test", command=lambda: multi_egg_test(app))
+    btn.pack(pady=10)
+    add_tooltip(btn, "Run multiple scans for debugging")
 
 
 
