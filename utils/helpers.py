@@ -27,4 +27,3 @@ def add_tooltip(widget, text: str) -> None:
 
     widget.bind("<Enter>", show)
     widget.bind("<Leave>", hide)
-

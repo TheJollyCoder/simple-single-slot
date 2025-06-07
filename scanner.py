@@ -36,11 +36,11 @@ def enhance_and_ocr(image: np.ndarray, runs: int = 3) -> list:
     Upscale→Sharpen→Otsu→Adaptive Mean Threshold→OCR (multiple runs)
     """
     scale = 4
-    up       = cv2.resize(image, None, fx=scale, fy=scale, interpolation=cv2.INTER_CUBIC)
-    gray     = cv2.cvtColor(up, cv2.COLOR_BGR2GRAY)
-    kernel   = np.array([[0, -1, 0], [-1, 5, -1], [0, -1, 0]])
-    sharp    = cv2.filter2D(gray, -1, kernel)
-    _, otsu  = cv2.threshold(sharp, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+    up = cv2.resize(image, None, fx=scale, fy=scale, interpolation=cv2.INTER_CUBIC)
+    gray = cv2.cvtColor(up, cv2.COLOR_BGR2GRAY)
+    kernel = np.array([[0, -1, 0], [-1, 5, -1], [0, -1, 0]])
+    sharp = cv2.filter2D(gray, -1, kernel)
+    _, otsu = cv2.threshold(sharp, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
     adaptive = cv2.adaptiveThreshold(
         otsu, 255,
         cv2.ADAPTIVE_THRESH_MEAN_C,

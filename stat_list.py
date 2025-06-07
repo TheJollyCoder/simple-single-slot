@@ -3,11 +3,11 @@ import json
 import os
 import sys
 
-PROGRESS_FILE     = "breeding_progress.json"
-EXTRA_TAMES_FILE  = "extra_tames.json"
-RULES_FILE        = "rules.json"
-SETTINGS_FILE     = "settings.json"
-OUTPUT_FILE       = "stat_list.txt"
+PROGRESS_FILE = "breeding_progress.json"
+EXTRA_TAMES_FILE = "extra_tames.json"
+RULES_FILE = "rules.json"
+SETTINGS_FILE = "settings.json"
+OUTPUT_FILE = "stat_list.txt"
 
 def load_json(path):
     if not os.path.exists(path):
@@ -74,12 +74,12 @@ def main():
     progress = load_json(PROGRESS_FILE)
     progress = merge_extra(progress)
     settings = load_json(SETTINGS_FILE)
-    mode     = get_mode(settings)
-    rules    = load_json(RULES_FILE) if mode == "mutation" else {}
+    mode = get_mode(settings)
+    rules = load_json(RULES_FILE) if mode == "mutation" else {}
 
     lines = []
     for species in sorted(progress):
-        stud   = progress[species].get("stud", {})
+        stud = progress[species].get("stud", {})
         thresh = progress[species].get("mutation_thresholds", {})
 
         if mode == "mutation":

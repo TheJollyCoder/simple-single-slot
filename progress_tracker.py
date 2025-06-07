@@ -10,7 +10,7 @@ from difflib import get_close_matches
 HISTORY_FILE = "progress_history.json"
 
 PROGRESS_FILE = "breeding_progress.json"
-RULES_FILE    = "rules.json"
+RULES_FILE = "rules.json"
 
 # default container for progress tracking per species
 DEFAULT_PROGRESS_TEMPLATE = {

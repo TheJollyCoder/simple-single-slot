@@ -82,7 +82,9 @@ def main():
     debug_mode = input("Enable debug mode? (y/N): ").strip().lower() == "y"
 
     # 10) Drop ALL EGGS button & confirmation
-    drop_all_button  = wait_and_record("10) Hover over the 'Drop All Eggs' button and press F9")
+    drop_all_button = wait_and_record(
+        "10) Hover over the 'Drop All Eggs' button and press F9"
+    )
 
     # 12–14) Food‐slot positions (we’ll assume 3 slots)
     food_slots = []

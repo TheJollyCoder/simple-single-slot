@@ -27,19 +27,37 @@ from tabs.progress_tab import build_progress_tab
 from utils.config_validator import validate_configs
 
 SETTINGS_FILE = "settings.json"
-RULES_FILE    = "rules.json"
+RULES_FILE = "rules.json"
 PROGRESS_FILE = "breeding_progress.json"
 
 # maximum number of lines to retain in the on-screen log viewer
 MAX_LOG_LINES = 500
 
-DEFAULT_MODES = ["mutations", "all_females", "stat_merge", "top_stat_females", "war"]
-ALL_STATS     = ["health", "stamina", "weight", "melee", "food", "oxygen"]
+DEFAULT_MODES = [
+    "mutations",
+    "all_females",
+    "stat_merge",
+    "top_stat_females",
+    "war",
+]
+ALL_STATS = ["health", "stamina", "weight", "melee", "food", "oxygen"]
 
 # ─── Load or initialize data ─────────────────────────────────────
-settings = json.load(open(SETTINGS_FILE, encoding="utf-8")) if os.path.exists(SETTINGS_FILE) else {}
-rules    = json.load(open(RULES_FILE,    encoding="utf-8")) if os.path.exists(RULES_FILE)    else {}
-progress = json.load(open(PROGRESS_FILE, encoding="utf-8")) if os.path.exists(PROGRESS_FILE) else {}
+settings = (
+    json.load(open(SETTINGS_FILE, encoding="utf-8"))
+    if os.path.exists(SETTINGS_FILE)
+    else {}
+)
+rules = (
+    json.load(open(RULES_FILE, encoding="utf-8"))
+    if os.path.exists(RULES_FILE)
+    else {}
+)
+progress = (
+    json.load(open(PROGRESS_FILE, encoding="utf-8"))
+    if os.path.exists(PROGRESS_FILE)
+    else {}
+)
 
 default_species_template = settings.get("default_species_template", {
     "modes": ["mutations", "all_females"],
@@ -85,7 +103,7 @@ class SettingsEditor(tk.Tk):
 
         # data handles
         self.settings = settings
-        self.rules    = rules
+        self.rules = rules
         self.progress = progress
 
         if self.settings.get("window_geometry"):
@@ -97,11 +115,13 @@ class SettingsEditor(tk.Tk):
         self._summary = {"studs": [], "mutations": []}
 
         # UI state variables
-        self.selected_species      = tk.StringVar()
-        self.default_modes         = tk.StringVar(value=DEFAULT_MODES)
-        self.mode_vars             = {m: tk.BooleanVar(value=True) for m in DEFAULT_MODES}
-        self.stat_vars             = {s: tk.BooleanVar(value=True) for s in ALL_STATS}
-        self.mutation_stat_vars    = {s: tk.BooleanVar(value=True) for s in ALL_STATS}
+        self.selected_species = tk.StringVar()
+        self.default_modes = tk.StringVar(value=DEFAULT_MODES)
+        self.mode_vars = {m: tk.BooleanVar(value=True) for m in DEFAULT_MODES}
+        self.stat_vars = {s: tk.BooleanVar(value=True) for s in ALL_STATS}
+        self.mutation_stat_vars = {
+            s: tk.BooleanVar(value=True) for s in ALL_STATS
+        }
 
         # build all tabs
         self.create_tabs()
@@ -136,12 +156,18 @@ class SettingsEditor(tk.Tk):
         tabs = ttk.Notebook(self)
         tabs.pack(expand=True, fill="both")
 
-        self.tab_global  = ttk.Frame(tabs); tabs.add(self.tab_global,  text="Global Settings")
-        self.tab_species = ttk.Frame(tabs); tabs.add(self.tab_species, text="Species Config")
-        self.tab_tools   = ttk.Frame(tabs); tabs.add(self.tab_tools,   text="Defaults & Tools")
-        self.tab_progress = ttk.Frame(tabs); tabs.add(self.tab_progress, text="Progress")
-        self.tab_help    = ttk.Frame(tabs); tabs.add(self.tab_help,    text="Help")
-        self.tab_test    = ttk.Frame(tabs); tabs.add(self.tab_test,    text="Script Control")
+        self.tab_global = ttk.Frame(tabs)
+        tabs.add(self.tab_global, text="Global Settings")
+        self.tab_species = ttk.Frame(tabs)
+        tabs.add(self.tab_species, text="Species Config")
+        self.tab_tools = ttk.Frame(tabs)
+        tabs.add(self.tab_tools, text="Defaults & Tools")
+        self.tab_progress = ttk.Frame(tabs)
+        tabs.add(self.tab_progress, text="Progress")
+        self.tab_help = ttk.Frame(tabs)
+        tabs.add(self.tab_help, text="Help")
+        self.tab_test = ttk.Frame(tabs)
+        tabs.add(self.tab_test, text="Script Control")
 
         build_global_tab(self)
         build_species_tab(self)
@@ -231,12 +257,14 @@ class SettingsEditor(tk.Tk):
                     time.sleep(self.settings.get("scan_loop_delay", 0.5))
                     continue
 
-                egg        = scan["species"]
-                stats      = scan["stats"]
-                sex        = "female" if "female" in egg.lower() else "male"
+                egg = scan["species"]
+                stats = scan["stats"]
+                sex = "female" if "female" in egg.lower() else "male"
                 normalized = normalize_species_name(egg)
 
-                config   = self.rules.get(normalized, self.settings.get("default_species_template", {}))
+                config = self.rules.get(
+                    normalized, self.settings.get("default_species_template", {})
+                )
                 progress = load_progress()
 
                 # Step 1: update top‐stats
@@ -302,9 +330,9 @@ class SettingsEditor(tk.Tk):
                     pyautogui.doubleClick(self.settings["slot_x"], self.settings["slot_y"])
                     self.log_message("✔ Egg auto-kept via double-click")
                 else:
-                    x, y   = self.settings["slot_x"], self.settings["slot_y"]
-                    dx, dy       = self.settings["destroy_offsets"]
-                    dx2, dy2     = self.settings["destroy_this_offsets"]
+                    x, y = self.settings["slot_x"], self.settings["slot_y"]
+                    dx, dy = self.settings["destroy_offsets"]
+                    dx2, dy2 = self.settings["destroy_this_offsets"]
                     pyautogui.moveTo(x, y); pyautogui.rightClick()
                     time.sleep(0.3)
                     pyautogui.moveTo(x + dx, y + dy)
@@ -337,9 +365,9 @@ class SettingsEditor(tk.Tk):
 
     def destroy_egg(self):
         """Button: force DESTROY via real logic."""
-        x, y       = self.settings["slot_x"], self.settings["slot_y"]
-        dx, dy     = self.settings["destroy_offsets"]
-        dx2, dy2   = self.settings["destroy_this_offsets"]
+        x, y = self.settings["slot_x"], self.settings["slot_y"]
+        dx, dy = self.settings["destroy_offsets"]
+        dx2, dy2 = self.settings["destroy_this_offsets"]
         pyautogui.moveTo(x, y); pyautogui.rightClick()
         time.sleep(0.3)
         pyautogui.moveTo(x + dx, y + dy)
