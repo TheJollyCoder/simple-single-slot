@@ -7,6 +7,7 @@ import pyautogui
 import keyboard
 import tkinter as tk
 from tkinter import ttk, messagebox
+import webbrowser
 
 from scanner import scan_slot
 from breeding_logic import should_keep_egg
@@ -55,6 +56,24 @@ class SettingsEditor(tk.Tk):
         super().__init__()
         self.title("ARK Breeding Config Editor")
         self.geometry("750x600")
+
+        # menus
+        menu = tk.Menu(self)
+        file_menu = tk.Menu(menu, tearoff=False)
+        file_menu.add_command(label="Save", command=self.save_all)
+        file_menu.add_command(label="Quit", command=self.quit)
+        menu.add_cascade(label="File", menu=file_menu)
+
+        help_menu = tk.Menu(menu, tearoff=False)
+        help_menu.add_command(
+            label="Documentation",
+            command=lambda: webbrowser.open("https://example.com"),
+        )
+        menu.add_cascade(label="Help", menu=help_menu)
+        self.config(menu=menu)
+
+        self.bind_all("<Control-s>", lambda e: self.save_all())
+        self.bind_all("<Control-q>", lambda e: self.quit())
 
         # data handles
         self.settings = settings
