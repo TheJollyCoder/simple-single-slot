@@ -1,15 +1,19 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
+
+from utils.helpers import refresh_species_dropdown, add_tooltip
+
+FONT = ("Segoe UI", 10)
 import json
 from progress_tracker import normalize_species_name
-from utils.helpers import refresh_species_dropdown
-
 DEFAULT_MODES = ["mutations", "all_females", "stat_merge", "top_stat_females", "war"]
 ALL_STATS = ["health", "stamina", "weight", "melee", "oxygen", "food"]
 
 def build_species_tab(app):
     row = 0
-    tk.Label(app.tab_species, text="Select Species:").grid(row=row, column=0, sticky="w")
+    ttk.Label(app.tab_species, text="Select Species:", font=FONT).grid(
+        row=row, column=0, sticky="w", padx=5, pady=2
+    )
     app.selected_species = tk.StringVar()
     # Track last-loaded species for autosave
     app._last_species = None
@@ -19,9 +23,11 @@ def build_species_tab(app):
         app.tab_species,
         values=app.species_list,
         textvariable=app.selected_species,
-        state="readonly"
+        state="readonly",
+        width=30,
     )
-    app.species_dropdown.grid(row=row, column=1, sticky="w")
+    app.species_dropdown.grid(row=row, column=1, sticky="w", padx=5, pady=2)
+    add_tooltip(app.species_dropdown, "Species configuration to edit")
     row += 1
 
     # Checkbox vars
@@ -30,38 +36,44 @@ def build_species_tab(app):
     app.mutation_stat_vars = {stat: tk.BooleanVar() for stat in ALL_STATS}
 
     # Placeholders for load/save buttons (now optional)
-    tk.Label(app.tab_species, text="Enabled Modes:").grid(row=row, column=0, sticky="nw")
+    ttk.Label(app.tab_species, text="Enabled Modes:", font=FONT).grid(
+        row=row, column=0, sticky="nw", padx=5, pady=2
+    )
     col = 1
     for mode in DEFAULT_MODES:
-        tk.Checkbutton(app.tab_species, text=mode, variable=app.mode_vars[mode]).grid(
-            row=row, column=col, sticky="w"
-        )
+        cb = ttk.Checkbutton(app.tab_species, text=mode, variable=app.mode_vars[mode])
+        cb.grid(row=row, column=col, sticky="w", padx=5, pady=2)
+        add_tooltip(cb, f"Enable {mode} mode")
         col += 1
     row += 1
 
-    tk.Label(app.tab_species, text="Shared Stats (merge/top/war):").grid(row=row, column=0, sticky="nw")
-    sf = tk.Frame(app.tab_species)
+    ttk.Label(app.tab_species, text="Shared Stats (merge/top/war):", font=FONT).grid(
+        row=row, column=0, sticky="nw", padx=5, pady=(10, 2)
+    )
+    sf = ttk.Frame(app.tab_species)
     sf.grid(row=row, column=1, columnspan=3, sticky="w")
     for i, stat in enumerate(ALL_STATS):
-        tk.Checkbutton(sf, text=stat, variable=app.stat_vars[stat]).grid(
-            row=i//3, column=i%3, sticky="w", padx=5, pady=1
-        )
+        cb = ttk.Checkbutton(sf, text=stat, variable=app.stat_vars[stat])
+        cb.grid(row=i//3, column=i%3, sticky="w", padx=5, pady=1)
+        add_tooltip(cb, f"Track {stat} for merges/top/war")
     row += 1
 
-    tk.Label(app.tab_species, text="Mutation Stats:").grid(row=row, column=0, sticky="nw")
-    mf = tk.Frame(app.tab_species)
+    ttk.Label(app.tab_species, text="Mutation Stats:", font=FONT).grid(
+        row=row, column=0, sticky="nw", padx=5, pady=(10, 2)
+    )
+    mf = ttk.Frame(app.tab_species)
     mf.grid(row=row, column=1, columnspan=3, sticky="w")
     for i, stat in enumerate(ALL_STATS):
-        tk.Checkbutton(mf, text=stat, variable=app.mutation_stat_vars[stat]).grid(
-            row=i//3, column=i%3, sticky="w", padx=5, pady=1
-        )
+        cb = ttk.Checkbutton(mf, text=stat, variable=app.mutation_stat_vars[stat])
+        cb.grid(row=i//3, column=i%3, sticky="w", padx=5, pady=1)
+        add_tooltip(cb, f"Watch mutations for {stat}")
     row += 1
 
     # Optional manual save button (can hide if you don't need it)
-    tk.Button(app.tab_species, text="Save Species Config", command=lambda: save_species_config(app)).grid(
+    ttk.Button(app.tab_species, text="Save Species Config", command=lambda: save_species_config(app)).grid(
         row=row, column=0, pady=10
     )
-    tk.Button(app.tab_species, text="Delete Species", command=lambda: delete_species(app)).grid(
+    ttk.Button(app.tab_species, text="Delete Species", command=lambda: delete_species(app)).grid(
         row=row, column=1, pady=10
     )
 

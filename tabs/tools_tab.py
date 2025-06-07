@@ -1,54 +1,78 @@
 import tkinter as tk
-from tkinter import messagebox
+from tkinter import ttk, messagebox
 import json
 import subprocess
-from utils.helpers import refresh_species_dropdown
+from utils.helpers import refresh_species_dropdown, add_tooltip
+
+FONT = ("Segoe UI", 10)
 
 ALL_STATS = ["health", "stamina", "weight", "melee", "oxygen", "food"]
 DEFAULT_MODES = ["mutations", "all_females", "stat_merge", "top_stat_females", "war"]
 
 def build_tools_tab(app):
     row = 0
-    tk.Button(app.tab_tools, text="Run Calibration", command=run_calibration).grid(row=row, column=0, sticky="w")
+    btn = ttk.Button(app.tab_tools, text="Run Calibration", command=run_calibration)
+    btn.grid(row=row, column=0, sticky="w", padx=5, pady=2)
+    add_tooltip(btn, "Run setup_positions.py to calibrate UI coordinates")
     row += 1
-    tk.Button(app.tab_tools, text="Refresh from Progress", command=lambda: refresh_species(app)).grid(row=row, column=0, sticky="w")
+
+    btn = ttk.Button(app.tab_tools, text="Refresh from Progress", command=lambda: refresh_species(app))
+    btn.grid(row=row, column=0, sticky="w", padx=5, pady=2)
+    add_tooltip(btn, "Create rules entries from progress.json")
     row += 1
-    tk.Button(app.tab_tools, text="Save All Settings", command=lambda: save_all(app)).grid(row=row, column=0, sticky="w")
+
+    btn = ttk.Button(app.tab_tools, text="Save All Settings", command=lambda: save_all(app))
+    btn.grid(row=row, column=0, sticky="w", padx=5, pady=2)
+    add_tooltip(btn, "Write all current settings to disk")
     row += 2
-    tk.Label(app.tab_tools, text="Default Settings for New Species:", font=("Segoe UI", 10, "bold")).grid(row=row, column=0, sticky="w")
+
+    ttk.Label(app.tab_tools, text="Default Settings for New Species:", font=("Segoe UI", 10, "bold")).grid(
+        row=row, column=0, sticky="w", padx=5, pady=2
+    )
     row += 1
 
     app.default_mode_vars = {mode: tk.BooleanVar(value=True) for mode in DEFAULT_MODES}
-    tk.Label(app.tab_tools, text="Enabled Modes:").grid(row=row, column=0, sticky="nw")
+    ttk.Label(app.tab_tools, text="Enabled Modes:", font=FONT).grid(
+        row=row, column=0, sticky="nw", padx=5, pady=2
+    )
     col = 1
     for mode in DEFAULT_MODES:
-        cb = tk.Checkbutton(app.tab_tools, text=mode, variable=app.default_mode_vars[mode])
-        cb.grid(row=row, column=col, sticky="w")
+        cb = ttk.Checkbutton(app.tab_tools, text=mode, variable=app.default_mode_vars[mode])
+        cb.grid(row=row, column=col, sticky="w", padx=5, pady=2)
+        add_tooltip(cb, f"Default enable {mode} mode")
         col += 1
     row += 1
 
     app.default_stat_vars = {stat: tk.BooleanVar(value=True) for stat in ALL_STATS}
     app.default_mutation_vars = {stat: tk.BooleanVar(value=True) for stat in ALL_STATS}
 
-    tk.Label(app.tab_tools, text="Shared Stats (merge/top/war):").grid(row=row, column=0, sticky="w", pady=(10, 2))
+    ttk.Label(app.tab_tools, text="Shared Stats (merge/top/war):", font=FONT).grid(
+        row=row, column=0, sticky="w", padx=5, pady=(10, 2)
+    )
     row += 1
-    sf = tk.Frame(app.tab_tools)
+    sf = ttk.Frame(app.tab_tools)
     sf.grid(row=row, column=0, columnspan=3, sticky="w")
     for i, stat in enumerate(ALL_STATS):
-        cb = tk.Checkbutton(sf, text=stat, variable=app.default_stat_vars[stat])
+        cb = ttk.Checkbutton(sf, text=stat, variable=app.default_stat_vars[stat])
         cb.grid(row=i//3, column=i%3, sticky="w", padx=10, pady=2)
+        add_tooltip(cb, f"Track {stat} by default")
     row += 1
 
-    tk.Label(app.tab_tools, text="Mutation Stats:").grid(row=row, column=0, sticky="w", pady=(10, 2))
+    ttk.Label(app.tab_tools, text="Mutation Stats:", font=FONT).grid(
+        row=row, column=0, sticky="w", padx=5, pady=(10, 2)
+    )
     row += 1
-    mf = tk.Frame(app.tab_tools)
+    mf = ttk.Frame(app.tab_tools)
     mf.grid(row=row, column=0, columnspan=3, sticky="w")
     for i, stat in enumerate(ALL_STATS):
-        cb = tk.Checkbutton(mf, text=stat, variable=app.default_mutation_vars[stat])
+        cb = ttk.Checkbutton(mf, text=stat, variable=app.default_mutation_vars[stat])
         cb.grid(row=i//3, column=i%3, sticky="w", padx=10, pady=2)
+        add_tooltip(cb, f"Default mutation stat {stat}")
     row += 1
 
-    tk.Button(app.tab_tools, text="Apply These Defaults to New Species", command=lambda: set_defaults(app)).grid(row=row, column=0, pady=10)
+    btn = ttk.Button(app.tab_tools, text="Apply These Defaults to New Species", command=lambda: set_defaults(app))
+    btn.grid(row=row, column=0, pady=10)
+    add_tooltip(btn, "Save defaults for new species to settings.json")
 
 def run_calibration():
     try:
