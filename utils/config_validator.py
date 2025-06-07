@@ -90,4 +90,3 @@ def validate_configs(settings: Dict[str, Any], rules: Dict[str, Any], progress: 
     warnings.extend(validate_rules(rules))
     warnings.extend(validate_progress(progress))
     return warnings
-

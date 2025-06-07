@@ -37,7 +37,11 @@ def _auto_loop(settings: dict, stop: threading.Event) -> None:
 def start_auto_eat(settings: Optional[dict] = None) -> threading.Event:
     settings = settings or load_settings()
     stop_event = threading.Event()
-    t = threading.Thread(target=_auto_loop, args=(settings, stop_event), daemon=True)
+    t = threading.Thread(
+        target=_auto_loop,
+        args=(settings, stop_event),
+        daemon=True,
+    )
     t.start()
     return stop_event
 
@@ -49,4 +53,3 @@ if __name__ == "__main__":
             time.sleep(1)
     except KeyboardInterrupt:
         stop.set()
-

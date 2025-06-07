@@ -16,4 +16,3 @@ if __name__ == "__main__":
         print(os.getcwd(), file=f)
         dump_tree(os.getcwd(), out_file=f)
     print("Wrote project_tree.txt")
-

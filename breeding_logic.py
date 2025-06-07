@@ -6,9 +6,9 @@ destroyed_log = get_logger("destroyed_eggs")
 from progress_tracker import normalize_species_name
 
 def should_keep_egg(scan, rules, progress):
-    egg     = scan["egg"]
-    stats   = scan["stats"]
-    sex     = scan["sex"]
+    egg = scan["egg"]
+    stats = scan["stats"]
+    sex = scan["sex"]
     species = normalize_species_name(egg)
 
     log.debug(f"Evaluating egg: {egg} ({sex})")
@@ -33,7 +33,7 @@ def should_keep_egg(scan, rules, progress):
 
     # ─── AUTO-DESTROY FEMALES WHEN NO FEMALE-MODES ENABLED ────────
     female_modes = {"all_females", "top_stat_females", "war"}
-    enabled      = set(rules.get("modes", []))
+    enabled = set(rules.get("modes", []))
     if sex == "female" and not (female_modes & enabled):
         result = {
             "mutations": False,
@@ -62,18 +62,18 @@ def should_keep_egg(scan, rules, progress):
     if "mutations" in rules.get("modes", []) and sex == "male":
         log.debug("Evaluating mutations rule")
 
-        tracked    = rules.get("mutation_stats", [])
+        tracked = rules.get("mutation_stats", [])
         old_thresh = progress.get(species, {}).get("mutation_thresholds", {})
         # default any missing stats to 0
         thresholds = {st: old_thresh.get(st, 0) for st in tracked}
 
-        all_ok     = True
+        all_ok = True
         any_strict = False
-        reasons    = []
+        reasons = []
 
         for st in tracked:
             egg_mut = stats.get(st, {}).get("mutation", 0)
-            th      = thresholds[st]
+            th = thresholds[st]
 
             # require at least your old threshold even if no new mutation
             if egg_mut < th:
@@ -86,7 +86,7 @@ def should_keep_egg(scan, rules, progress):
                 reasons.append(f"{st}={egg_mut}={th}")
 
         if all_ok and any_strict:
-            result["mutations"]           = True
+            result["mutations"] = True
             result["_debug"]["mutations"] = " | ".join(reasons)
         else:
             result["_debug"]["mutations"] = f"❌ not qualified: {' | '.join(reasons)}"
@@ -105,8 +105,8 @@ def should_keep_egg(scan, rules, progress):
             result["_debug"]["stat_merge"] = "updated_stud = True"
         else:
             merge_stats = rules.get("stat_merge_stats", [])
-            top         = progress.get(species, {}).get("top_stats", {})
-            stud        = progress.get(species, {}).get("stud", {})
+            top = progress.get(species, {}).get("top_stats", {})
+            stud = progress.get(species, {}).get("stud", {})
             match_count = sum(
                 1 for stat in merge_stats
                 if stats.get(stat, {}).get("base", 0) >= top.get(stat, 0)
@@ -133,12 +133,12 @@ def should_keep_egg(scan, rules, progress):
     if "top_stat_females" in rules.get("modes", []) and sex == "female":
         log.debug(f"RAW STATS passed into logic: {stats}")
         log.debug("Evaluating top_stat_females rule")
-        top      = progress.get(species, {}).get("top_stats", {})
+        top = progress.get(species, {}).get("top_stats", {})
         required = rules.get("top_stat_females_stats", [])
         mismatched = []
         match = True
         for stat in required:
-            top_val  = top.get(stat, -999)
+            top_val = top.get(stat, -999)
             base_val = stats.get(stat, {}).get("base", 0)
             if base_val != top_val:
                 match = False
@@ -152,14 +152,14 @@ def should_keep_egg(scan, rules, progress):
     # ─── War Tames ───────────────────────────────────────────────
     if "war" in rules.get("modes", []):
         log.debug("Evaluating war rule")
-        top     = progress.get(species, {}).get("top_stats", {})
+        top = progress.get(species, {}).get("top_stats", {})
         tracked = rules.get("war_stats", [])
         mismatch = []
         match = True
         for stat in tracked:
             base = stats.get(stat, {}).get("base", 0)
-            mut  = stats.get(stat, {}).get("mutation", 0)
-            val  = base + mut
+            mut = stats.get(stat, {}).get("mutation", 0)
+            val = base + mut
             top_val = top.get(stat, 0)
             if val < top_val:
                 mismatch.append(f"{stat}={val}<{top_val}")
