@@ -13,7 +13,7 @@ def build_global_tab(app):
     app.hotkey_var = tk.StringVar(value=app.settings.get("hotkey_scan", "F8"))
     entry = ttk.Entry(app.tab_global, textvariable=app.hotkey_var, width=10)
     entry.grid(row=row, column=1, sticky="w", padx=5, pady=2)
-    add_tooltip(entry, "Keyboard hotkey to start live scanning")
+    add_tooltip(entry, "Keyboard key that triggers the live scan loop")
     row += 1
 
     for delay_key in ["popup_delay", "action_delay", "scan_loop_delay"]:
@@ -32,7 +32,12 @@ def build_global_tab(app):
             width=8,
         )
         spin.grid(row=row, column=1, sticky="w", padx=5, pady=2)
-        add_tooltip(spin, f"{label} in seconds")
+        tip_map = {
+            "Popup Delay": "Time to wait after clicking before reading the popup",
+            "Action Delay": "Interval between automated mouse actions",
+            "Scan Loop Delay": "Pause between each scan cycle",
+        }
+        add_tooltip(spin, tip_map.get(label, f"{label} in seconds"))
         row += 1
 
     ttk.Label(app.tab_global, text="Per-Module Debug:", font=FONT).grid(
@@ -52,7 +57,7 @@ def build_global_tab(app):
         app.debug_vars[mod] = var
         cb = ttk.Checkbutton(app.tab_global, text=mod, variable=var)
         cb.grid(row=row, column=1, sticky="w", padx=5, pady=1)
-        add_tooltip(cb, f"Enable debug logs for {mod}")
+        add_tooltip(cb, f"Print detailed logs from the {mod} module")
         row += 1
 
     def save_all():

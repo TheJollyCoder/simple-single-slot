@@ -27,7 +27,7 @@ def build_species_tab(app):
         width=30,
     )
     app.species_dropdown.grid(row=row, column=1, sticky="w", padx=5, pady=2)
-    add_tooltip(app.species_dropdown, "Species configuration to edit")
+    add_tooltip(app.species_dropdown, "Select the species whose rules you want to edit")
     row += 1
 
     # Checkbox vars
@@ -43,7 +43,7 @@ def build_species_tab(app):
     for mode in DEFAULT_MODES:
         cb = ttk.Checkbutton(app.tab_species, text=mode, variable=app.mode_vars[mode])
         cb.grid(row=row, column=col, sticky="w", padx=5, pady=2)
-        add_tooltip(cb, f"Enable {mode} mode")
+        add_tooltip(cb, f"Enable the {mode} mode for this species")
         col += 1
     row += 1
 
@@ -55,7 +55,7 @@ def build_species_tab(app):
     for i, stat in enumerate(ALL_STATS):
         cb = ttk.Checkbutton(sf, text=stat, variable=app.stat_vars[stat])
         cb.grid(row=i//3, column=i%3, sticky="w", padx=5, pady=1)
-        add_tooltip(cb, f"Track {stat} for merges/top/war")
+        add_tooltip(cb, f"Track {stat} when merging or rating dinos")
     row += 1
 
     ttk.Label(app.tab_species, text="Mutation Stats:", font=FONT).grid(
@@ -66,7 +66,7 @@ def build_species_tab(app):
     for i, stat in enumerate(ALL_STATS):
         cb = ttk.Checkbutton(mf, text=stat, variable=app.mutation_stat_vars[stat])
         cb.grid(row=i//3, column=i%3, sticky="w", padx=5, pady=1)
-        add_tooltip(cb, f"Watch mutations for {stat}")
+        add_tooltip(cb, f"Monitor mutations affecting {stat}")
     row += 1
 
     # Optional manual save button (can hide if you don't need it)
