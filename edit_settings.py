@@ -13,6 +13,7 @@ from breeding_logic import should_keep_egg
 from progress_tracker import (
     load_progress, save_progress,
     update_top_stats, update_mutation_thresholds, update_stud,
+    increment_female_count, adjust_rules_for_females,
     normalize_species_name
 )
 
@@ -177,6 +178,14 @@ class SettingsEditor(tk.Tk):
                     config,
                     progress
                 )
+
+                # Track kept females and adjust rules automatically
+                if decision == "keep" and sex == "female":
+                    count = increment_female_count(egg, progress, sex)
+                    if adjust_rules_for_females(normalized, progress, self.rules, self.settings.get("default_species_template")):
+                        with open(RULES_FILE, "w", encoding="utf-8") as f:
+                            json.dump(self.rules, f, indent=2)
+                        self.log_message(f"⚙ Rules updated for {normalized} (females={count})")
 
                 # Step 3: update thresholds only if mutations rule passed
                 if reasons.get("mutations"):
