@@ -35,6 +35,17 @@ def build_global_tab(app):
         add_tooltip(spin, f"{label} in seconds")
         row += 1
 
+    ttk.Label(app.tab_global, text="Theme", font=FONT).grid(
+        row=row, column=0, sticky="w", padx=5, pady=2
+    )
+    themes = ttk.Style().theme_names()
+    app.theme_var = tk.StringVar(value=app.settings.get("theme", "clam"))
+    cmb = ttk.Combobox(app.tab_global, textvariable=app.theme_var,
+                       values=themes, state="readonly", width=15)
+    cmb.grid(row=row, column=1, sticky="w", padx=5, pady=2)
+    add_tooltip(cmb, "Select ttk UI theme")
+    row += 1
+
     ttk.Label(app.tab_global, text="Per-Module Debug:", font=FONT).grid(
         row=row, column=0, sticky="w", padx=5, pady=(10, 2)
     )
@@ -60,6 +71,9 @@ def build_global_tab(app):
         app.settings["popup_delay"] = app.popup_delay_var.get()
         app.settings["action_delay"] = app.action_delay_var.get()
         app.settings["scan_loop_delay"] = app.scan_loop_delay_var.get()
+        app.settings["theme"] = app.theme_var.get()
+        if hasattr(app, "style"):
+            app.style.theme_use(app.theme_var.get())
         app.settings["debug_mode"] = {k: v.get() for k, v in app.debug_vars.items()}
         with open("settings.json", "w", encoding="utf-8") as f:
             import json

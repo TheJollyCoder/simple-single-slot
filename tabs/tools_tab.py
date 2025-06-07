@@ -100,6 +100,10 @@ def save_all(app):
     app.settings["popup_delay"] = app.popup_delay_var.get()
     app.settings["action_delay"] = app.action_delay_var.get()
     app.settings["scan_loop_delay"] = app.scan_loop_delay_var.get()
+    if hasattr(app, "theme_var"):
+        app.settings["theme"] = app.theme_var.get()
+        if hasattr(app, "style"):
+            app.style.theme_use(app.theme_var.get())
     app.settings["debug_mode"] = {k: v.get() for k, v in app.debug_vars.items()}
     with open("settings.json", "w", encoding="utf-8") as f:
         json.dump(app.settings, f, indent=2)

@@ -53,6 +53,9 @@ for species in progress:
 class SettingsEditor(tk.Tk):
     def __init__(self):
         super().__init__()
+        self.style = ttk.Style()
+        theme = settings.get("theme", "clam")
+        self.style.theme_use(theme)
         self.title("ARK Breeding Config Editor")
         self.geometry("750x600")
 
@@ -83,6 +86,9 @@ class SettingsEditor(tk.Tk):
 
     def save_all(self):
         """Save settings.json and rules.json from GUI state."""
+        if hasattr(self, "theme_var"):
+            self.settings["theme"] = self.theme_var.get()
+            self.style.theme_use(self.theme_var.get())
         with open(SETTINGS_FILE, "w", encoding="utf-8") as f:
             json.dump(self.settings, f, indent=2)
         with open(RULES_FILE, "w", encoding="utf-8") as f:
