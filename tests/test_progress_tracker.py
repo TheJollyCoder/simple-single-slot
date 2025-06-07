@@ -50,21 +50,21 @@ def test_adjust_rules_for_females_new_species_with_template():
     with patch('progress_tracker.log'):
         changed = progress_tracker.adjust_rules_for_females('Rex', progress, rules, template)
     assert changed is True
-    assert set(rules['Rex']['modes']) == {'mutations', 'stat_merge', 'all_females'}
+    assert set(rules['Rex']['modes']) == {'mutations', 'stat_merge', 'all_females', 'automated'}
 
 
 def test_adjust_rules_for_females_medium_count():
     progress = {'Rex': {'female_count': 50}}
-    rules = {'Rex': {'modes': ['all_females']}}
+    rules = {'Rex': {'modes': ['all_females', 'automated']}}
     with patch('progress_tracker.log'):
         changed = progress_tracker.adjust_rules_for_females('Rex', progress, rules)
     assert changed is True
-    assert set(rules['Rex']['modes']) == {'mutations', 'stat_merge', 'top_stat_females'}
+    assert set(rules['Rex']['modes']) == {'mutations', 'stat_merge', 'top_stat_females', 'automated'}
 
 
 def test_adjust_rules_for_females_high_count():
     progress = {'Rex': {'female_count': 150}}
-    rules = {'Rex': {'modes': ['all_females', 'top_stat_females']}}
+    rules = {'Rex': {'modes': ['all_females', 'top_stat_females', 'automated']}}
     with patch('progress_tracker.log'):
         changed = progress_tracker.adjust_rules_for_females('Rex', progress, rules)
     assert changed is True
