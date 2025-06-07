@@ -20,6 +20,7 @@ from tabs.global_tab import build_global_tab
 from tabs.species_tab import build_species_tab
 from tabs.tools_tab import build_tools_tab
 from tabs.script_control_tab import build_test_tab
+from utils.config_validator import validate_configs
 
 SETTINGS_FILE = "settings.json"
 RULES_FILE    = "rules.json"
@@ -73,6 +74,10 @@ class SettingsEditor(tk.Tk):
 
         # hotkeys
         self.update_hotkeys(initial=True)
+
+        warnings = validate_configs(self.settings, self.rules, self.progress)
+        if warnings:
+            messagebox.showwarning("Config Warnings", "\n".join(warnings))
 
     def save_all(self):
         """Save settings.json and rules.json from GUI state."""
