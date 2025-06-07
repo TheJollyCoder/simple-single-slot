@@ -2,9 +2,13 @@ import logging
 import json
 
 # load your settings once
-with open("settings.json", encoding="utf-8") as f:
-    cfg = json.load(f)
-debug_flags = cfg.get("debug_mode", {})
+try:
+    with open("settings.json", encoding="utf-8") as f:
+        cfg = json.load(f)
+except FileNotFoundError:
+    cfg = {}
+
+debug_flags = cfg.get("debug_mode", False)
 
 def get_logger(module_name: str) -> logging.Logger:
     # if debug_flags is a dict, look up per-module;
