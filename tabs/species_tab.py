@@ -1,6 +1,9 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 import json
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent
 from progress_tracker import normalize_species_name
 
 DEFAULT_MODES = ["mutations", "all_females", "stat_merge", "top_stat_females", "war"]
@@ -74,7 +77,7 @@ def build_species_tab(app):
                 "war_stats": [s for s, var in app.stat_vars.items() if var.get()]
             }
             app.rules[old] = rule
-            with open("rules.json", "w", encoding="utf-8") as f:
+            with open(str(BASE_DIR / "rules.json"), "w", encoding="utf-8") as f:
                 json.dump(app.rules, f, indent=2)
         # load new
         app._last_species = new
@@ -105,6 +108,6 @@ def save_species_config(app):
         "top_stat_females_stats": [s for s, var in app.stat_vars.items() if var.get()],
         "war_stats": [s for s, var in app.stat_vars.items() if var.get()]
     }
-    with open("rules.json", "w", encoding="utf-8") as f:
+    with open(str(BASE_DIR / "rules.json"), "w", encoding="utf-8") as f:
         json.dump(app.rules, f, indent=2)
     messagebox.showinfo("Saved", f"Settings for {s} updated.")

@@ -2,12 +2,17 @@
 import json
 import os
 import sys
+from pathlib import Path
+from logger import get_logger
 
-PROGRESS_FILE     = "breeding_progress.json"
-EXTRA_TAMES_FILE  = "extra_tames.json"
-RULES_FILE        = "rules.json"
-SETTINGS_FILE     = "settings.json"
-OUTPUT_FILE       = "stat_list.txt"
+log = get_logger("stat_list")
+
+BASE_DIR = Path(__file__).resolve().parent
+PROGRESS_FILE     = BASE_DIR / "breeding_progress.json"
+EXTRA_TAMES_FILE  = BASE_DIR / "extra_tames.json"
+RULES_FILE        = BASE_DIR / "rules.json"
+SETTINGS_FILE     = BASE_DIR / "settings.json"
+OUTPUT_FILE       = BASE_DIR / "stat_list.txt"
 
 def load_json(path):
     if not os.path.exists(path):
@@ -23,9 +28,9 @@ def get_mode(settings):
     m = settings.get("stat_list_mode")
     if m in ("full", "mutation"):
         return m
-    print("Choose display mode:")
-    print("  1) full      — show every stud & mutation stat")
-    print("  2) mutation  — only stats in each species' mutation_stats")
+    log.info("Choose display mode:")
+    log.info("  1) full      — show every stud & mutation stat")
+    log.info("  2) mutation  — only stats in each species' mutation_stats")
     choice = input("Enter 1 or 2: ").strip()
     mode = "mutation" if choice == "2" else "full"
     settings["stat_list_mode"] = mode
@@ -98,7 +103,7 @@ def main():
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
         f.write("\n".join(lines) + ("\n" if lines else ""))
 
-    print(f"Wrote {len(lines)} lines to '{OUTPUT_FILE}' in {mode!r} mode.")
+    log.info("Wrote %d lines to '%s' in %r mode.", len(lines), OUTPUT_FILE, mode)
 
 if __name__ == "__main__":
     main()

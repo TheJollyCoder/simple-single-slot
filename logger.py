@@ -1,10 +1,14 @@
 import logging
 import json
+from pathlib import Path
 
-# load your settings once
-with open("settings.json", encoding="utf-8") as f:
+# load your settings once using a path relative to this file
+BASE_DIR = Path(__file__).resolve().parent
+settings_file = BASE_DIR / "settings.json"
+with settings_file.open(encoding="utf-8") as f:
     cfg = json.load(f)
 debug_flags = cfg.get("debug_mode", {})
+
 
 def get_logger(module_name: str) -> logging.Logger:
     # if debug_flags is a dict, look up per-module;
@@ -20,7 +24,8 @@ def get_logger(module_name: str) -> logging.Logger:
     # avoid adding multiple handlers if called repeatedly
     if not logger.handlers:
         handler = logging.StreamHandler()
-        handler.setFormatter(logging.Formatter("%(asctime)s [%(levelname)s] %(message)s"))
+        fmt = "%(asctime)s [%(levelname)s] %(message)s"
+        handler.setFormatter(logging.Formatter(fmt))
         logger.addHandler(handler)
     logger.setLevel(level)
     return logger
