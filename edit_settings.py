@@ -55,7 +55,6 @@ class SettingsEditor(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("ARK Breeding Config Editor")
-        self.geometry("750x600")
 
         # menus
         menu = tk.Menu(self)
@@ -80,6 +79,11 @@ class SettingsEditor(tk.Tk):
         self.rules    = rules
         self.progress = progress
 
+        if self.settings.get("window_geometry"):
+            self.geometry(self.settings.get("window_geometry"))
+        else:
+            self.geometry("750x600")
+
         # summary buffers for ESC dump
         self._summary = {"studs": [], "mutations": []}
 
@@ -100,8 +104,13 @@ class SettingsEditor(tk.Tk):
         if warnings:
             messagebox.showwarning("Config Warnings", "\n".join(warnings))
 
+    def save_geometry(self):
+        """Store current window geometry into settings."""
+        self.settings["window_geometry"] = self.geometry()
+
     def save_all(self):
         """Save settings.json and rules.json from GUI state."""
+        self.save_geometry()
         with open(SETTINGS_FILE, "w", encoding="utf-8") as f:
             json.dump(self.settings, f, indent=2)
         with open(RULES_FILE, "w", encoding="utf-8") as f:
@@ -307,6 +316,7 @@ class SettingsEditor(tk.Tk):
     def quit(self):
         """On ESC: write summary.log then close."""
         self.log_message("🛑 ESC pressed — quitting application.")
+        self.save_geometry()
         with open("summary.log", "w", encoding="utf-8") as f:
             f.write("=== STUDS UPDATED (tracked only) ===\n")
             for species, stats in self._summary["studs"]:
