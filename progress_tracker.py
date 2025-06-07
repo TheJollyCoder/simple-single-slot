@@ -4,7 +4,10 @@ log = get_logger("progress_tracker")
 import json
 import os
 import re
+import time
 from difflib import get_close_matches
+
+HISTORY_FILE = "progress_history.json"
 
 PROGRESS_FILE = "breeding_progress.json"
 RULES_FILE    = "rules.json"
@@ -34,6 +37,23 @@ def load_progress():
 def save_progress(data):
     with open(PROGRESS_FILE, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2)
+
+def load_history():
+    if os.path.exists(HISTORY_FILE):
+        with open(HISTORY_FILE, "r", encoding="utf-8") as f:
+            return json.load(f)
+    return {}
+
+def save_history(hist):
+    with open(HISTORY_FILE, "w", encoding="utf-8") as f:
+        json.dump(hist, f, indent=2)
+
+def record_history(species: str, category: str, stat: str, value: int) -> None:
+    hist = load_history()
+    species_hist = hist.setdefault(species, {"top_stats": {}, "mutation_thresholds": {}})
+    cat_hist = species_hist.setdefault(category, {}).setdefault(stat, [])
+    cat_hist.append({"ts": int(time.time()), "value": value})
+    save_history(hist)
 
 def normalize_species_name(raw_name):
     """
@@ -74,6 +94,7 @@ def update_top_stats(egg, scan_stats, progress):
         if base > current:
             log.info(f"New top stat for {stat}: {base} (was {current})")
             progress[s]["top_stats"][stat] = base
+            record_history(s, "top_stats", stat, base)
             updated = True
 
     return updated
@@ -95,6 +116,7 @@ def update_mutation_thresholds(egg, scan_stats, config, progress, sex):
         if mut > current:
             log.info(f"New threshold for {stat}: {mut} (was {current})")
             progress[s]["mutation_thresholds"][stat] = mut
+            record_history(s, "mutation_thresholds", stat, mut)
             updated = True
 
     return updated

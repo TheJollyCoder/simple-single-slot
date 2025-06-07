@@ -21,6 +21,7 @@ def validate_settings(settings: Dict[str, Any]) -> List[str]:
         "action_delay": (int, float),
         "hotkey_scan": str,
         "debug_mode": (bool, dict),
+        "webhook_url": str,
         "drop_all_button": list,
         "drop_all_confirm": list,
         "food_slots": list,
