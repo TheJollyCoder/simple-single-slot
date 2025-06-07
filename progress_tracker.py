@@ -9,6 +9,22 @@ from difflib import get_close_matches
 PROGRESS_FILE = "breeding_progress.json"
 RULES_FILE    = "rules.json"
 
+# default container for progress tracking per species
+DEFAULT_PROGRESS_TEMPLATE = {
+    "top_stats": {},
+    "mutation_thresholds": {},
+    "stud": {},
+    "female_count": 0,
+}
+
+def ensure_species(progress, species):
+    """Ensure a species entry exists with all required keys."""
+    if species not in progress:
+        progress[species] = DEFAULT_PROGRESS_TEMPLATE.copy()
+    else:
+        for k, v in DEFAULT_PROGRESS_TEMPLATE.items():
+            progress[species].setdefault(k, v if isinstance(v, dict) else 0)
+
 def load_progress():
     if os.path.exists(PROGRESS_FILE):
         with open(PROGRESS_FILE, "r", encoding="utf-8") as f:
@@ -48,8 +64,7 @@ def update_top_stats(egg, scan_stats, progress):
     s = normalize_species_name(egg)
     updated = False
     log.debug(f"Evaluating top stats for {s}")
-    if s not in progress:
-        progress[s] = {"top_stats": {}, "mutation_thresholds": {}, "stud": {}}
+    ensure_species(progress, s)
 
     for stat, values in scan_stats.items():
         base = values.get("base", 0)
@@ -69,8 +84,7 @@ def update_mutation_thresholds(egg, scan_stats, config, progress, sex):
     s = normalize_species_name(egg)
     updated = False
     log.debug(f"Evaluating mutation thresholds for {s}")
-    if s not in progress:
-        progress[s] = {"top_stats": {}, "mutation_thresholds": {}, "stud": {}}
+    ensure_species(progress, s)
 
     mutation_stats = config.get("mutation_stats", [])
     for stat in mutation_stats:
@@ -87,8 +101,7 @@ def update_mutation_thresholds(egg, scan_stats, config, progress, sex):
 
 def update_stud(egg, scan_stats, config, progress):
     s = normalize_species_name(egg)
-    if s not in progress:
-        progress[s] = {"top_stats": {}, "mutation_thresholds": {}, "stud": {}}
+    ensure_species(progress, s)
 
     merge_stats = config.get("stat_merge_stats", [])
     top_stats = progress[s]["top_stats"]
@@ -110,6 +123,47 @@ def update_stud(egg, scan_stats, config, progress):
             stat: scan_stats.get(stat, {}).get("base", 0)
             for stat in merge_stats
         }
+        return True
+
+    return False
+
+def increment_female_count(egg, progress, sex):
+    """Increment female count for a species if sex is female."""
+    if sex != "female":
+        return 0
+    s = normalize_species_name(egg)
+    ensure_species(progress, s)
+    progress[s]["female_count"] += 1
+    log.info(f"Female count for {s} is now {progress[s]['female_count']}")
+    return progress[s]["female_count"]
+
+def adjust_rules_for_females(species, progress, rules, default_template=None):
+    """Adjust breeding rules based on female counts."""
+    if species not in rules:
+        if default_template:
+            rules[species] = default_template.copy()
+        else:
+            return False
+
+    ensure_species(progress, species)
+    count = progress[species].get("female_count", 0)
+    modes = set(rules[species].get("modes", []))
+    before = modes.copy()
+
+    if count < 30:
+        modes.update({"mutations", "stat_merge", "all_females"})
+        modes.discard("top_stat_females")
+    elif count < 100:
+        modes.update({"mutations", "stat_merge", "top_stat_females"})
+        modes.discard("all_females")
+    else:
+        modes.update({"mutations", "stat_merge"})
+        modes.discard("all_females")
+        modes.discard("top_stat_females")
+
+    if modes != before:
+        rules[species]["modes"] = list(modes)
+        log.info(f"Rules updated for {species}: {rules[species]['modes']}")
         return True
 
     return False
