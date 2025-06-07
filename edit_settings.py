@@ -6,7 +6,8 @@ import subprocess
 import pyautogui
 import keyboard
 import tkinter as tk
-from tkinter import ttk, messagebox
+from tkinter import ttk
+from utils.dialogs import show_error, show_warning, show_info
 import webbrowser
 
 from scanner import scan_slot
@@ -114,7 +115,7 @@ class SettingsEditor(tk.Tk):
 
         warnings = validate_configs(self.settings, self.rules, self.progress)
         if warnings:
-            messagebox.showwarning("Config Warnings", "\n".join(warnings))
+            show_warning("Config Warnings", "\n".join(warnings))
 
     def save_geometry(self):
         """Store current window geometry into settings."""
@@ -128,7 +129,7 @@ class SettingsEditor(tk.Tk):
             json.dump(self.settings, f, indent=2)
         with open(RULES_FILE, "w", encoding="utf-8") as f:
             json.dump(self.rules, f, indent=2)
-        messagebox.showinfo("Saved", "Settings and rules have been saved.")
+        show_info("Saved", "Settings and rules have been saved.")
 
     def create_tabs(self):
         """Construct the Notebook and attach each tab’s builder."""
