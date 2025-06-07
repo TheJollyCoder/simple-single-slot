@@ -1,6 +1,5 @@
 import tkinter as tk
 import pyautogui
-import time
 from logger import get_logger
 
 log = get_logger("test_tab")
@@ -42,10 +41,6 @@ def test_scan_egg(app):
     config = app.rules.get(normalized, app.settings.get("default_species_template", {}))
     progress = load_progress()
 
-    update_top_stats(egg, stats, progress)
-    update_mutation_thresholds(egg, stats, config, progress, sex)
-    if sex == "male":
-        update_stud(egg, stats, config, progress)
 
     scan.update({
         "egg": egg,
@@ -96,10 +91,6 @@ def multi_egg_test(app):
         normalized = normalize_species_name(egg)
 
         config = app.rules.get(normalized, app.settings.get("default_species_template", {}))
-        update_top_stats(egg, stats, progress)
-        update_mutation_thresholds(egg, stats, config, progress, sex)
-        if sex == "male":
-            update_stud(egg, stats, config, progress)
 
         scan.update({
             "egg": egg,
