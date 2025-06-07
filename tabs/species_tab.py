@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
+from utils.dialogs import show_error, show_warning, show_info
 
 from utils.helpers import refresh_species_dropdown, add_tooltip
 
@@ -112,7 +113,7 @@ def load_species_config(app):
 def save_species_config(app):
     s = app.selected_species.get()
     if not s:
-        messagebox.showwarning("No species", "Select a species first.")
+        show_warning("No species", "Select a species first.")
         return
     app.rules[s] = {
         "modes": [m for m, var in app.mode_vars.items() if var.get()],
@@ -123,12 +124,12 @@ def save_species_config(app):
     }
     with open("rules.json", "w", encoding="utf-8") as f:
         json.dump(app.rules, f, indent=2)
-    messagebox.showinfo("Saved", f"Settings for {s} updated.")
+    show_info("Saved", f"Settings for {s} updated.")
 
 def delete_species(app):
     s = app.selected_species.get()
     if not s:
-        messagebox.showwarning("No species", "Select a species first.")
+        show_warning("No species", "Select a species first.")
         return
     if not messagebox.askyesno("Confirm", f"Delete configuration for {s}?"):
         return
