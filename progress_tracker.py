@@ -166,22 +166,27 @@ def adjust_rules_for_females(species, progress, rules, default_template=None):
             rules[species] = default_template.copy()
         else:
             return False
+        modes = set(rules[species].get("modes", []))
+        modes.add("automated")
+        rules[species]["modes"] = list(modes)
 
     ensure_species(progress, species)
     count = progress[species].get("female_count", 0)
     modes = set(rules[species].get("modes", []))
     before = modes.copy()
 
-    if count < 30:
-        modes.update({"mutations", "stat_merge", "all_females"})
-        modes.discard("top_stat_females")
-    elif count < 100:
-        modes.update({"mutations", "stat_merge", "top_stat_females"})
-        modes.discard("all_females")
-    else:
-        modes.update({"mutations", "stat_merge"})
-        modes.discard("all_females")
-        modes.discard("top_stat_females")
+    if "automated" in modes:
+        if count < 30:
+            modes.update({"mutations", "stat_merge", "all_females"})
+            modes.discard("top_stat_females")
+        elif count < 96:
+            modes.update({"mutations", "stat_merge", "top_stat_females"})
+            modes.discard("all_females")
+        else:
+            modes.update({"mutations", "stat_merge"})
+            modes.discard("all_females")
+            modes.discard("top_stat_females")
+            modes.discard("automated")
 
     if modes != before:
         rules[species]["modes"] = list(modes)

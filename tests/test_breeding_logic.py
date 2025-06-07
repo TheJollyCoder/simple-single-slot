@@ -37,6 +37,25 @@ class ShouldKeepEggTests(TestCase):
         self.assertIn("KEPT", self.keep_stream.getvalue())
         self.assertEqual("", self.destroy_stream.getvalue())
 
+    def test_mutations_keep_better_base_same_mut(self):
+        scan = {
+            "egg": "CS Test Male",
+            "sex": "male",
+            "stats": {"melee": {"mutation": 2, "base": 6}},
+        }
+        rules = {"modes": ["mutations"], "mutation_stats": ["melee"]}
+        progress = {
+            "TestDino": {
+                "mutation_thresholds": {"melee": 2},
+                "stud": {"melee": 5},
+            }
+        }
+        with patch("breeding_logic.normalize_species_name", return_value="TestDino"):
+            decision, res = breeding_logic.should_keep_egg(scan, rules, progress)
+        self.assertEqual(decision, "keep")
+        self.assertTrue(res["mutations"])
+        self.assertIn("KEPT", self.keep_stream.getvalue())
+
     def test_all_females_keep(self):
         scan = {"egg": "CS Test Female", "sex": "female", "stats": {}}
         rules = {"modes": ["all_females"]}
@@ -95,3 +114,11 @@ class ShouldKeepEggTests(TestCase):
         self.assertFalse(any(res[m] for m in [
             "mutations", "all_females", "stat_merge", "top_stat_females", "war"]))
         self.assertIn("DESTROYED", self.destroy_stream.getvalue())
+
+    def test_invalid_species_triggers_rescan(self):
+        scan = {"egg": "Bad Read", "sex": "male", "stats": {}}
+        rules = {"modes": ["mutations"]}
+        progress = {}
+        decision, res = breeding_logic.should_keep_egg(scan, rules, progress)
+        self.assertEqual(decision, "rescan")
+        self.assertEqual(res["_debug"]["final"], "rescan")

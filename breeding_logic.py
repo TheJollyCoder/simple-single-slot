@@ -25,11 +25,11 @@ def should_keep_egg(scan, rules, progress):
             "war": False,
             "_debug": {
                 "invalid_species": "name did not contain CS and male/female",
-                "final": "destroy"
+                "final": "rescan"
             }
         }
-        destroyed_log.info(f"Egg {egg} DESTROYED | reason: invalid_species")
-        return "destroy", result
+        log.error(f"Invalid OCR for egg species: {egg!r}. Triggering rescan.")
+        return "rescan", result
 
     # ─── AUTO-DESTROY FEMALES WHEN NO FEMALE-MODES ENABLED ────────
     female_modes = {"all_females", "top_stat_females", "war"}
@@ -69,6 +69,7 @@ def should_keep_egg(scan, rules, progress):
 
         all_ok = True
         any_strict = False
+        better_base = False
         reasons = []
 
         for st in tracked:
@@ -83,9 +84,13 @@ def should_keep_egg(scan, rules, progress):
                 any_strict = True
                 reasons.append(f"{st}={egg_mut}>{th}")
             else:
+                stud_base = progress.get(species, {}).get("stud", {}).get(st, 0)
+                egg_base = stats.get(st, {}).get("base", 0)
+                if egg_base > stud_base:
+                    better_base = True
                 reasons.append(f"{st}={egg_mut}={th}")
 
-        if all_ok and any_strict:
+        if all_ok and (any_strict or better_base):
             result["mutations"] = True
             result["_debug"]["mutations"] = " | ".join(reasons)
         else:

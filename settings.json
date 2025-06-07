@@ -92,7 +92,8 @@
       "all_females",
       "stat_merge",
       "top_stat_females",
-      "war"
+      "war",
+      "automated"
     ],
     "mutation_stats": [
       "health",

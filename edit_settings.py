@@ -60,7 +60,7 @@ progress = (
 )
 
 default_species_template = settings.get("default_species_template", {
-    "modes": ["mutations", "all_females"],
+    "modes": ["mutations", "all_females", "stat_merge", "top_stat_females", "war", "automated"],
     "mutation_stats": ["health", "melee"],
     "stat_merge_stats": ["health", "melee", "stamina"],
     "top_stat_females_stats": ["health", "melee", "stamina"],
