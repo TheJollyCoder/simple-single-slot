@@ -14,3 +14,7 @@ node_modules/
 .env
 dump_structure.pyc
 project_tree.txt
+# Output artifacts
+summary.log
+stat_list.txt
+progress_history.json
