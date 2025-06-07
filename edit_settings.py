@@ -29,6 +29,9 @@ SETTINGS_FILE = "settings.json"
 RULES_FILE    = "rules.json"
 PROGRESS_FILE = "breeding_progress.json"
 
+# maximum number of lines to retain in the on-screen log viewer
+MAX_LOG_LINES = 500
+
 DEFAULT_MODES = ["mutations", "all_females", "stat_merge", "top_stat_females", "war"]
 ALL_STATS     = ["health", "stamina", "weight", "melee", "food", "oxygen"]
 
@@ -139,6 +142,16 @@ class SettingsEditor(tk.Tk):
         try:
             if hasattr(self, "log_widget"):
                 self.log_widget.configure(state="normal")
+                try:
+                    lines = int(self.log_widget.index("end-1c").split(".")[0])
+                except Exception:
+                    lines = 0
+                while lines >= MAX_LOG_LINES:
+                    try:
+                        self.log_widget.delete("1.0", "2.0")
+                        lines = int(self.log_widget.index("end-1c").split(".")[0])
+                    except Exception:
+                        break
                 self.log_widget.insert("end", msg + "\n")
                 self.log_widget.see("end")
                 self.log_widget.configure(state="disabled")
