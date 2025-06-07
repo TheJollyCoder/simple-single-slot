@@ -1,5 +1,6 @@
 import tkinter as tk
-from tkinter import ttk, messagebox
+from tkinter import ttk
+from utils.dialogs import show_error, show_info, show_warning
 import time
 import json
 from progress_tracker import load_progress, load_history
@@ -58,7 +59,7 @@ def build_progress_tab(app):
     def send_summary():
         sp = app.progress_species.get()
         if not sp:
-            messagebox.showwarning("No species", "Select a species first.")
+            show_warning("No species", "Select a species first.")
             return
         prog = load_progress().get(sp, {})
         lines = [f"{sp} stats:"]
@@ -77,10 +78,10 @@ def build_progress_tab(app):
                 import urllib.request
                 req = urllib.request.Request(url, data=json.dumps({"content": msg}).encode("utf-8"), headers={"Content-Type": "application/json"})
                 urllib.request.urlopen(req)
-                messagebox.showinfo("Sent", "Summary sent to Discord and copied to clipboard.")
+                show_info("Sent", "Summary sent to Discord and copied to clipboard.")
             except Exception as e:
-                messagebox.showerror("Error", str(e))
+                show_error("Error", str(e))
         else:
-            messagebox.showinfo("Copied", "Summary copied to clipboard.")
+            show_info("Copied", "Summary copied to clipboard.")
 
     ttk.Button(app.tab_progress, text="Copy/Send Summary", command=send_summary).grid(row=row, column=0, padx=5, pady=5, sticky="w")
