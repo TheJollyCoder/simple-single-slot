@@ -5,6 +5,7 @@ import json
 import os
 import re
 import time
+from copy import deepcopy
 from difflib import get_close_matches
 
 HISTORY_FILE = "progress_history.json"
@@ -23,7 +24,7 @@ DEFAULT_PROGRESS_TEMPLATE = {
 def ensure_species(progress, species):
     """Ensure a species entry exists with all required keys."""
     if species not in progress:
-        progress[species] = DEFAULT_PROGRESS_TEMPLATE.copy()
+        progress[species] = deepcopy(DEFAULT_PROGRESS_TEMPLATE)
     else:
         for k, v in DEFAULT_PROGRESS_TEMPLATE.items():
             progress[species].setdefault(k, v if isinstance(v, dict) else 0)
@@ -163,7 +164,7 @@ def adjust_rules_for_females(species, progress, rules, default_template=None):
     """Adjust breeding rules based on female counts."""
     if species not in rules:
         if default_template:
-            rules[species] = default_template.copy()
+            rules[species] = deepcopy(default_template)
         else:
             return False
         modes = set(rules[species].get("modes", []))
