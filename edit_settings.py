@@ -7,6 +7,7 @@ import pyautogui
 import keyboard
 import tkinter as tk
 from tkinter import ttk
+from copy import deepcopy
 from utils.dialogs import show_error, show_warning, show_info
 import webbrowser
 
@@ -70,7 +71,7 @@ default_species_template = settings.get("default_species_template", {
 # ensure every species in progress has a rules entry
 for species in progress:
     if species not in rules:
-        rules[species] = default_species_template.copy()
+        rules[species] = deepcopy(default_species_template)
 
 # ─── Main GUI ─────────────────────────────────────────────────────
 class SettingsEditor(tk.Tk):

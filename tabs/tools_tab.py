@@ -4,6 +4,7 @@ from utils.dialogs import show_error, show_warning, show_info
 import json
 import subprocess
 from utils.helpers import refresh_species_dropdown, add_tooltip
+from copy import deepcopy
 
 FONT = ("Segoe UI", 10)
 
@@ -88,7 +89,7 @@ def refresh_species(app):
     default = app.settings.get("default_species_template", {})
     for species in progress:
         if species not in app.rules:
-            app.rules[species] = default.copy()
+            app.rules[species] = deepcopy(default)
             new_added += 1
     with open("rules.json", "w", encoding="utf-8") as f:
         json.dump(app.rules, f, indent=2)
