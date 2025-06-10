@@ -154,6 +154,8 @@ class SettingsEditor(tk.Tk):
         tabs = ttk.Notebook(self)
         tabs.pack(expand=True, fill="both")
 
+        self.tab_test = ttk.Frame(tabs)
+        tabs.add(self.tab_test, text="Script Control")
         self.tab_global = ttk.Frame(tabs)
         tabs.add(self.tab_global, text="Global Settings")
         self.tab_species = ttk.Frame(tabs)
@@ -164,16 +166,14 @@ class SettingsEditor(tk.Tk):
         tabs.add(self.tab_progress, text="Progress")
         self.tab_help = ttk.Frame(tabs)
         tabs.add(self.tab_help, text="Help")
-        self.tab_test = ttk.Frame(tabs)
-        tabs.add(self.tab_test, text="Script Control")
 
+        build_test_tab(self)
         build_global_tab(self)
         build_species_tab(self)
         build_tools_tab(self)
         build_progress_tab(self)
         from tabs.help_tab import build_help_tab
         build_help_tab(self)
-        build_test_tab(self)
 
     def log_message(self, msg: str):
         """Write a line to both stdout and the GUI log viewer."""
