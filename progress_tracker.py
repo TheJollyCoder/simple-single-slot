@@ -50,12 +50,23 @@ def ensure_species(progress, species):
             progress[species].setdefault(k, v if isinstance(v, dict) else 0)
 
 def load_progress(wipe: str = "default"):
-    path = get_progress_file(wipe)
+    """Load progress data, initializing the file if necessary."""
     ensure_wipe_dir(wipe)
-    if os.path.exists(path):
-        with open(path, "r", encoding="utf-8") as f:
+    path = get_progress_file(wipe)
+
+    if not os.path.exists(path) or os.path.getsize(path) == 0:
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump({}, f)
+        return {}
+
+    with open(path, "r", encoding="utf-8") as f:
+        try:
             return json.load(f)
-    return {}
+        except json.JSONDecodeError:
+            # Corrupted file, reset to empty
+            with open(path, "w", encoding="utf-8") as wf:
+                json.dump({}, wf)
+            return {}
 
 def save_progress(data, wipe: str = "default"):
     ensure_wipe_dir(wipe)

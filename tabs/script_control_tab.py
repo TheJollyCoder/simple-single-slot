@@ -79,6 +79,14 @@ def test_scan_egg(app):
 
     config = app.rules.get(normalized, app.settings.get("default_species_template", {}))
     progress = load_progress(app.settings.get("current_wipe", "default"))
+    new_species = normalized not in progress
+    if new_species and normalized not in app.rules:
+        from copy import deepcopy
+        app.rules[normalized] = deepcopy(app.settings.get("default_species_template", {}))
+        with open("rules.json", "w", encoding="utf-8") as f:
+            json.dump(app.rules, f, indent=2)
+        from utils.helpers import refresh_species_dropdown
+        refresh_species_dropdown(app)
 
     update_top_stats(egg, stats, progress)
     update_mutation_thresholds(egg, stats, config, progress, sex)
@@ -137,6 +145,14 @@ def multi_egg_test(app):
         normalized = normalize_species_name(egg)
 
         config = app.rules.get(normalized, app.settings.get("default_species_template", {}))
+        new_species = normalized not in progress
+        if new_species and normalized not in app.rules:
+            from copy import deepcopy
+            app.rules[normalized] = deepcopy(app.settings.get("default_species_template", {}))
+            with open("rules.json", "w", encoding="utf-8") as f:
+                json.dump(app.rules, f, indent=2)
+            from utils.helpers import refresh_species_dropdown
+            refresh_species_dropdown(app)
         update_top_stats(egg, stats, progress)
         update_mutation_thresholds(egg, stats, config, progress, sex)
         if sex == "male":

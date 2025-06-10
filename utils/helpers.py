@@ -3,7 +3,12 @@ from tkinter import ttk
 
 
 def refresh_species_dropdown(app):
-    """Update the species combobox with keys from ``app.progress``."""
+    """Reload progress for the current wipe and refresh the species combobox."""
+    from progress_tracker import load_progress
+
+    if hasattr(app, "settings"):
+        app.progress = load_progress(app.settings.get("current_wipe", "default"))
+
     if hasattr(app, "species_dropdown"):
         app.species_dropdown["values"] = sorted(app.progress.keys())
 

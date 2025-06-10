@@ -264,6 +264,14 @@ class SettingsEditor(tk.Tk):
                     normalized, self.settings.get("default_species_template", {})
                 )
                 progress = load_progress(self.settings.get("current_wipe", "default"))
+                new_species = normalized not in progress
+                if new_species and normalized not in self.rules:
+                    from copy import deepcopy
+                    self.rules[normalized] = deepcopy(self.settings.get("default_species_template", {}))
+                    with open(RULES_FILE, "w", encoding="utf-8") as f:
+                        json.dump(self.rules, f, indent=2)
+                    from utils.helpers import refresh_species_dropdown
+                    refresh_species_dropdown(self)
 
                 # Step 1: update top‐stats
                 updated_stats = update_top_stats(egg, stats, progress)

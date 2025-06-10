@@ -21,7 +21,9 @@ def build_species_tab(app):
     # Track last-loaded species for autosave
     app._last_species = None
 
-    # populate dropdown from progress data so switching wipes updates correctly
+    # populate dropdown using only the currently selected wipe's progress
+    from progress_tracker import load_progress
+    app.progress = load_progress(app.settings.get("current_wipe", "default"))
     app.species_list = sorted(app.progress.keys())
     app.species_dropdown = ttk.Combobox(
         app.tab_species,

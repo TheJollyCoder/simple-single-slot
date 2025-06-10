@@ -93,8 +93,12 @@ def build_global_tab(app):
         app.settings["scan_loop_delay"] = app.scan_loop_delay_var.get()
         app.settings["auto_eat_enabled"] = app.auto_eat_var.get()
         app.settings["debug_mode"] = {k: v.get() for k, v in app.debug_vars.items()}
+        old_wipe = app.settings.get("current_wipe", "default")
         app.settings["current_wipe"] = app.wipe_var.get() or "default"
         ensure_wipe_dir(app.settings["current_wipe"])
+        if app.settings["current_wipe"] != old_wipe:
+            from utils.helpers import refresh_species_dropdown
+            refresh_species_dropdown(app)
         with open("settings.json", "w", encoding="utf-8") as f:
             import json
             json.dump(app.settings, f, indent=2)
