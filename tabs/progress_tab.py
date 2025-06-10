@@ -1,13 +1,11 @@
 import tkinter as tk
 from tkinter import ttk
 from utils.dialogs import show_error, show_warning, show_info
-import time
 import json
-from progress_tracker import load_progress, load_history
+from progress_tracker import load_progress
 from stat_list import generate_stat_list
 
 FONT = ("Segoe UI", 10)
-ALL_STATS = ["health", "stamina", "weight", "melee", "oxygen", "food"]
 
 
 def build_progress_tab(app):
@@ -21,21 +19,6 @@ def build_progress_tab(app):
     ttk.Label(app.tab_progress, textvariable=app.female_count_var, font=FONT).grid(row=row, column=2, sticky="w", padx=5, pady=2)
     row += 1
 
-    cols = ("Stat", "Top", "Threshold")
-    app.progress_tree = ttk.Treeview(app.tab_progress, columns=cols, show="headings", height=6)
-    for c in cols:
-        app.progress_tree.heading(c, text=c)
-        app.progress_tree.column(c, width=90)
-    app.progress_tree.grid(row=row, column=0, columnspan=3, padx=5, pady=5, sticky="nsew")
-    row += 1
-
-    hist_cols = ("Time", "Stat", "Value", "Type")
-    app.history_tree = ttk.Treeview(app.tab_progress, columns=hist_cols, show="headings", height=8)
-    for c in hist_cols:
-        app.history_tree.heading(c, text=c)
-        app.history_tree.column(c, width=100)
-    app.history_tree.grid(row=row, column=0, columnspan=3, padx=5, pady=5, sticky="nsew")
-    row += 1
 
     app.stat_list_text = tk.Text(app.tab_progress, height=6, width=50, state="disabled")
     app.stat_list_text.grid(row=row, column=0, columnspan=3, padx=5, pady=5, sticky="nsew")
@@ -56,25 +39,10 @@ def build_progress_tab(app):
 
     def refresh_tables(event=None):
         prog = load_progress(app.settings.get("current_wipe", "default"))
-        hist = load_history(app.settings.get("current_wipe", "default"))
         sp = app.progress_species.get()
         count = prog.get(sp, {}).get("female_count", 0)
         app.female_count_var.set(f"Females: {count}")
-        for i in app.progress_tree.get_children():
-            app.progress_tree.delete(i)
-        for st in ALL_STATS:
-            top = prog.get(sp, {}).get("top_stats", {}).get(st, "")
-            thr = prog.get(sp, {}).get("mutation_thresholds", {}).get(st, "")
-            app.progress_tree.insert("", "end", values=(st, top, thr))
-        for i in app.history_tree.get_children():
-            app.history_tree.delete(i)
-        sp_hist = hist.get(sp, {})
-        for cat in ["top_stats", "mutation_thresholds"]:
-            for st, logs in sp_hist.get(cat, {}).items():
-                for entry in logs:
-                    ts = time.strftime("%Y-%m-%d %H:%M", time.localtime(entry.get("ts", 0)))
-                    val = entry.get("value")
-                    app.history_tree.insert("", "end", values=(ts, st, val, "top" if cat == "top_stats" else "threshold"))
+
 
         lines = generate_stat_list(prog, app.rules, app.settings)
         app.stat_list_text.configure(state="normal")
