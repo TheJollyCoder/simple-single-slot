@@ -2,6 +2,7 @@ import os
 import json
 import time
 import asyncio
+import threading
 
 import discord
 from discord.ext import commands
@@ -19,6 +20,9 @@ if not BOT_TOKEN:
     raise RuntimeError("Bot token not provided via DISCORD_BOT_TOKEN or settings.json")
 
 bot = commands.Bot(command_prefix="!")
+
+# shared lock to prevent simultaneous pyautogui actions
+GUI_LOCK = threading.Lock()
 
 
 def drop_all(settings):
@@ -40,14 +44,16 @@ async def on_ready():
 @bot.command()
 async def dropall(ctx):
     """Drop all eggs using configured coordinates."""
-    drop_all(SETTINGS)
+    with GUI_LOCK:
+        drop_all(SETTINGS)
     await ctx.send("🗑 Drop All executed")
 
 
 @bot.command()
 async def eatfood(ctx):
     """Consume food from the configured slots."""
-    eat_food(SETTINGS)
+    with GUI_LOCK:
+        eat_food(SETTINGS)
     await ctx.send("🍗 Ate one food item")
 
 
