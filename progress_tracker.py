@@ -230,6 +230,27 @@ def increment_female_count(egg, progress, sex):
     log.info(f"Female count for {s} is now {progress[s]['female_count']}")
     return progress[s]["female_count"]
 
+
+def apply_automated_modes(female_count, modes):
+    """Return mode set adjusted for automated breeding rules."""
+    modes = set(modes)
+    if "automated" not in modes:
+        return modes
+
+    if female_count < 30:
+        modes.update({"mutations", "stat_merge", "all_females"})
+        modes.discard("top_stat_females")
+    elif female_count < 96:
+        modes.update({"mutations", "stat_merge", "top_stat_females"})
+        modes.discard("all_females")
+    else:
+        modes.update({"mutations", "stat_merge"})
+        modes.discard("all_females")
+        modes.discard("top_stat_females")
+        modes.discard("automated")
+
+    return modes
+
 def adjust_rules_for_females(species, progress, rules, default_template=None):
     """Adjust breeding rules based on female counts."""
     if species not in rules:
@@ -246,18 +267,7 @@ def adjust_rules_for_females(species, progress, rules, default_template=None):
     modes = set(rules[species].get("modes", []))
     before = modes.copy()
 
-    if "automated" in modes:
-        if count < 30:
-            modes.update({"mutations", "stat_merge", "all_females"})
-            modes.discard("top_stat_females")
-        elif count < 96:
-            modes.update({"mutations", "stat_merge", "top_stat_females"})
-            modes.discard("all_females")
-        else:
-            modes.update({"mutations", "stat_merge"})
-            modes.discard("all_females")
-            modes.discard("top_stat_females")
-            modes.discard("automated")
+    modes = apply_automated_modes(count, modes)
 
     if modes != before:
         rules[species]["modes"] = list(modes)

@@ -3,7 +3,7 @@ log = get_logger("breeding_logic")
 kept_log = get_logger("kept_eggs")
 destroyed_log = get_logger("destroyed_eggs")
 
-from progress_tracker import normalize_species_name
+from progress_tracker import normalize_species_name, apply_automated_modes
 
 def should_keep_egg(scan, rules, progress):
     egg = scan["egg"]
@@ -33,18 +33,8 @@ def should_keep_egg(scan, rules, progress):
 
     # determine effective modes, accounting for automated logic
     enabled = set(rules.get("modes", []))
-    if "automated" in enabled:
-        count = progress.get(species, {}).get("female_count", 0)
-        if count < 30:
-            enabled.update({"mutations", "stat_merge", "all_females"})
-            enabled.discard("top_stat_females")
-        elif count < 96:
-            enabled.update({"mutations", "stat_merge", "top_stat_females"})
-            enabled.discard("all_females")
-        else:
-            enabled.update({"mutations", "stat_merge"})
-            enabled.discard("all_females")
-            enabled.discard("top_stat_females")
+    count = progress.get(species, {}).get("female_count", 0)
+    enabled = apply_automated_modes(count, enabled)
 
     # ─── AUTO-DESTROY FEMALES WHEN NO FEMALE-MODES ENABLED ────────
     female_modes = {"all_females", "top_stat_females", "war"}

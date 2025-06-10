@@ -102,3 +102,18 @@ def test_update_stud_equal_match_better_base():
         updated = progress_tracker.update_stud('egg', stats, config, progress)
     assert updated is True
     assert progress['Rex']['stud']['melee'] == 6
+
+
+def test_apply_automated_modes_low_count():
+    modes = progress_tracker.apply_automated_modes(10, {'automated'})
+    assert modes == {'automated', 'mutations', 'stat_merge', 'all_females'}
+
+
+def test_apply_automated_modes_mid_count():
+    modes = progress_tracker.apply_automated_modes(50, {'all_females', 'automated'})
+    assert modes == {'automated', 'mutations', 'stat_merge', 'top_stat_females'}
+
+
+def test_apply_automated_modes_high_count():
+    modes = progress_tracker.apply_automated_modes(120, {'all_females', 'top_stat_females', 'automated'})
+    assert modes == {'mutations', 'stat_merge'}
