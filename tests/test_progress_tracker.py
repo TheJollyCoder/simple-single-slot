@@ -84,3 +84,21 @@ def test_update_mutation_stud_updates_value():
         updated = progress_tracker.update_mutation_stud('egg', stats, config, progress)
     assert updated is True
     assert progress['Rex']['mutation_stud']['melee'] == 6
+
+
+def test_update_stud_equal_match_better_base():
+    progress = {
+        'Rex': {
+            'top_stats': {'melee': 5},
+            'stud': {'melee': 5},
+            'mutation_thresholds': {},
+            'mutation_stud': {},
+            'female_count': 0
+        }
+    }
+    config = {'stat_merge_stats': ['melee']}
+    stats = {'melee': {'base': 6}}
+    with patch('progress_tracker.normalize_species_name', return_value='Rex'), patch('progress_tracker.log'):
+        updated = progress_tracker.update_stud('egg', stats, config, progress)
+    assert updated is True
+    assert progress['Rex']['stud']['melee'] == 6
