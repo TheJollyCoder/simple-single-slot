@@ -84,3 +84,18 @@ def test_update_mutation_stud_updates_value():
         updated = progress_tracker.update_mutation_stud('egg', stats, config, progress)
     assert updated is True
     assert progress['Rex']['mutation_stud']['melee'] == 6
+
+
+def test_apply_automated_modes_low_count():
+    result = progress_tracker.apply_automated_modes(10, {'automated'})
+    assert result == {'automated', 'mutations', 'stat_merge', 'all_females'}
+
+
+def test_apply_automated_modes_mid_count():
+    result = progress_tracker.apply_automated_modes(50, {'automated', 'all_females'})
+    assert result == {'automated', 'mutations', 'stat_merge', 'top_stat_females'}
+
+
+def test_apply_automated_modes_high_count():
+    result = progress_tracker.apply_automated_modes(150, {'automated', 'all_females', 'top_stat_females'})
+    assert result == {'mutations', 'stat_merge'}
