@@ -19,7 +19,8 @@ def build_species_tab(app):
     # Track last-loaded species for autosave
     app._last_species = None
 
-    app.species_list = list(app.rules.keys())
+    # populate dropdown from progress data so switching wipes updates correctly
+    app.species_list = sorted(app.progress.keys())
     app.species_dropdown = ttk.Combobox(
         app.tab_species,
         values=app.species_list,

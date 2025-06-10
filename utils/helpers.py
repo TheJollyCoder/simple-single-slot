@@ -3,8 +3,9 @@ from tkinter import ttk
 
 
 def refresh_species_dropdown(app):
+    """Update the species combobox with keys from ``app.progress``."""
     if hasattr(app, "species_dropdown"):
-        app.species_dropdown["values"] = list(app.rules.keys())
+        app.species_dropdown["values"] = sorted(app.progress.keys())
 
 
 def add_tooltip(widget, text: str) -> None:
