@@ -34,8 +34,16 @@ def _auto_loop(settings: dict, stop: threading.Event) -> None:
             time.sleep(1)
 
 
-def start_auto_eat(settings: Optional[dict] = None) -> threading.Event:
+def start_auto_eat(settings: Optional[dict] = None) -> Optional[threading.Event]:
+    """Start the background auto-eat thread if enabled.
+
+    Returns the stop ``Event`` when started or ``None`` if the feature is
+    disabled in ``settings``.
+    """
     settings = settings or load_settings()
+    if not settings.get("auto_eat_enabled", False):
+        return None
+
     stop_event = threading.Event()
     t = threading.Thread(
         target=_auto_loop,
@@ -52,4 +60,5 @@ if __name__ == "__main__":
         while True:
             time.sleep(1)
     except KeyboardInterrupt:
-        stop.set()
+        if stop is not None:
+            stop.set()
