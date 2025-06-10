@@ -4,6 +4,7 @@ from utils.dialogs import show_error, show_warning, show_info
 import time
 import json
 from progress_tracker import load_progress, load_history
+from stat_list import generate_stat_list
 
 FONT = ("Segoe UI", 10)
 ALL_STATS = ["health", "stamina", "weight", "melee", "oxygen", "food"]
@@ -36,6 +37,10 @@ def build_progress_tab(app):
     app.history_tree.grid(row=row, column=0, columnspan=3, padx=5, pady=5, sticky="nsew")
     row += 1
 
+    app.stat_list_text = tk.Text(app.tab_progress, height=6, width=50, state="disabled")
+    app.stat_list_text.grid(row=row, column=0, columnspan=3, padx=5, pady=5, sticky="nsew")
+    row += 1
+
     def refresh_tables(event=None):
         prog = load_progress(app.settings.get("current_wipe", "default"))
         hist = load_history(app.settings.get("current_wipe", "default"))
@@ -57,6 +62,12 @@ def build_progress_tab(app):
                     ts = time.strftime("%Y-%m-%d %H:%M", time.localtime(entry.get("ts", 0)))
                     val = entry.get("value")
                     app.history_tree.insert("", "end", values=(ts, st, val, "top" if cat == "top_stats" else "threshold"))
+
+        lines = generate_stat_list(prog, app.rules, app.settings)
+        app.stat_list_text.configure(state="normal")
+        app.stat_list_text.delete("1.0", "end")
+        app.stat_list_text.insert("end", "\n".join(lines))
+        app.stat_list_text.configure(state="disabled")
 
     app.progress_dropdown.bind("<<ComboboxSelected>>", refresh_tables)
 
@@ -89,4 +100,9 @@ def build_progress_tab(app):
         else:
             show_info("Copied", "Summary copied to clipboard.")
 
-    ttk.Button(app.tab_progress, text="Copy/Send Summary", command=send_summary).grid(row=row, column=0, padx=5, pady=5, sticky="w")
+    btn_frame = ttk.Frame(app.tab_progress)
+    btn_frame.grid(row=row, column=0, columnspan=3, padx=5, pady=5, sticky="w")
+    ttk.Button(btn_frame, text="Copy/Send Summary", command=send_summary).pack(side="left")
+    ttk.Button(btn_frame, text="Refresh", command=refresh_tables).pack(side="left", padx=5)
+
+    refresh_tables()
