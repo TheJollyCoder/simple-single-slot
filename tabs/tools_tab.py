@@ -84,7 +84,7 @@ def run_calibration():
 
 def refresh_species(app):
     from progress_tracker import load_progress
-    progress = load_progress()
+    progress = load_progress(app.settings.get("current_wipe", "default"))
     new_added = 0
     default = app.settings.get("default_species_template", {})
     for species in progress:

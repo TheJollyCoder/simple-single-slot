@@ -77,7 +77,7 @@ def test_scan_egg(app):
     normalized = normalize_species_name(egg)
 
     config = app.rules.get(normalized, app.settings.get("default_species_template", {}))
-    progress = load_progress()
+    progress = load_progress(app.settings.get("current_wipe", "default"))
 
     update_top_stats(egg, stats, progress)
     update_mutation_thresholds(egg, stats, config, progress, sex)
@@ -94,7 +94,7 @@ def test_scan_egg(app):
     })
 
     decision, reasons = should_keep_egg(scan, config, progress)
-    save_progress(progress)
+    save_progress(progress, app.settings.get("current_wipe", "default"))
 
     print(f"→ Scanned Egg: {egg} | DECISION: {decision.upper()}")
     for k, v in reasons.items():
@@ -116,7 +116,7 @@ def multi_egg_test(app):
         print("Invalid number.")
         return
     print(f"Scanning {count} eggs...")
-    progress = load_progress()
+    progress = load_progress(app.settings.get("current_wipe", "default"))
 
     for i in range(1, count + 1):
         if getattr(app, "scanning_paused", False):
@@ -149,7 +149,7 @@ def multi_egg_test(app):
         })
 
         decision, reasons = should_keep_egg(scan, config, progress)
-        save_progress(progress)
+        save_progress(progress, app.settings.get("current_wipe", "default"))
 
         print(f"Egg {i}: {egg} | DECISION: {decision.upper()}")
         for k, v in reasons.items():

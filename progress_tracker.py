@@ -11,6 +11,7 @@ from difflib import get_close_matches
 HISTORY_FILE = "progress_history.json"
 
 PROGRESS_FILE = "breeding_progress.json"
+WIPE_DIR = "wipes"
 RULES_FILE = "rules.json"
 
 # default container for progress tracking per species
@@ -21,6 +22,24 @@ DEFAULT_PROGRESS_TEMPLATE = {
     "female_count": 0,
 }
 
+def get_progress_file(wipe: str = "default") -> str:
+    """Return the breeding progress path for a given wipe."""
+    return os.path.join(WIPE_DIR, wipe, PROGRESS_FILE)
+
+
+def get_history_file(wipe: str = "default") -> str:
+    """Return the progress history path for a given wipe."""
+    return os.path.join(WIPE_DIR, wipe, HISTORY_FILE)
+
+
+def ensure_wipe_dir(wipe: str = "default") -> None:
+    """Create wipe directory and empty files if missing."""
+    os.makedirs(os.path.join(WIPE_DIR, wipe), exist_ok=True)
+    for path in [get_progress_file(wipe), get_history_file(wipe)]:
+        if not os.path.exists(path):
+            with open(path, "w", encoding="utf-8") as f:
+                json.dump({}, f)
+
 def ensure_species(progress, species):
     """Ensure a species entry exists with all required keys."""
     if species not in progress:
@@ -29,24 +48,32 @@ def ensure_species(progress, species):
         for k, v in DEFAULT_PROGRESS_TEMPLATE.items():
             progress[species].setdefault(k, v if isinstance(v, dict) else 0)
 
-def load_progress():
-    if os.path.exists(PROGRESS_FILE):
-        with open(PROGRESS_FILE, "r", encoding="utf-8") as f:
+def load_progress(wipe: str = "default"):
+    path = get_progress_file(wipe)
+    ensure_wipe_dir(wipe)
+    if os.path.exists(path):
+        with open(path, "r", encoding="utf-8") as f:
             return json.load(f)
     return {}
 
-def save_progress(data):
-    with open(PROGRESS_FILE, "w", encoding="utf-8") as f:
+def save_progress(data, wipe: str = "default"):
+    ensure_wipe_dir(wipe)
+    path = get_progress_file(wipe)
+    with open(path, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2)
 
-def load_history():
-    if os.path.exists(HISTORY_FILE):
-        with open(HISTORY_FILE, "r", encoding="utf-8") as f:
+def load_history(wipe: str = "default"):
+    path = get_history_file(wipe)
+    ensure_wipe_dir(wipe)
+    if os.path.exists(path):
+        with open(path, "r", encoding="utf-8") as f:
             return json.load(f)
     return {}
 
-def save_history(hist):
-    with open(HISTORY_FILE, "w", encoding="utf-8") as f:
+def save_history(hist, wipe: str = "default"):
+    ensure_wipe_dir(wipe)
+    path = get_history_file(wipe)
+    with open(path, "w", encoding="utf-8") as f:
         json.dump(hist, f, indent=2)
 
 def record_history(species: str, category: str, stat: str, value: int) -> None:

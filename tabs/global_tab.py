@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter import ttk
 from utils.dialogs import show_info
+from progress_tracker import ensure_wipe_dir
+import os
 
 from utils.helpers import add_tooltip
 
@@ -8,6 +10,22 @@ FONT = ("Segoe UI", 10)
 
 def build_global_tab(app):
     row = 0
+    ttk.Label(app.tab_global, text="Current Wipe", font=FONT).grid(
+        row=row, column=0, sticky="w", padx=5, pady=2
+    )
+    existing = []
+    if os.path.isdir("wipes"):
+        existing = sorted(d for d in os.listdir("wipes") if os.path.isdir(os.path.join("wipes", d)))
+    app.wipe_var = tk.StringVar(value=app.settings.get("current_wipe", "default"))
+    wipe_combo = ttk.Combobox(
+        app.tab_global,
+        textvariable=app.wipe_var,
+        values=existing,
+        width=12,
+    )
+    wipe_combo.grid(row=row, column=1, sticky="w", padx=5, pady=2)
+    add_tooltip(wipe_combo, "Select or enter wipe name")
+    row += 1
     ttk.Label(app.tab_global, text="Hotkey Scan", font=FONT).grid(
         row=row, column=0, sticky="w", padx=5, pady=2
     )
@@ -83,6 +101,8 @@ def build_global_tab(app):
         app.settings["scan_loop_delay"] = app.scan_loop_delay_var.get()
         app.settings["debug_mode"] = {k: v.get() for k, v in app.debug_vars.items()}
         app.settings["theme"] = app.theme_var.get()
+        app.settings["current_wipe"] = app.wipe_var.get() or "default"
+        ensure_wipe_dir(app.settings["current_wipe"])
         if hasattr(app, "style"):
             app.style.theme_use(app.settings["theme"])
         with open("settings.json", "w", encoding="utf-8") as f:

@@ -13,7 +13,7 @@ def build_progress_tab(app):
     row = 0
     ttk.Label(app.tab_progress, text="Select Species:", font=FONT).grid(row=row, column=0, sticky="w", padx=5, pady=2)
     app.progress_species = tk.StringVar()
-    species = list(load_progress().keys())
+    species = list(load_progress(app.settings.get("current_wipe", "default")).keys())
     app.progress_dropdown = ttk.Combobox(app.tab_progress, values=species, textvariable=app.progress_species, state="readonly", width=30)
     app.progress_dropdown.grid(row=row, column=1, sticky="w", padx=5, pady=2)
     row += 1
@@ -35,8 +35,8 @@ def build_progress_tab(app):
     row += 1
 
     def refresh_tables(event=None):
-        prog = load_progress()
-        hist = load_history()
+        prog = load_progress(app.settings.get("current_wipe", "default"))
+        hist = load_history(app.settings.get("current_wipe", "default"))
         sp = app.progress_species.get()
         for i in app.progress_tree.get_children():
             app.progress_tree.delete(i)
@@ -61,7 +61,7 @@ def build_progress_tab(app):
         if not sp:
             show_warning("No species", "Select a species first.")
             return
-        prog = load_progress().get(sp, {})
+        prog = load_progress(app.settings.get("current_wipe", "default")).get(sp, {})
         lines = [f"{sp} stats:"]
         lines.append("Top Stats:")
         for st, val in prog.get("top_stats", {}).items():

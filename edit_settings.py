@@ -29,7 +29,6 @@ from utils.config_validator import validate_configs
 
 SETTINGS_FILE = "settings.json"
 RULES_FILE = "rules.json"
-PROGRESS_FILE = "breeding_progress.json"
 
 # maximum number of lines to retain in the on-screen log viewer
 MAX_LOG_LINES = 500
@@ -54,11 +53,7 @@ rules = (
     if os.path.exists(RULES_FILE)
     else {}
 )
-progress = (
-    json.load(open(PROGRESS_FILE, encoding="utf-8"))
-    if os.path.exists(PROGRESS_FILE)
-    else {}
-)
+progress = load_progress(settings.get("current_wipe", "default"))
 
 default_species_template = settings.get("default_species_template", {
     "modes": ["mutations", "all_females", "stat_merge", "top_stat_females", "war", "automated"],
@@ -266,7 +261,7 @@ class SettingsEditor(tk.Tk):
                 config = self.rules.get(
                     normalized, self.settings.get("default_species_template", {})
                 )
-                progress = load_progress()
+                progress = load_progress(self.settings.get("current_wipe", "default"))
 
                 # Step 1: update top‐stats
                 updated_stats = update_top_stats(egg, stats, progress)
@@ -317,7 +312,7 @@ class SettingsEditor(tk.Tk):
                     "updated_thresholds": updated_thresholds,
                     "updated_stud": updated_stud
                 })
-                save_progress(progress)
+                save_progress(progress, self.settings.get("current_wipe", "default"))
                 # print UI feedback
                 self.log_message(f"→ {egg}: {decision.upper()}")
                 for k, v in reasons.items():
