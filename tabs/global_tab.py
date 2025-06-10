@@ -1,10 +1,10 @@
 import tkinter as tk
 from tkinter import ttk
 from utils.dialogs import show_info
-from progress_tracker import ensure_wipe_dir
+from progress_tracker import ensure_wipe_dir, load_progress
 import os
 
-from utils.helpers import add_tooltip
+from utils.helpers import add_tooltip, refresh_species_dropdown
 
 FONT = ("Segoe UI", 10)
 
@@ -95,6 +95,8 @@ def build_global_tab(app):
         app.settings["debug_mode"] = {k: v.get() for k, v in app.debug_vars.items()}
         app.settings["current_wipe"] = app.wipe_var.get() or "default"
         ensure_wipe_dir(app.settings["current_wipe"])
+        app.progress = load_progress(app.settings["current_wipe"])
+        refresh_species_dropdown(app)
         with open("settings.json", "w", encoding="utf-8") as f:
             import json
             json.dump(app.settings, f, indent=2)

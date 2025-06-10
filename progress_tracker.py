@@ -53,8 +53,13 @@ def load_progress(wipe: str = "default"):
     path = get_progress_file(wipe)
     ensure_wipe_dir(wipe)
     if os.path.exists(path):
-        with open(path, "r", encoding="utf-8") as f:
-            return json.load(f)
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except json.JSONDecodeError:
+            with open(path, "w", encoding="utf-8") as f:
+                json.dump({}, f)
+            return {}
     return {}
 
 def save_progress(data, wipe: str = "default"):

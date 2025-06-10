@@ -27,6 +27,7 @@ from tabs.tools_tab import build_tools_tab
 from tabs.script_control_tab import build_test_tab
 from tabs.progress_tab import build_progress_tab
 from utils.config_validator import validate_configs
+from utils.helpers import refresh_species_dropdown
 
 SETTINGS_FILE = "settings.json"
 RULES_FILE = "rules.json"
@@ -264,6 +265,13 @@ class SettingsEditor(tk.Tk):
                     normalized, self.settings.get("default_species_template", {})
                 )
                 progress = load_progress(self.settings.get("current_wipe", "default"))
+                new_species = False
+                if normalized not in progress:
+                    new_species = True
+                    if normalized not in self.rules:
+                        self.rules[normalized] = deepcopy(self.settings.get("default_species_template", {}))
+                        with open(RULES_FILE, "w", encoding="utf-8") as f:
+                            json.dump(self.rules, f, indent=2)
 
                 # Step 1: update top‐stats
                 updated_stats = update_top_stats(egg, stats, progress)
@@ -321,6 +329,8 @@ class SettingsEditor(tk.Tk):
                     "updated_mutation_stud": updated_mstud
                 })
                 save_progress(progress, self.settings.get("current_wipe", "default"))
+                if new_species:
+                    refresh_species_dropdown(self)
                 # print UI feedback
                 self.log_message(f"→ {egg}: {decision.upper()}")
                 for k, v in reasons.items():
