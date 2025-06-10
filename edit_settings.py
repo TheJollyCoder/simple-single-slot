@@ -67,6 +67,9 @@ default_species_template = settings.get("default_species_template", {
 for species in progress:
     if species not in rules:
         rules[species] = deepcopy(default_species_template)
+        modes = set(rules[species].get("modes", []))
+        modes.add("automated")
+        rules[species]["modes"] = list(modes)
 
 # ─── Main GUI ─────────────────────────────────────────────────────
 class SettingsEditor(tk.Tk):

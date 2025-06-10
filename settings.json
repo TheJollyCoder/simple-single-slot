@@ -12,6 +12,7 @@
   "popup_delay": 0.25,
   "action_delay": 0.05,
   "hotkey_scan": "F8",
+  "auto_eat_enabled": false,
   "webhook_url": "",
   "debug_mode": false,
   "drop_all_button": [

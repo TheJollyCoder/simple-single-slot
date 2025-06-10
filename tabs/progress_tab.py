@@ -16,6 +16,8 @@ def build_progress_tab(app):
     species = list(load_progress(app.settings.get("current_wipe", "default")).keys())
     app.progress_dropdown = ttk.Combobox(app.tab_progress, values=species, textvariable=app.progress_species, state="readonly", width=30)
     app.progress_dropdown.grid(row=row, column=1, sticky="w", padx=5, pady=2)
+    app.female_count_var = tk.StringVar()
+    ttk.Label(app.tab_progress, textvariable=app.female_count_var, font=FONT).grid(row=row, column=2, sticky="w", padx=5, pady=2)
     row += 1
 
     cols = ("Stat", "Top", "Threshold")
@@ -38,6 +40,8 @@ def build_progress_tab(app):
         prog = load_progress(app.settings.get("current_wipe", "default"))
         hist = load_history(app.settings.get("current_wipe", "default"))
         sp = app.progress_species.get()
+        count = prog.get(sp, {}).get("female_count", 0)
+        app.female_count_var.set(f"Females: {count}")
         for i in app.progress_tree.get_children():
             app.progress_tree.delete(i)
         for st in ALL_STATS:
@@ -63,6 +67,7 @@ def build_progress_tab(app):
             return
         prog = load_progress(app.settings.get("current_wipe", "default")).get(sp, {})
         lines = [f"{sp} stats:"]
+        lines.append(f"Females: {prog.get('female_count', 0)}")
         lines.append("Top Stats:")
         for st, val in prog.get("top_stats", {}).items():
             lines.append(f"  {st}: {val}")
