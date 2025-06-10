@@ -19,6 +19,7 @@ DEFAULT_PROGRESS_TEMPLATE = {
     "top_stats": {},
     "mutation_thresholds": {},
     "stud": {},
+    "mutation_stud": {},
     "female_count": 0,
 }
 
@@ -176,6 +177,30 @@ def update_stud(egg, scan_stats, config, progress):
         return True
 
     return False
+
+def update_mutation_stud(egg, scan_stats, config, progress):
+    """Update mutation stud bases when mutations equal thresholds."""
+    s = normalize_species_name(egg)
+    ensure_species(progress, s)
+
+    mutation_stats = config.get("mutation_stats", [])
+    thresholds = progress[s].get("mutation_thresholds", {})
+    mstud = progress[s].get("mutation_stud", {})
+
+    updated = False
+
+    for stat in mutation_stats:
+        mut = scan_stats.get(stat, {}).get("mutation", 0)
+        base = scan_stats.get(stat, {}).get("base", 0)
+        thresh = thresholds.get(stat, 0)
+        if mut == thresh and base > mstud.get(stat, 0):
+            log.info(
+                f"New mutation stud for {s} {stat}: base {base} at {mut} mutations"
+            )
+            progress[s].setdefault("mutation_stud", {})[stat] = base
+            updated = True
+
+    return updated
 
 def increment_female_count(egg, progress, sex):
     """Increment female count for a species if sex is female."""

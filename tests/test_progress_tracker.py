@@ -69,3 +69,18 @@ def test_adjust_rules_for_females_high_count():
         changed = progress_tracker.adjust_rules_for_females('Rex', progress, rules)
     assert changed is True
     assert set(rules['Rex']['modes']) == {'mutations', 'stat_merge'}
+
+
+def test_update_mutation_stud_updates_value():
+    progress = {
+        'Rex': {
+            'mutation_thresholds': {'melee': 2},
+            'mutation_stud': {'melee': 5}
+        }
+    }
+    config = {'mutation_stats': ['melee']}
+    stats = {'melee': {'mutation': 2, 'base': 6}}
+    with patch('progress_tracker.normalize_species_name', return_value='Rex'):
+        updated = progress_tracker.update_mutation_stud('egg', stats, config, progress)
+    assert updated is True
+    assert progress['Rex']['mutation_stud']['melee'] == 6

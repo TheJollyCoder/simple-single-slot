@@ -11,7 +11,8 @@ __test__ = False
 from breeding_logic import should_keep_egg
 from progress_tracker import (
     load_progress, save_progress,
-    update_top_stats, update_mutation_thresholds, update_stud,
+    update_top_stats, update_mutation_thresholds,
+    update_stud, update_mutation_stud,
     normalize_species_name
 )
 
@@ -83,6 +84,7 @@ def test_scan_egg(app):
     update_mutation_thresholds(egg, stats, config, progress, sex)
     if sex == "male":
         update_stud(egg, stats, config, progress)
+        update_mutation_stud(egg, stats, config, progress)
 
     scan.update({
         "egg": egg,
@@ -90,7 +92,8 @@ def test_scan_egg(app):
         "stats": stats,
         "updated_stats": update_top_stats(egg, stats, progress),
         "updated_thresholds": update_mutation_thresholds(egg, stats, config, progress, sex),
-        "updated_stud": update_stud(egg, stats, config, progress) if sex == "male" else False
+        "updated_stud": update_stud(egg, stats, config, progress) if sex == "male" else False,
+        "updated_mutation_stud": update_mutation_stud(egg, stats, config, progress) if sex == "male" else False
     })
 
     decision, reasons = should_keep_egg(scan, config, progress)
@@ -138,6 +141,7 @@ def multi_egg_test(app):
         update_mutation_thresholds(egg, stats, config, progress, sex)
         if sex == "male":
             update_stud(egg, stats, config, progress)
+            update_mutation_stud(egg, stats, config, progress)
 
         scan.update({
             "egg": egg,
@@ -145,7 +149,8 @@ def multi_egg_test(app):
             "stats": stats,
             "updated_stats": update_top_stats(egg, stats, progress),
             "updated_thresholds": update_mutation_thresholds(egg, stats, config, progress, sex),
-            "updated_stud": update_stud(egg, stats, config, progress) if sex == "male" else False
+            "updated_stud": update_stud(egg, stats, config, progress) if sex == "male" else False,
+            "updated_mutation_stud": update_mutation_stud(egg, stats, config, progress) if sex == "male" else False
         })
 
         decision, reasons = should_keep_egg(scan, config, progress)
