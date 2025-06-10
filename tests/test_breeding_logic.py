@@ -122,3 +122,33 @@ class ShouldKeepEggTests(TestCase):
         decision, res = breeding_logic.should_keep_egg(scan, rules, progress)
         self.assertEqual(decision, "rescan")
         self.assertEqual(res["_debug"]["final"], "rescan")
+
+    def test_automated_all_females_under_30(self):
+        scan = {"egg": "CS Test Female", "sex": "female", "stats": {}}
+        rules = {"modes": ["automated"]}
+        progress = {"TestDino": {"female_count": 10}}
+        with patch("breeding_logic.normalize_species_name", return_value="TestDino"):
+            decision, res = breeding_logic.should_keep_egg(scan, rules, progress)
+        self.assertEqual(decision, "keep")
+        self.assertTrue(res["all_females"])
+
+    def test_automated_top_stat_range(self):
+        scan = {
+            "egg": "CS Test Female",
+            "sex": "female",
+            "stats": {"health": {"base": 10}},
+        }
+        rules = {"modes": ["automated"], "top_stat_females_stats": ["health"]}
+        progress = {"TestDino": {"female_count": 50, "top_stats": {"health": 10}}}
+        with patch("breeding_logic.normalize_species_name", return_value="TestDino"):
+            decision, res = breeding_logic.should_keep_egg(scan, rules, progress)
+        self.assertEqual(decision, "keep")
+        self.assertTrue(res["top_stat_females"])
+
+    def test_automated_high_count_no_female_modes(self):
+        scan = {"egg": "CS Test Female", "sex": "female", "stats": {}}
+        rules = {"modes": ["automated"]}
+        progress = {"TestDino": {"female_count": 120}}
+        with patch("breeding_logic.normalize_species_name", return_value="TestDino"):
+            decision, res = breeding_logic.should_keep_egg(scan, rules, progress)
+        self.assertEqual(decision, "destroy")

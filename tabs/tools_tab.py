@@ -9,7 +9,7 @@ from copy import deepcopy
 FONT = ("Segoe UI", 10)
 
 ALL_STATS = ["health", "stamina", "weight", "melee", "oxygen", "food"]
-DEFAULT_MODES = ["mutations", "all_females", "stat_merge", "top_stat_females", "war"]
+DEFAULT_MODES = ["mutations", "all_females", "stat_merge", "top_stat_females", "war", "automated"]
 
 def build_tools_tab(app):
     row = 0

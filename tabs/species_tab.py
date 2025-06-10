@@ -7,7 +7,7 @@ from utils.helpers import refresh_species_dropdown, add_tooltip
 FONT = ("Segoe UI", 10)
 import json
 from progress_tracker import normalize_species_name
-DEFAULT_MODES = ["mutations", "all_females", "stat_merge", "top_stat_females", "war"]
+DEFAULT_MODES = ["mutations", "all_females", "stat_merge", "top_stat_females", "war", "automated"]
 ALL_STATS = ["health", "stamina", "weight", "melee", "oxygen", "food"]
 
 def build_species_tab(app):
