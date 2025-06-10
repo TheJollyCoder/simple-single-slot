@@ -173,10 +173,11 @@ def scan_once(settings, debug=False):
     return {"species": species, "stats": stats}
 
 def is_invalid(scan):
-    # ignore zero oxygen (legit for some species)
-    zeros = sum(1 for stat,v in scan["stats"].items() if stat!="oxygen" and v["base"]==0)
+    """Return True when OCR produced obviously bogus values."""
+    # Values of 0 are legitimate, so we only guard against excessively
+    # large numbers which indicate an OCR failure.
     too_big = any(v["base"] > 99 for v in scan["stats"].values())
-    return zeros > 1 or too_big
+    return too_big
 
 def scan_slot(settings, debug=False):
     """OCR a single slot with validation and optional re-scans."""
