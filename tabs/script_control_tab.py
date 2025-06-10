@@ -56,9 +56,6 @@ def build_test_tab(app):
     btn = ttk.Button(app.tab_test, text="Force DESTROY (Real Logic)", command=app.destroy_egg)
     btn.pack(pady=5)
     add_tooltip(btn, "Force the destroy logic on the current egg")
-    btn = ttk.Button(app.tab_test, text="Multi-Egg Scan Test", command=lambda: multi_egg_test(app))
-    btn.pack(pady=10)
-    add_tooltip(btn, "Run repeated scans for debugging")
 
 
 
@@ -112,58 +109,3 @@ def test_scan_egg(app):
         pyautogui.doubleClick(app.settings["slot_x"], app.settings["slot_y"])
         print("✔ Egg auto-kept via double-click")
 
-def multi_egg_test(app):
-    try:
-        count = int(input("How many eggs to scan for test? "))
-    except:
-        print("Invalid number.")
-        return
-    print(f"Scanning {count} eggs...")
-    progress = load_progress(app.settings.get("current_wipe", "default"))
-
-    for i in range(1, count + 1):
-        if getattr(app, "scanning_paused", False):
-            print(f"🔁 Skipping scan {i}, scanning is paused.")
-            continue
-
-        scan = scan_slot(app.settings)
-        if scan == "no_egg":
-            print(f"Egg {i}: no egg found.")
-            continue
-
-        egg = scan["species"]
-        stats = scan["stats"]
-        sex = "female" if "female" in egg.lower() else "male"
-        normalized = normalize_species_name(egg)
-
-        config = app.rules.get(normalized, app.settings.get("default_species_template", {}))
-        update_top_stats(egg, stats, progress)
-        update_mutation_thresholds(egg, stats, config, progress, sex)
-        if sex == "male":
-            update_stud(egg, stats, config, progress)
-            update_mutation_stud(egg, stats, config, progress)
-
-        scan.update({
-            "egg": egg,
-            "sex": sex,
-            "stats": stats,
-            "updated_stats": update_top_stats(egg, stats, progress),
-            "updated_thresholds": update_mutation_thresholds(egg, stats, config, progress, sex),
-            "updated_stud": update_stud(egg, stats, config, progress) if sex == "male" else False,
-            "updated_mutation_stud": update_mutation_stud(egg, stats, config, progress) if sex == "male" else False
-        })
-
-        decision, reasons = should_keep_egg(scan, config, progress)
-        save_progress(progress, app.settings.get("current_wipe", "default"))
-
-        print(f"Egg {i}: {egg} | DECISION: {decision.upper()}")
-        for k, v in reasons.items():
-            if k != "_debug" and v:
-                print(f"  ✔ {k}")
-        if "_debug" in reasons:
-            for k, v in reasons["_debug"].items():
-                print(f"    debug[{k}]: {v}")
-        if decision == "keep":
-            import pyautogui
-            pyautogui.doubleClick(app.settings["slot_x"], app.settings["slot_y"])
-            print("→ Egg auto-kept via double-click")
