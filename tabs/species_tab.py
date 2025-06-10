@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
+from tkinter import simpledialog
 from utils.dialogs import show_error, show_warning, show_info
 
 from utils.helpers import refresh_species_dropdown, add_tooltip
@@ -7,6 +8,7 @@ from utils.helpers import refresh_species_dropdown, add_tooltip
 FONT = ("Segoe UI", 10)
 import json
 from progress_tracker import normalize_species_name
+import progress_tracker
 DEFAULT_MODES = ["mutations", "all_females", "stat_merge", "top_stat_females", "war", "automated"]
 ALL_STATS = ["health", "stamina", "weight", "melee", "oxygen", "food"]
 
@@ -30,6 +32,42 @@ def build_species_tab(app):
     )
     app.species_dropdown.grid(row=row, column=1, sticky="w", padx=5, pady=2)
     add_tooltip(app.species_dropdown, "Select the species whose rules you want to edit")
+    row += 1
+
+    # Automatic breeding toggle
+    app.auto_var = tk.BooleanVar()
+    def on_auto_toggle():
+        species = app.selected_species.get()
+        if not species:
+            show_warning("No species", "Select a species first.")
+            app.auto_var.set(False)
+            return
+        if app.auto_var.get():
+            count = simpledialog.askinteger(
+                "Female count",
+                "Enter current female count",
+                initialvalue=1,
+                parent=app.tab_species,
+            )
+            if count is None:
+                app.auto_var.set(False)
+                return
+            app.progress.setdefault(species, {}).setdefault("female_count", 0)
+            app.progress[species]["female_count"] = count
+            progress_tracker.save_progress(app.progress, app.settings.get("current_wipe", "default"))
+            app.mode_vars["automated"].set(True)
+        else:
+            app.mode_vars["automated"].set(False)
+        update_mode_state()
+
+    auto_cb = ttk.Checkbutton(
+        app.tab_species,
+        text="Automatic breeding",
+        variable=app.auto_var,
+        command=on_auto_toggle,
+    )
+    auto_cb.grid(row=row, column=0, columnspan=2, sticky="w", padx=5, pady=2)
+    add_tooltip(auto_cb, "Enable automated rule adjustments")
     row += 1
 
     # Checkbox vars
@@ -118,6 +156,7 @@ def load_species_config(app):
     rule = app.rules.get(s, {})
     for mode in DEFAULT_MODES:
         app.mode_vars[mode].set(mode in rule.get("modes", []))
+    app.auto_var.set("automated" in rule.get("modes", []))
     for stat in ALL_STATS:
         app.stat_vars[stat].set(stat in rule.get("stat_merge_stats", []))
         app.mutation_stat_vars[stat].set(stat in rule.get("mutation_stats", []))
