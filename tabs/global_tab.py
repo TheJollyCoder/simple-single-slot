@@ -74,6 +74,12 @@ def build_global_tab(app):
     add_tooltip(theme_combo, "Select GUI theme")
     row += 1
 
+    app.auto_eat_var = tk.BooleanVar(value=app.settings.get("auto_eat_enabled", False))
+    cb_auto = ttk.Checkbutton(app.tab_global, text="Enable Auto-Eat", variable=app.auto_eat_var)
+    cb_auto.grid(row=row, column=0, columnspan=2, sticky="w", padx=5, pady=2)
+    add_tooltip(cb_auto, "Automatically consume food periodically")
+    row += 1
+
     ttk.Label(app.tab_global, text="Per-Module Debug:", font=FONT).grid(
         row=row, column=0, sticky="w", padx=5, pady=(10, 2)
     )
@@ -99,6 +105,7 @@ def build_global_tab(app):
         app.settings["popup_delay"] = app.popup_delay_var.get()
         app.settings["action_delay"] = app.action_delay_var.get()
         app.settings["scan_loop_delay"] = app.scan_loop_delay_var.get()
+        app.settings["auto_eat_enabled"] = app.auto_eat_var.get()
         app.settings["debug_mode"] = {k: v.get() for k, v in app.debug_vars.items()}
         app.settings["theme"] = app.theme_var.get()
         app.settings["current_wipe"] = app.wipe_var.get() or "default"
