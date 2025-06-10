@@ -18,3 +18,4 @@ project_tree.txt
 summary.log
 stat_list.txt
 progress_history.json
+!wipes/**/progress_history.json

@@ -3,7 +3,9 @@ import json
 import os
 import sys
 
-PROGRESS_FILE = "breeding_progress.json"
+from progress_tracker import load_progress
+
+PROGRESS_FILE = "breeding_progress.json"  # unused but kept for compatibility
 EXTRA_TAMES_FILE = "extra_tames.json"
 RULES_FILE = "rules.json"
 SETTINGS_FILE = "settings.json"
@@ -71,9 +73,9 @@ def format_mutation(stud, thresh, mutation_stats):
 
 def main():
     # load files
-    progress = load_json(PROGRESS_FILE)
-    progress = merge_extra(progress)
     settings = load_json(SETTINGS_FILE)
+    progress = load_progress(settings.get("current_wipe", "default"))
+    progress = merge_extra(progress)
     mode = get_mode(settings)
     rules = load_json(RULES_FILE) if mode == "mutation" else {}
 
