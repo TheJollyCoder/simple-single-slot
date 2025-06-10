@@ -181,6 +181,19 @@ def update_stud(egg, scan_stats, config, progress):
         }
         return True
 
+    if match_count == stud_count and match_count > 0:
+        for stat in merge_stats:
+            base = scan_stats.get(stat, {}).get("base", 0)
+            if base > stud.get(stat, 0):
+                log.info(
+                    f"New stud accepted for {s}; {stat} base {base}>{stud.get(stat, 0)}"
+                )
+                progress[s]["stud"] = {
+                    st: scan_stats.get(st, {}).get("base", 0)
+                    for st in merge_stats
+                }
+                return True
+
     return False
 
 def update_mutation_stud(egg, scan_stats, config, progress):
