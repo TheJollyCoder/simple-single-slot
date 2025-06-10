@@ -34,8 +34,11 @@ def _auto_loop(settings: dict, stop: threading.Event) -> None:
             time.sleep(1)
 
 
-def start_auto_eat(settings: Optional[dict] = None) -> threading.Event:
+def start_auto_eat(settings: Optional[dict] = None) -> Optional[threading.Event]:
     settings = settings or load_settings()
+    if not settings.get("auto_eat_enabled", False):
+        return None
+
     stop_event = threading.Event()
     t = threading.Thread(
         target=_auto_loop,
