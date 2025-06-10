@@ -1,8 +1,7 @@
 import stat_list
 
 
-def test_generate_stat_list_full(monkeypatch):
-    monkeypatch.setattr(stat_list, "load_json", lambda p: {})
+def test_generate_stat_list_full():
     progress = {
         "Dodo": {"stud": {"health": 10}, "mutation_thresholds": {"health": 1}}
     }
@@ -11,8 +10,7 @@ def test_generate_stat_list_full(monkeypatch):
     assert lines == ["10+1H Dodo"]
 
 
-def test_generate_stat_list_mutation(monkeypatch):
-    monkeypatch.setattr(stat_list, "load_json", lambda p: {})
+def test_generate_stat_list_mutation():
     progress = {
         "Dodo": {
             "stud": {"health": 10, "melee": 5},
@@ -25,8 +23,7 @@ def test_generate_stat_list_mutation(monkeypatch):
     assert lines == ["5+2M Dodo"]
 
 
-def test_generate_stat_list_mutation_fallback(monkeypatch):
-    monkeypatch.setattr(stat_list, "load_json", lambda p: {})
+def test_generate_stat_list_mutation_fallback():
     progress = {
         "Dodo": {"stud": {"health": 10}, "mutation_thresholds": {"health": 1}}
     }

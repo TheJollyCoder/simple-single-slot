@@ -7,7 +7,6 @@ from typing import List
 from progress_tracker import load_progress
 
 PROGRESS_FILE = "breeding_progress.json"  # unused but kept for compatibility
-EXTRA_TAMES_FILE = "extra_tames.json"
 RULES_FILE = "rules.json"
 SETTINGS_FILE = "settings.json"
 OUTPUT_FILE = "stat_list.txt"
@@ -35,12 +34,6 @@ def get_mode(settings):
     save_settings(settings)
     return mode
 
-def merge_extra(progress):
-    extra = load_json(EXTRA_TAMES_FILE)
-    for sp, data in extra.items():
-        if sp not in progress:
-            progress[sp] = data
-    return progress
 
 def format_full(stud, thresh):
     tokens = []
@@ -75,7 +68,6 @@ def format_mutation(stud, thresh, mutation_stats):
 
 def generate_stat_list(progress, rules, settings) -> List[str]:
     """Return formatted stat list lines based on progress and rules."""
-    progress = merge_extra(progress)
     mode = settings.get("stat_list_mode", "full")
 
     lines: List[str] = []
@@ -94,6 +86,10 @@ def generate_stat_list(progress, rules, settings) -> List[str]:
 
         if tokens:
             lines.append(f"{' '.join(tokens)} {species}")
+
+    extra = settings.get("custom_stat_list_lines", [])
+    if isinstance(extra, list):
+        lines.extend(extra)
 
     return lines
 

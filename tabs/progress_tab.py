@@ -41,6 +41,19 @@ def build_progress_tab(app):
     app.stat_list_text.grid(row=row, column=0, columnspan=3, padx=5, pady=5, sticky="nsew")
     row += 1
 
+    ttk.Label(app.tab_progress, text="Add Custom Line:", font=FONT).grid(row=row, column=0, sticky="w", padx=5)
+    app.custom_line_var = tk.StringVar()
+    entry = ttk.Entry(app.tab_progress, textvariable=app.custom_line_var, width=30)
+    entry.grid(row=row, column=1, sticky="w")
+    ttk.Button(app.tab_progress, text="Add", command=lambda: add_custom_line()).grid(row=row, column=2, sticky="w")
+    row += 1
+
+    app.custom_lines_list = tk.Listbox(app.tab_progress, height=4, width=50)
+    app.custom_lines_list.grid(row=row, column=0, columnspan=3, padx=5, pady=2, sticky="nsew")
+    row += 1
+    ttk.Button(app.tab_progress, text="Delete Selected", command=lambda: delete_custom_line()).grid(row=row, column=0, sticky="w", padx=5)
+    row += 1
+
     def refresh_tables(event=None):
         prog = load_progress(app.settings.get("current_wipe", "default"))
         hist = load_history(app.settings.get("current_wipe", "default"))
@@ -69,7 +82,33 @@ def build_progress_tab(app):
         app.stat_list_text.insert("end", "\n".join(lines))
         app.stat_list_text.configure(state="disabled")
 
+        app.custom_lines_list.delete(0, "end")
+        for line in app.settings.get("custom_stat_list_lines", []):
+            app.custom_lines_list.insert("end", line)
+
     app.progress_dropdown.bind("<<ComboboxSelected>>", refresh_tables)
+
+    def add_custom_line():
+        line = app.custom_line_var.get().strip()
+        if not line:
+            return
+        app.settings.setdefault("custom_stat_list_lines", []).append(line)
+        with open("settings.json", "w", encoding="utf-8") as f:
+            json.dump(app.settings, f, indent=2)
+        app.custom_line_var.set("")
+        refresh_tables()
+
+    def delete_custom_line():
+        sel = app.custom_lines_list.curselection()
+        if not sel:
+            return
+        idx = sel[0]
+        lines = app.settings.get("custom_stat_list_lines", [])
+        if 0 <= idx < len(lines):
+            del lines[idx]
+            with open("settings.json", "w", encoding="utf-8") as f:
+                json.dump(app.settings, f, indent=2)
+        refresh_tables()
 
     def send_summary():
         sp = app.progress_species.get()
