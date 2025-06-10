@@ -98,7 +98,7 @@ def should_keep_egg(scan, rules, progress):
                 any_strict = True
                 reasons.append(f"{st}={egg_mut}>{th}")
             else:
-                stud_base = progress.get(species, {}).get("stud", {}).get(st, 0)
+                stud_base = progress.get(species, {}).get("mutation_stud", {}).get(st, 0)
                 egg_base = stats.get(st, {}).get("base", 0)
                 if egg_base > stud_base:
                     better_base = True

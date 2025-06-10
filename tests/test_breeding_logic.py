@@ -47,7 +47,7 @@ class ShouldKeepEggTests(TestCase):
         progress = {
             "TestDino": {
                 "mutation_thresholds": {"melee": 2},
-                "stud": {"melee": 5},
+                "mutation_stud": {"melee": 5},
             }
         }
         with patch("breeding_logic.normalize_species_name", return_value="TestDino"):

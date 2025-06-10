@@ -15,7 +15,8 @@ from scanner import scan_slot
 from breeding_logic import should_keep_egg
 from progress_tracker import (
     load_progress, save_progress,
-    update_top_stats, update_mutation_thresholds, update_stud,
+    update_top_stats, update_mutation_thresholds,
+    update_stud, update_mutation_stud,
     increment_female_count, adjust_rules_for_females,
     normalize_species_name
 )
@@ -299,6 +300,11 @@ class SettingsEditor(tk.Tk):
                     if sex == "male"
                     else False
                 )
+                updated_mstud = (
+                    update_mutation_stud(egg, stats, config, progress)
+                    if sex == "male"
+                    else False
+                )
 
                 # record for summary
                 if updated_thresholds:
@@ -314,7 +320,8 @@ class SettingsEditor(tk.Tk):
                     "stats": stats,
                     "updated_stats": updated_stats,
                     "updated_thresholds": updated_thresholds,
-                    "updated_stud": updated_stud
+                    "updated_stud": updated_stud,
+                    "updated_mutation_stud": updated_mstud
                 })
                 save_progress(progress, self.settings.get("current_wipe", "default"))
                 # print UI feedback
