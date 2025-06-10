@@ -13,11 +13,14 @@ import pytesseract
 import pyautogui
 
 def normalize_stat_text(text: str) -> str:
-    """
-    Normalize common OCR mis-reads ('l','I','|','i') into '1'.
-    """
+    """Cleanup OCR text for numeric parsing."""
+    # Many fonts cause Tesseract to misread ``l``/``I``/``|`` as ``1``.  We
+    # normalise those here *before* attempting to parse numbers.
     text = text.strip()
     text = text.replace("l", "1").replace("|", "1").replace("I", "1").replace("i", "1")
+    # Sometimes a stray 1 appears next to punctuation or whitespace.  If it's
+    # not adjacent to other digits we treat it as noise and strip it.
+    text = re.sub(r"(?<!\d)1(?!\d)", "", text)
     text = re.sub(r"(?<=\d)[lI|i]", "1", text)
     log.debug(f"normalize_stat_text → {text!r}")
     return text
@@ -176,23 +179,28 @@ def is_invalid(scan):
     return zeros > 1 or too_big
 
 def scan_slot(settings, debug=False):
-    a = scan_once(settings, debug)
-    if a == "no_egg": return "no_egg"
-    b = scan_once(settings, debug)
-    if b == "no_egg": return "no_egg"
-    if a == b and not is_invalid(a):
-        return a
+    """OCR a single slot with validation and optional re-scans."""
+    result = scan_once(settings, debug)
+    if result == "no_egg":
+        return "no_egg"
 
+    if not is_invalid(result):
+        return result
+
+    log.warning("Initial scan invalid; performing additional passes")
     batch = [scan_once(settings, debug) for _ in range(3)]
     if any(x == "no_egg" for x in batch):
         return "no_egg"
 
     final = {"species": batch[0]["species"], "stats": {}}
     for stat in batch[0]["stats"]:
-        vals = [(r["stats"][stat]["base"], r["stats"][stat]["mutation"]) for r in batch]
+        vals = [
+            (r["stats"][stat]["base"], r["stats"][stat]["mutation"]) for r in batch
+        ]
         best = max(set(vals), key=vals.count)
         final["stats"][stat] = {"base": best[0], "mutation": best[1]}
 
     if is_invalid(final):
+        log.warning("Rescans still produced invalid data; treating as no egg")
         return "no_egg"
     return final
