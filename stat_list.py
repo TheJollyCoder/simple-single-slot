@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 import json
 import os
-import sys
+
+from typing import List
 
 from progress_tracker import load_progress
 
@@ -71,31 +72,40 @@ def format_mutation(stud, thresh, mutation_stats):
             tokens.append(f"+{m}{L}")
     return tokens
 
-def main():
-    # load files
-    settings = load_json(SETTINGS_FILE)
-    progress = load_progress(settings.get("current_wipe", "default"))
-    progress = merge_extra(progress)
-    mode = get_mode(settings)
-    rules = load_json(RULES_FILE) if mode == "mutation" else {}
 
-    lines = []
+def generate_stat_list(progress, rules, settings) -> List[str]:
+    """Return formatted stat list lines based on progress and rules."""
+    progress = merge_extra(progress)
+    mode = settings.get("stat_list_mode", "full")
+
+    lines: List[str] = []
     for species in sorted(progress):
         stud = progress[species].get("stud", {})
         thresh = progress[species].get("mutation_thresholds", {})
 
         if mode == "mutation":
-            muts = rules.get(species, {}).get("mutation_stats", None)
-            if muts:  
+            muts = rules.get(species, {}).get("mutation_stats")
+            if muts:
                 tokens = format_mutation(stud, thresh, muts)
             else:
-                # fallback for species without mutation_stats
                 tokens = format_full(stud, thresh)
         else:
             tokens = format_full(stud, thresh)
 
         if tokens:
             lines.append(f"{' '.join(tokens)} {species}")
+
+    return lines
+
+def main():
+    # load files
+    settings = load_json(SETTINGS_FILE)
+    progress = load_progress(settings.get("current_wipe", "default"))
+    mode = get_mode(settings)
+    rules = load_json(RULES_FILE) if mode == "mutation" else {}
+    settings["stat_list_mode"] = mode
+
+    lines = generate_stat_list(progress, rules, settings)
 
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
         f.write("\n".join(lines) + ("\n" if lines else ""))
