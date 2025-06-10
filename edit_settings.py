@@ -264,7 +264,8 @@ class SettingsEditor(tk.Tk):
                 config = self.rules.get(
                     normalized, self.settings.get("default_species_template", {})
                 )
-                progress = load_progress(self.settings.get("current_wipe", "default"))
+                wipe = self.settings.get("current_wipe", "default")
+                progress = load_progress(wipe)
                 new_species = False
                 if normalized not in progress:
                     new_species = True
@@ -274,7 +275,7 @@ class SettingsEditor(tk.Tk):
                             json.dump(self.rules, f, indent=2)
 
                 # Step 1: update top‐stats
-                updated_stats = update_top_stats(egg, stats, progress)
+                updated_stats = update_top_stats(egg, stats, progress, wipe)
 
                 # Step 2: decide keep/destroy
                 decision, reasons = should_keep_egg(
@@ -294,7 +295,7 @@ class SettingsEditor(tk.Tk):
                 # Step 3: update thresholds only if mutations rule passed
                 if reasons.get("mutations"):
                     updated_thresholds = update_mutation_thresholds(
-                        egg, stats, config, progress, sex
+                        egg, stats, config, progress, sex, wipe
                     )
                 else:
                     updated_thresholds = False
@@ -328,7 +329,7 @@ class SettingsEditor(tk.Tk):
                     "updated_stud": updated_stud,
                     "updated_mutation_stud": updated_mstud
                 })
-                save_progress(progress, self.settings.get("current_wipe", "default"))
+                save_progress(progress, wipe)
                 if new_species:
                     refresh_species_dropdown(self)
                 # print UI feedback

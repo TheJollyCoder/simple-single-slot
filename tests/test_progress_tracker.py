@@ -1,5 +1,6 @@
 import os
 import sys
+import json
 from unittest.mock import patch
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
@@ -11,17 +12,17 @@ def test_update_top_stats_records_new_value():
     progress = {}
     with patch('progress_tracker.normalize_species_name', return_value='Rex'), \
          patch('progress_tracker.record_history') as rec:
-        updated = progress_tracker.update_top_stats('egg', {'melee': {'base': 5}}, progress)
+        updated = progress_tracker.update_top_stats('egg', {'melee': {'base': 5}}, progress, 'wipe1')
     assert updated is True
     assert progress['Rex']['top_stats']['melee'] == 5
-    rec.assert_called_once_with('Rex', 'top_stats', 'melee', 5)
+    rec.assert_called_once_with('Rex', 'top_stats', 'melee', 5, 'wipe1')
 
 
 def test_update_top_stats_no_change():
     progress = {'Rex': {'top_stats': {'melee': 5}, 'mutation_thresholds': {}, 'stud': {}, 'female_count': 0}}
     with patch('progress_tracker.normalize_species_name', return_value='Rex'), \
          patch('progress_tracker.record_history') as rec:
-        updated = progress_tracker.update_top_stats('egg', {'melee': {'base': 4}}, progress)
+        updated = progress_tracker.update_top_stats('egg', {'melee': {'base': 4}}, progress, 'wipe1')
     assert updated is False
     assert progress['Rex']['top_stats']['melee'] == 5
     rec.assert_not_called()
@@ -117,3 +118,15 @@ def test_apply_automated_modes_mid_count():
 def test_apply_automated_modes_high_count():
     modes = progress_tracker.apply_automated_modes(120, {'all_females', 'top_stat_females', 'automated'})
     assert modes == {'mutations', 'stat_merge'}
+
+
+def test_record_history_custom_wipe(tmp_path):
+    wipe = 'custom'
+    wipes_dir = tmp_path / 'wipes'
+    with patch('progress_tracker.WIPE_DIR', str(wipes_dir)):
+        progress_tracker.record_history('Rex', 'top_stats', 'melee', 5, wipe)
+        hist_file = wipes_dir / wipe / 'progress_history.json'
+        assert hist_file.exists()
+        with open(hist_file, encoding='utf-8') as f:
+            data = json.load(f)
+        assert data['Rex']['top_stats']['melee'][0]['value'] == 5
