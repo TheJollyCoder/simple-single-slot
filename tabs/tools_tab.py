@@ -33,7 +33,12 @@ def build_tools_tab(app):
     )
     row += 1
 
-    app.default_mode_vars = {mode: tk.BooleanVar(value=True) for mode in DEFAULT_MODES}
+    template = app.settings.get("default_species_template", {})
+    mode_defaults = set(template.get("modes", DEFAULT_MODES))
+    app.default_mode_vars = {
+        mode: tk.BooleanVar(value=(mode in mode_defaults))
+        for mode in DEFAULT_MODES
+    }
     ttk.Label(app.tab_tools, text="Enabled Modes:", font=FONT).grid(
         row=row, column=0, sticky="nw", padx=5, pady=2
     )
@@ -45,8 +50,16 @@ def build_tools_tab(app):
         col += 1
     row += 1
 
-    app.default_stat_vars = {stat: tk.BooleanVar(value=True) for stat in ALL_STATS}
-    app.default_mutation_vars = {stat: tk.BooleanVar(value=True) for stat in ALL_STATS}
+    shared_defaults = set(template.get("stat_merge_stats", ALL_STATS))
+    app.default_stat_vars = {
+        stat: tk.BooleanVar(value=(stat in shared_defaults))
+        for stat in ALL_STATS
+    }
+    mutation_defaults = set(template.get("mutation_stats", ALL_STATS))
+    app.default_mutation_vars = {
+        stat: tk.BooleanVar(value=(stat in mutation_defaults))
+        for stat in ALL_STATS
+    }
 
     ttk.Label(app.tab_tools, text="Shared Stats (merge/top/war):", font=FONT).grid(
         row=row, column=0, sticky="w", padx=5, pady=(10, 2)
