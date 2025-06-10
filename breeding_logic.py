@@ -31,9 +31,23 @@ def should_keep_egg(scan, rules, progress):
         log.error(f"Invalid OCR for egg species: {egg!r}. Triggering rescan.")
         return "rescan", result
 
+    # determine effective modes, accounting for automated logic
+    enabled = set(rules.get("modes", []))
+    if "automated" in enabled:
+        count = progress.get(species, {}).get("female_count", 0)
+        if count < 30:
+            enabled.update({"mutations", "stat_merge", "all_females"})
+            enabled.discard("top_stat_females")
+        elif count < 96:
+            enabled.update({"mutations", "stat_merge", "top_stat_females"})
+            enabled.discard("all_females")
+        else:
+            enabled.update({"mutations", "stat_merge"})
+            enabled.discard("all_females")
+            enabled.discard("top_stat_females")
+
     # ─── AUTO-DESTROY FEMALES WHEN NO FEMALE-MODES ENABLED ────────
     female_modes = {"all_females", "top_stat_females", "war"}
-    enabled = set(rules.get("modes", []))
     if sex == "female" and not (female_modes & enabled):
         result = {
             "mutations": False,
@@ -59,7 +73,7 @@ def should_keep_egg(scan, rules, progress):
     }
 
     # ─── Mutations ─────────────────────────────────────────
-    if "mutations" in rules.get("modes", []) and sex == "male":
+    if "mutations" in enabled and sex == "male":
         log.debug("Evaluating mutations rule")
 
         tracked = rules.get("mutation_stats", [])
@@ -97,13 +111,13 @@ def should_keep_egg(scan, rules, progress):
             result["_debug"]["mutations"] = f"❌ not qualified: {' | '.join(reasons)}"
 
     # ─── All Females ──────────────────────────────────────────────
-    if "all_females" in rules.get("modes", []) and sex == "female":
+    if "all_females" in enabled and sex == "female":
         log.debug("Evaluating all_females rule")
         result["all_females"] = True
         result["_debug"]["all_females"] = "female"
 
     # ─── Stat Merge ──────────────────────────────────────────────
-    if "stat_merge" in rules.get("modes", []) and sex == "male":
+    if "stat_merge" in enabled and sex == "male":
         log.debug("Evaluating stat_merge rule")
         if scan.get("updated_stud"):
             result["stat_merge"] = True
@@ -135,7 +149,7 @@ def should_keep_egg(scan, rules, progress):
                         break
 
     # ─── Top Stat Females ────────────────────────────────────────
-    if "top_stat_females" in rules.get("modes", []) and sex == "female":
+    if "top_stat_females" in enabled and sex == "female":
         log.debug(f"RAW STATS passed into logic: {stats}")
         log.debug("Evaluating top_stat_females rule")
         top = progress.get(species, {}).get("top_stats", {})
@@ -155,7 +169,7 @@ def should_keep_egg(scan, rules, progress):
             result["_debug"]["top_stat_females"] = f"mismatched: {', '.join(mismatched)}"
 
     # ─── War Tames ───────────────────────────────────────────────
-    if "war" in rules.get("modes", []):
+    if "war" in enabled:
         log.debug("Evaluating war rule")
         top = progress.get(species, {}).get("top_stats", {})
         tracked = rules.get("war_stats", [])

@@ -39,6 +39,7 @@ DEFAULT_MODES = [
     "stat_merge",
     "top_stat_females",
     "war",
+    "automated",
 ]
 ALL_STATS = ["health", "stamina", "weight", "melee", "food", "oxygen"]
 
