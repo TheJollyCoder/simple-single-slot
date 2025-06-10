@@ -75,10 +75,11 @@ def test_scan_egg(app):
     normalized = normalize_species_name(egg)
 
     config = app.rules.get(normalized, app.settings.get("default_species_template", {}))
-    progress = load_progress(app.settings.get("current_wipe", "default"))
+    wipe = app.settings.get("current_wipe", "default")
+    progress = load_progress(wipe)
 
-    update_top_stats(egg, stats, progress)
-    update_mutation_thresholds(egg, stats, config, progress, sex)
+    update_top_stats(egg, stats, progress, wipe)
+    update_mutation_thresholds(egg, stats, config, progress, sex, wipe)
     if sex == "male":
         update_stud(egg, stats, config, progress)
         update_mutation_stud(egg, stats, config, progress)
@@ -87,14 +88,14 @@ def test_scan_egg(app):
         "egg": egg,
         "sex": sex,
         "stats": stats,
-        "updated_stats": update_top_stats(egg, stats, progress),
-        "updated_thresholds": update_mutation_thresholds(egg, stats, config, progress, sex),
+        "updated_stats": update_top_stats(egg, stats, progress, wipe),
+        "updated_thresholds": update_mutation_thresholds(egg, stats, config, progress, sex, wipe),
         "updated_stud": update_stud(egg, stats, config, progress) if sex == "male" else False,
         "updated_mutation_stud": update_mutation_stud(egg, stats, config, progress) if sex == "male" else False
     })
 
     decision, reasons = should_keep_egg(scan, config, progress)
-    save_progress(progress, app.settings.get("current_wipe", "default"))
+    save_progress(progress, wipe)
 
     print(f"→ Scanned Egg: {egg} | DECISION: {decision.upper()}")
     for k, v in reasons.items():

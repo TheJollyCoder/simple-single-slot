@@ -82,12 +82,12 @@ def save_history(hist, wipe: str = "default"):
     with open(path, "w", encoding="utf-8") as f:
         json.dump(hist, f, indent=2)
 
-def record_history(species: str, category: str, stat: str, value: int) -> None:
-    hist = load_history()
+def record_history(species: str, category: str, stat: str, value: int, wipe: str = "default") -> None:
+    hist = load_history(wipe)
     species_hist = hist.setdefault(species, {"top_stats": {}, "mutation_thresholds": {}})
     cat_hist = species_hist.setdefault(category, {}).setdefault(stat, [])
     cat_hist.append({"ts": int(time.time()), "value": value})
-    save_history(hist)
+    save_history(hist, wipe)
 
 def normalize_species_name(raw_name):
     """
@@ -114,7 +114,7 @@ def normalize_species_name(raw_name):
 
     return cleaned
 
-def update_top_stats(egg, scan_stats, progress):
+def update_top_stats(egg, scan_stats, progress, wipe: str = "default"):
     s = normalize_species_name(egg)
     updated = False
     log.debug(f"Evaluating top stats for {s}")
@@ -128,12 +128,12 @@ def update_top_stats(egg, scan_stats, progress):
         if base > current:
             log.info(f"New top stat for {stat}: {base} (was {current})")
             progress[s]["top_stats"][stat] = base
-            record_history(s, "top_stats", stat, base)
+            record_history(s, "top_stats", stat, base, wipe)
             updated = True
 
     return updated
 
-def update_mutation_thresholds(egg, scan_stats, config, progress, sex):
+def update_mutation_thresholds(egg, scan_stats, config, progress, sex, wipe: str = "default"):
     if sex != "male":
         return False
     s = normalize_species_name(egg)
@@ -150,7 +150,7 @@ def update_mutation_thresholds(egg, scan_stats, config, progress, sex):
         if mut > current:
             log.info(f"New threshold for {stat}: {mut} (was {current})")
             progress[s]["mutation_thresholds"][stat] = mut
-            record_history(s, "mutation_thresholds", stat, mut)
+            record_history(s, "mutation_thresholds", stat, mut, wipe)
             updated = True
 
     return updated
