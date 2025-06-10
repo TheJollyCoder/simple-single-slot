@@ -59,20 +59,6 @@ def build_global_tab(app):
         add_tooltip(spin, tip_map.get(label, f"{label} in seconds"))
         row += 1
 
-    ttk.Label(app.tab_global, text="Theme", font=FONT).grid(
-        row=row, column=0, sticky="w", padx=5, pady=2
-    )
-    app.theme_var = tk.StringVar(value=app.settings.get("theme", "clam"))
-    theme_combo = ttk.Combobox(
-        app.tab_global,
-        textvariable=app.theme_var,
-        values=ttk.Style().theme_names(),
-        state="readonly",
-        width=12,
-    )
-    theme_combo.grid(row=row, column=1, sticky="w", padx=5, pady=2)
-    add_tooltip(theme_combo, "Select GUI theme")
-    row += 1
 
     app.auto_eat_var = tk.BooleanVar(value=app.settings.get("auto_eat_enabled", False))
     cb_auto = ttk.Checkbutton(app.tab_global, text="Enable Auto-Eat", variable=app.auto_eat_var)
@@ -107,11 +93,8 @@ def build_global_tab(app):
         app.settings["scan_loop_delay"] = app.scan_loop_delay_var.get()
         app.settings["auto_eat_enabled"] = app.auto_eat_var.get()
         app.settings["debug_mode"] = {k: v.get() for k, v in app.debug_vars.items()}
-        app.settings["theme"] = app.theme_var.get()
         app.settings["current_wipe"] = app.wipe_var.get() or "default"
         ensure_wipe_dir(app.settings["current_wipe"])
-        if hasattr(app, "style"):
-            app.style.theme_use(app.settings["theme"])
         with open("settings.json", "w", encoding="utf-8") as f:
             import json
             json.dump(app.settings, f, indent=2)
