@@ -41,11 +41,23 @@ def build_species_tab(app):
         row=row, column=0, sticky="nw", padx=5, pady=2
     )
     col = 1
+    app.mode_cbs = {}
     for mode in DEFAULT_MODES:
         cb = ttk.Checkbutton(app.tab_species, text=mode, variable=app.mode_vars[mode])
         cb.grid(row=row, column=col, sticky="w", padx=5, pady=2)
         add_tooltip(cb, f"Enable the {mode} mode for this species")
+        app.mode_cbs[mode] = cb
         col += 1
+
+    def update_mode_state():
+        disable = app.mode_vars["automated"].get()
+        for m, cb in app.mode_cbs.items():
+            if m == "automated":
+                continue
+            cb.configure(state="disabled" if disable else "normal")
+
+    app.mode_cbs["automated"].configure(command=update_mode_state)
+    update_mode_state()
     row += 1
 
     ttk.Label(app.tab_species, text="Shared Stats (merge/top/war):", font=FONT).grid(
@@ -108,6 +120,13 @@ def load_species_config(app):
     for stat in ALL_STATS:
         app.stat_vars[stat].set(stat in rule.get("stat_merge_stats", []))
         app.mutation_stat_vars[stat].set(stat in rule.get("mutation_stats", []))
+    if hasattr(app, "mode_cbs"):
+        # ensure checkbutton states reflect automated setting
+        disable = app.mode_vars["automated"].get()
+        for m, cb in app.mode_cbs.items():
+            if m == "automated":
+                continue
+            cb.configure(state="disabled" if disable else "normal")
 
 
 def save_species_config(app):

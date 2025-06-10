@@ -38,11 +38,23 @@ def build_tools_tab(app):
         row=row, column=0, sticky="nw", padx=5, pady=2
     )
     col = 1
+    app.default_mode_cbs = {}
     for mode in DEFAULT_MODES:
         cb = ttk.Checkbutton(app.tab_tools, text=mode, variable=app.default_mode_vars[mode])
         cb.grid(row=row, column=col, sticky="w", padx=5, pady=2)
         add_tooltip(cb, f"Enable {mode} mode for all new species")
+        app.default_mode_cbs[mode] = cb
         col += 1
+
+    def update_default_mode_state():
+        disable = app.default_mode_vars["automated"].get()
+        for m, cb in app.default_mode_cbs.items():
+            if m == "automated":
+                continue
+            cb.configure(state="disabled" if disable else "normal")
+
+    app.default_mode_cbs["automated"].configure(command=update_default_mode_state)
+    update_default_mode_state()
     row += 1
 
     app.default_stat_vars = {stat: tk.BooleanVar(value=True) for stat in ALL_STATS}
