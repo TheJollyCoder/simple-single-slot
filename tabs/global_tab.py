@@ -25,6 +25,16 @@ def build_global_tab(app):
     )
     wipe_combo.grid(row=row, column=1, sticky="w", padx=5, pady=2)
     add_tooltip(wipe_combo, "Select or enter wipe name")
+
+    def on_wipe_change(_=None):
+        app.settings["current_wipe"] = app.wipe_var.get() or "default"
+        ensure_wipe_dir(app.settings["current_wipe"])
+        app.progress = load_progress(app.settings["current_wipe"])
+        refresh_species_dropdown(app)
+
+    wipe_combo.bind("<<ComboboxSelected>>", on_wipe_change)
+    wipe_combo.bind("<Return>", on_wipe_change)
+    wipe_combo.bind("<FocusOut>", on_wipe_change)
     row += 1
     ttk.Label(app.tab_global, text="Hotkey Scan", font=FONT).grid(
         row=row, column=0, sticky="w", padx=5, pady=2
@@ -62,7 +72,7 @@ def build_global_tab(app):
 
     app.auto_eat_var = tk.BooleanVar(value=app.settings.get("auto_eat_enabled", False))
     cb_auto = ttk.Checkbutton(app.tab_global, text="Enable Auto-Eat", variable=app.auto_eat_var)
-    cb_auto.grid(row=row, column=0, columnspan=2, sticky="w", padx=5, pady=2)
+    cb_auto.grid(row=row, column=2, sticky="w", padx=5, pady=2)
     add_tooltip(cb_auto, "Automatically consume food periodically")
     row += 1
 
@@ -115,5 +125,5 @@ def build_global_tab(app):
             app.update_hotkeys()
 
     ttk.Button(app.tab_global, text="Save Settings", command=save_all).grid(
-        row=row, column=0, columnspan=2, pady=10
+        row=row, column=0, columnspan=3, pady=10
     )
