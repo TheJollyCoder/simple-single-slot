@@ -100,6 +100,16 @@ def build_global_tab(app):
         with open("settings.json", "w", encoding="utf-8") as f:
             import json
             json.dump(app.settings, f, indent=2)
+        try:
+            import importlib, logger, scanner, breeding_logic, progress_tracker
+            importlib.reload(logger)
+            scanner.log = logger.get_logger("scanner")
+            breeding_logic.log = logger.get_logger("breeding_logic")
+            breeding_logic.kept_log = logger.get_logger("kept_eggs")
+            breeding_logic.destroyed_log = logger.get_logger("destroyed_eggs")
+            progress_tracker.log = logger.get_logger("progress_tracker")
+        except Exception:
+            pass
         show_info("Saved", "Global settings saved.")
         if hasattr(app, "update_hotkeys"):
             app.update_hotkeys()

@@ -45,6 +45,7 @@ def ensure_species(progress, species):
     """Ensure a species entry exists with all required keys."""
     if species not in progress:
         progress[species] = deepcopy(DEFAULT_PROGRESS_TEMPLATE)
+        log.info(f"Added new species to progress: {species}")
     else:
         for k, v in DEFAULT_PROGRESS_TEMPLATE.items():
             progress[species].setdefault(k, v if isinstance(v, dict) else 0)
