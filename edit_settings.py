@@ -166,7 +166,7 @@ class SettingsEditor(tk.Tk):
         self.tab_species = ttk.Frame(tabs)
         tabs.add(self.tab_species, text="Species Config")
         self.tab_tools = ttk.Frame(tabs)
-        tabs.add(self.tab_tools, text="Defaults & Tools")
+        tabs.add(self.tab_tools, text="Defaults")
         self.tab_progress = ttk.Frame(tabs)
         tabs.add(self.tab_progress, text="Progress")
         self.tab_help = ttk.Frame(tabs)
