@@ -25,7 +25,7 @@ from tabs.global_tab import build_global_tab
 from tabs.species_tab import build_species_tab
 from tabs.tools_tab import build_tools_tab
 from tabs.script_control_tab import build_test_tab
-from tabs.progress_tab import build_progress_tab
+from tabs.progress_tab import build_stats_tab
 from utils.config_validator import validate_configs
 from utils.helpers import refresh_species_dropdown
 
@@ -167,8 +167,8 @@ class SettingsEditor(tk.Tk):
         tabs.add(self.tab_species, text="Species Config")
         self.tab_tools = ttk.Frame(tabs)
         tabs.add(self.tab_tools, text="Defaults")
-        self.tab_progress = ttk.Frame(tabs)
-        tabs.add(self.tab_progress, text="Progress")
+        self.tab_stats = ttk.Frame(tabs)
+        tabs.add(self.tab_stats, text="Studs")
         self.tab_help = ttk.Frame(tabs)
         tabs.add(self.tab_help, text="Help")
 
@@ -176,7 +176,7 @@ class SettingsEditor(tk.Tk):
         build_global_tab(self)
         build_species_tab(self)
         build_tools_tab(self)
-        build_progress_tab(self)
+        build_stats_tab(self)
         from tabs.help_tab import build_help_tab
         build_help_tab(self)
 
