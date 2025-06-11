@@ -269,10 +269,16 @@ class SettingsEditor(tk.Tk):
                 new_species = False
                 if normalized not in progress:
                     new_species = True
-                    if normalized not in self.rules:
-                        self.rules[normalized] = deepcopy(self.settings.get("default_species_template", {}))
-                        with open(RULES_FILE, "w", encoding="utf-8") as f:
-                            json.dump(self.rules, f, indent=2)
+                    # initialize rules entry from the default template and
+                    # ensure automated mode is always enabled
+                    template = deepcopy(self.settings.get("default_species_template", {}))
+                    modes = set(template.get("modes", []))
+                    modes.add("automated")
+                    template["modes"] = list(modes)
+                    self.rules[normalized] = template
+                    config = self.rules[normalized]
+                    with open(RULES_FILE, "w", encoding="utf-8") as f:
+                        json.dump(self.rules, f, indent=2)
 
                 # Step 1: update top‐stats
                 updated_stats = update_top_stats(egg, stats, progress, wipe)
