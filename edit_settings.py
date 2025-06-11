@@ -169,6 +169,8 @@ class SettingsEditor(tk.Tk):
         tabs.add(self.tab_tools, text="Defaults")
         self.tab_stats = ttk.Frame(tabs)
         tabs.add(self.tab_stats, text="Studs")
+        self.tab_stat_list = ttk.Frame(tabs)
+        tabs.add(self.tab_stat_list, text="Stat List")
         self.tab_help = ttk.Frame(tabs)
         tabs.add(self.tab_help, text="Help")
 
@@ -177,6 +179,8 @@ class SettingsEditor(tk.Tk):
         build_species_tab(self)
         build_tools_tab(self)
         build_stats_tab(self)
+        from tabs.stat_list_tab import build_stat_list_tab
+        build_stat_list_tab(self)
         from tabs.help_tab import build_help_tab
         build_help_tab(self)
 
