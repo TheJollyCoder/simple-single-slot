@@ -10,6 +10,9 @@ except FileNotFoundError:
 
 debug_flags = cfg.get("debug_mode", False)
 
+# Default to WARNING so only important events show when debug flags are off
+logging.getLogger().setLevel(logging.WARNING)
+
 def get_logger(module_name: str) -> logging.Logger:
     # if debug_flags is a dict, look up per-module;
     # if it's a bool, apply it to everything.
