@@ -127,8 +127,12 @@ class SettingsEditor(tk.Tk):
         self.create_tabs()
 
         # status indicator at bottom of window
-        self.status_lbl = ttk.Label(self, text="Idle")
-        self.status_lbl.pack(side="bottom", fill="x")
+        self.status_frame = ttk.Frame(self)
+        self.status_icon = tk.Label(self.status_frame, text="\u25CF", fg="gray")
+        self.status_icon.pack(side="left", padx=(5, 2))
+        self.status_lbl = ttk.Label(self.status_frame, text="Idle")
+        self.status_lbl.pack(side="left")
+        self.status_frame.pack(side="bottom", fill="x")
 
         # hotkeys
         self.update_hotkeys(initial=True)
@@ -199,9 +203,12 @@ class SettingsEditor(tk.Tk):
         print(msg)
 
     def update_status(self, msg: str):
-        """Update bottom status label."""
+        """Update bottom status label and colored indicator."""
         if hasattr(self, "status_lbl"):
             self.status_lbl["text"] = msg
+        if hasattr(self, "status_icon"):
+            colors = {"Running": "green", "Paused": "orange", "Stopped": "red"}
+            self.status_icon.config(fg=colors.get(msg, "gray"))
 
     def update_hotkeys(self, initial: bool = False):
         """Refresh global hotkeys based on current settings."""
@@ -365,6 +372,7 @@ class SettingsEditor(tk.Tk):
 
             self.live_running = False
             self.log_message("⏹ Scanning stopped.")
+            self.update_status("Stopped")
             if hasattr(self, "btn_start"):
                 self.btn_start.config(state="normal")
             if hasattr(self, "btn_pause") and hasattr(self, "btn_resume"):
