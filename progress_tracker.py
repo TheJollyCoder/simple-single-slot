@@ -21,6 +21,8 @@ DEFAULT_PROGRESS_TEMPLATE = {
     "stud": {},
     "mutation_stud": {},
     "female_count": 0,
+    "stop_female_count": 0,
+    "stop_top_stat_females": 0,
 }
 
 def get_progress_file(wipe: str = "default") -> str:

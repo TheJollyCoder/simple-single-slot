@@ -9,7 +9,9 @@ FONT = ("Segoe UI", 10)
 import json
 from progress_tracker import normalize_species_name
 import progress_tracker
-DEFAULT_MODES = ["mutations", "all_females", "stat_merge", "top_stat_females", "war", "automated"]
+
+ALWAYS_ON_MODES = ["mutations", "stat_merge"]
+DEFAULT_MODES = ["all_females", "top_stat_females", "war", "automated"]
 ALL_STATS = ["health", "stamina", "weight", "melee", "oxygen", "food"]
 
 def build_species_tab(app):
@@ -35,28 +37,55 @@ def build_species_tab(app):
     add_tooltip(app.species_dropdown, "Select the species whose rules you want to edit")
     row += 1
 
-    # Automatic breeding toggle
+    # ---- Sub-tabs for rules vs automation ----
+    nb = ttk.Notebook(app.tab_species)
+    nb.grid(row=row, column=0, columnspan=4, sticky="nsew", padx=5, pady=5)
+    app.rules_frame = ttk.Frame(nb)
+    app.auto_frame = ttk.Frame(nb)
+    nb.add(app.rules_frame, text="Rules")
+    nb.add(app.auto_frame, text="Auto")
+    row_auto = 0
+    row_rules = 0
+
+    # Automatic breeding variables
     app.auto_var = tk.BooleanVar()
     app.female_count_var = tk.IntVar()
+    app.stop_females_var = tk.IntVar()
+    app.stop_top_var = tk.IntVar()
 
-    def on_count_change(*_):
-        if getattr(app, "_updating_fcount", False):
-            return
+    def on_stop_change(*_):
         species = app.selected_species.get()
         if not species:
             return
-        app.progress.setdefault(species, {}).setdefault("female_count", 0)
-        app.progress[species]["female_count"] = app.female_count_var.get()
+        prog = app.progress.setdefault(species, {})
+        prog["stop_female_count"] = app.stop_females_var.get()
+        prog["stop_top_stat_females"] = app.stop_top_var.get()
         progress_tracker.save_progress(app.progress, app.settings.get("current_wipe", "default"))
-        changed = progress_tracker.adjust_rules_for_females(species, app.progress, app.rules)
-        if changed:
-            with open("rules.json", "w", encoding="utf-8") as f:
-                json.dump(app.rules, f, indent=2)
-            app._updating_fcount = True
-            load_species_config(app)
-            app._updating_fcount = False
 
-    app.female_count_var.trace_add("write", on_count_change)
+    app.stop_females_var.trace_add("write", on_stop_change)
+    app.stop_top_var.trace_add("write", on_stop_change)
+
+    # List of all species with auto toggle
+    app.auto_species_vars = {}
+    list_frame = ttk.LabelFrame(app.auto_frame, text="Species List")
+    list_frame.grid(row=row_auto, column=3, rowspan=6, sticky="nw", padx=10)
+    for i, sp in enumerate(app.species_list):
+        var = tk.BooleanVar(value="automated" in app.rules.get(sp, {}).get("modes", []))
+        def _make_toggle(sp=sp, var=var):
+            def _toggle():
+                modes = set(app.rules.get(sp, {}).get("modes", []))
+                if var.get():
+                    modes.add("automated")
+                else:
+                    modes.discard("automated")
+                app.rules.setdefault(sp, {})["modes"] = list(modes)
+                with open("rules.json", "w", encoding="utf-8") as f:
+                    json.dump(app.rules, f, indent=2)
+            return _toggle
+        cb = ttk.Checkbutton(list_frame, text=sp, variable=var, command=_make_toggle())
+        cb.grid(row=i, column=0, sticky="w")
+        app.auto_species_vars[sp] = var
+
 
     def on_auto_toggle():
         species = app.selected_species.get()
@@ -65,55 +94,48 @@ def build_species_tab(app):
             app.auto_var.set(False)
             return
         if app.auto_var.get():
-            count = simpledialog.askinteger(
-                "Female count",
-                "Enter current female count",
-                initialvalue=1,
-                parent=app.tab_species,
-            )
-            if count is None:
-                app.auto_var.set(False)
-                return
-            app.female_count_var.set(count)
             app.mode_vars["automated"].set(True)
         else:
             app.mode_vars["automated"].set(False)
         update_mode_state()
 
     auto_cb = ttk.Checkbutton(
-        app.tab_species,
+        app.auto_frame,
         text="Automatic breeding",
         variable=app.auto_var,
         command=on_auto_toggle,
     )
-    auto_cb.grid(row=row, column=0, sticky="w", padx=5, pady=2)
+    auto_cb.grid(row=row_auto, column=0, sticky="w", padx=5, pady=2)
     add_tooltip(auto_cb, "Enable automated rule adjustments")
 
-    count_spin = ttk.Spinbox(
-        app.tab_species,
-        textvariable=app.female_count_var,
-        from_=0,
-        to=999,
-        width=5,
-    )
-    count_spin.grid(row=row, column=1, sticky="w", padx=5, pady=2)
-    add_tooltip(count_spin, "Current female count")
-    row += 1
+    ttk.Label(app.auto_frame, text="Current females:").grid(row=row_auto, column=1, sticky="e", padx=5)
+    count_lbl = ttk.Label(app.auto_frame, textvariable=app.female_count_var)
+    count_lbl.grid(row=row_auto, column=2, sticky="w", padx=5)
+    row_auto += 1
+
+    ttk.Label(app.auto_frame, text="Stop at females:").grid(row=row_auto, column=0, sticky="e", padx=5)
+    stop_spin = ttk.Spinbox(app.auto_frame, textvariable=app.stop_females_var, from_=0, to=999, width=5)
+    stop_spin.grid(row=row_auto, column=1, sticky="w", padx=5)
+    row_auto += 1
+
+    ttk.Label(app.auto_frame, text="Stop at top-stat females:").grid(row=row_auto, column=0, sticky="e", padx=5)
+    stop_top_spin = ttk.Spinbox(app.auto_frame, textvariable=app.stop_top_var, from_=0, to=999, width=5)
+    stop_top_spin.grid(row=row_auto, column=1, sticky="w", padx=5)
+    row_auto += 1
 
     # Checkbox vars
     app.mode_vars = {mode: tk.BooleanVar() for mode in DEFAULT_MODES}
     app.stat_vars = {stat: tk.BooleanVar() for stat in ALL_STATS}
     app.mutation_stat_vars = {stat: tk.BooleanVar() for stat in ALL_STATS}
 
-    # Placeholders for load/save buttons (now optional)
-    ttk.Label(app.tab_species, text="Enabled Modes:", font=FONT).grid(
-        row=row, column=0, sticky="nw", padx=5, pady=2
+    ttk.Label(app.rules_frame, text="Enabled Modes:", font=FONT).grid(
+        row=row_rules, column=0, sticky="nw", padx=5, pady=2
     )
     col = 1
     app.mode_cbs = {}
     for mode in DEFAULT_MODES:
-        cb = ttk.Checkbutton(app.tab_species, text=mode, variable=app.mode_vars[mode])
-        cb.grid(row=row, column=col, sticky="w", padx=5, pady=2)
+        cb = ttk.Checkbutton(app.rules_frame, text=mode, variable=app.mode_vars[mode])
+        cb.grid(row=row_rules, column=col, sticky="w", padx=5, pady=2)
         add_tooltip(cb, f"Enable the {mode} mode for this species")
         app.mode_cbs[mode] = cb
         col += 1
@@ -127,36 +149,36 @@ def build_species_tab(app):
 
     app.mode_cbs["automated"].configure(command=update_mode_state)
     update_mode_state()
-    row += 1
+    row_rules += 1
 
-    ttk.Label(app.tab_species, text="Shared Stats (merge/top/war):", font=FONT).grid(
-        row=row, column=0, sticky="nw", padx=5, pady=(10, 2)
+    ttk.Label(app.rules_frame, text="Shared Stats (merge/top/war):", font=FONT).grid(
+        row=row_rules, column=0, sticky="nw", padx=5, pady=(10, 2)
     )
-    sf = ttk.Frame(app.tab_species)
-    sf.grid(row=row, column=1, columnspan=3, sticky="w")
+    sf = ttk.Frame(app.rules_frame)
+    sf.grid(row=row_rules, column=1, columnspan=3, sticky="w")
     for i, stat in enumerate(ALL_STATS):
         cb = ttk.Checkbutton(sf, text=stat, variable=app.stat_vars[stat])
         cb.grid(row=i//3, column=i%3, sticky="w", padx=5, pady=1)
         add_tooltip(cb, f"Track {stat} when merging or rating dinos")
-    row += 1
+    row_rules += 1
 
-    ttk.Label(app.tab_species, text="Mutation Stats:", font=FONT).grid(
-        row=row, column=0, sticky="nw", padx=5, pady=(10, 2)
+    ttk.Label(app.rules_frame, text="Mutation Stats:", font=FONT).grid(
+        row=row_rules, column=0, sticky="nw", padx=5, pady=(10, 2)
     )
-    mf = ttk.Frame(app.tab_species)
-    mf.grid(row=row, column=1, columnspan=3, sticky="w")
+    mf = ttk.Frame(app.rules_frame)
+    mf.grid(row=row_rules, column=1, columnspan=3, sticky="w")
     for i, stat in enumerate(ALL_STATS):
         cb = ttk.Checkbutton(mf, text=stat, variable=app.mutation_stat_vars[stat])
         cb.grid(row=i//3, column=i%3, sticky="w", padx=5, pady=1)
         add_tooltip(cb, f"Monitor mutations affecting {stat}")
-    row += 1
+    row_rules += 1
 
     # Optional manual save button (can hide if you don't need it)
-    ttk.Button(app.tab_species, text="Save Species Config", command=lambda: save_species_config(app)).grid(
-        row=row, column=0, pady=10
+    ttk.Button(app.rules_frame, text="Save Species Config", command=lambda: save_species_config(app)).grid(
+        row=row_rules, column=0, pady=10
     )
-    ttk.Button(app.tab_species, text="Delete Species", command=lambda: delete_species(app)).grid(
-        row=row, column=1, pady=10
+    ttk.Button(app.rules_frame, text="Delete Species", command=lambda: delete_species(app)).grid(
+        row=row_rules, column=1, pady=10
     )
 
     def on_species_select(event):
@@ -164,8 +186,10 @@ def build_species_tab(app):
         # autosave previous species
         old = app._last_species
         if old:
+            rule_modes = [m for m, var in app.mode_vars.items() if var.get()]
+            rule_modes.extend(ALWAYS_ON_MODES)
             rule = {
-                "modes": [m for m, var in app.mode_vars.items() if var.get()],
+                "modes": rule_modes,
                 "mutation_stats": [s for s, var in app.mutation_stat_vars.items() if var.get()],
                 "stat_merge_stats": [s for s, var in app.stat_vars.items() if var.get()],
                 "top_stat_females_stats": [s for s, var in app.stat_vars.items() if var.get()],
@@ -187,10 +211,12 @@ def load_species_config(app):
     for mode in DEFAULT_MODES:
         app.mode_vars[mode].set(mode in rule.get("modes", []))
     app.auto_var.set("automated" in rule.get("modes", []))
+    if s in app.auto_species_vars:
+        app.auto_species_vars[s].set(app.auto_var.get())
     count = app.progress.get(s, {}).get("female_count", 0)
-    app._updating_fcount = True
     app.female_count_var.set(count)
-    app._updating_fcount = False
+    app.stop_females_var.set(app.progress.get(s, {}).get("stop_female_count", 0))
+    app.stop_top_var.set(app.progress.get(s, {}).get("stop_top_stat_females", 0))
     for stat in ALL_STATS:
         app.stat_vars[stat].set(stat in rule.get("stat_merge_stats", []))
         app.mutation_stat_vars[stat].set(stat in rule.get("mutation_stats", []))
@@ -208,8 +234,10 @@ def save_species_config(app):
     if not s:
         show_warning("No species", "Select a species first.")
         return
+    modes = [m for m, var in app.mode_vars.items() if var.get()]
+    modes.extend(ALWAYS_ON_MODES)
     app.rules[s] = {
-        "modes": [m for m, var in app.mode_vars.items() if var.get()],
+        "modes": modes,
         "mutation_stats": [s for s, var in app.mutation_stat_vars.items() if var.get()],
         "stat_merge_stats": [s for s, var in app.stat_vars.items() if var.get()],
         "top_stat_females_stats": [s for s, var in app.stat_vars.items() if var.get()],

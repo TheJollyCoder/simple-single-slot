@@ -33,6 +33,8 @@ def should_keep_egg(scan, rules, progress):
 
     # determine effective modes, accounting for automated logic
     enabled = set(rules.get("modes", []))
+    # mutations and stat_merge are always active
+    enabled.update({"mutations", "stat_merge"})
     count = progress.get(species, {}).get("female_count", 0)
     enabled = apply_automated_modes(count, enabled)
 
