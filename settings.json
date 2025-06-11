@@ -14,6 +14,7 @@
   "hotkey_scan": "F8",
   "auto_eat_enabled": false,
   "webhook_url": "",
+  "bot_token": "",
   "debug_mode": false,
   "drop_all_button": [
     495,

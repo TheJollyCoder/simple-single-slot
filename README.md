@@ -33,3 +33,13 @@ pytest
 - **`dump_structure.py`** – Writes a text representation of the repository tree for debugging.
 
 Other modules implement breeding logic and progress tracking used by these scripts.
+
+## Discord Bot
+
+`discord_bot.py` implements a small Discord bot that can control the game and report breeding progress. Set your bot token in `settings.json` under the `bot_token` key or provide it via the `DISCORD_BOT_TOKEN` environment variable. Start the bot with:
+
+```bash
+python discord_bot.py
+```
+
+Once running you can use commands like `!dropall`, `!eatfood`, and `!progress <species>` in your Discord channel. The Progress tab will also use this token when sending summaries.

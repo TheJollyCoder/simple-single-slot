@@ -95,17 +95,12 @@ def build_progress_tab(app):
         msg = "\n".join(lines)
         app.clipboard_clear()
         app.clipboard_append(msg)
-        url = app.settings.get("webhook_url", "")
-        if url:
-            try:
-                import urllib.request
-                req = urllib.request.Request(url, data=json.dumps({"content": msg}).encode("utf-8"), headers={"Content-Type": "application/json"})
-                urllib.request.urlopen(req)
-                show_info("Sent", "Summary sent to Discord and copied to clipboard.")
-            except Exception as e:
-                show_error("Error", str(e))
-        else:
-            show_info("Copied", "Summary copied to clipboard.")
+        try:
+            from discord_bot import send_progress_message
+            send_progress_message(msg)
+            show_info("Sent", "Summary sent to Discord and copied to clipboard.")
+        except Exception as e:
+            show_error("Error", str(e))
 
     btn_frame = ttk.Frame(app.tab_progress)
     btn_frame.grid(row=row, column=0, columnspan=3, padx=5, pady=5, sticky="w")
