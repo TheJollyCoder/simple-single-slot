@@ -3,6 +3,8 @@ from tkinter import ttk, scrolledtext
 import time
 from scanner import scan_slot
 from utils.helpers import add_tooltip
+from utils.calibration import run_calibration as calibration_wizard
+from utils.dialogs import show_error
 
 FONT = ("Segoe UI", 10)
 
@@ -52,6 +54,10 @@ def build_test_tab(app):
     btn_clear = ttk.Button(app.tab_test, text="Clear Log", command=lambda: clear_log(app))
     btn_clear.pack(pady=(0, 10))
     add_tooltip(btn_clear, "Erase all entries from the log viewer")
+
+    btn_cal = ttk.Button(app.tab_test, text="Run Calibration", command=run_calibration)
+    btn_cal.pack(pady=(0, 10))
+    add_tooltip(btn_cal, "Launch the calibration tool to record screen positions")
 
     ttk.Label(app.tab_test, text="Testing Utilities", font=(FONT[0], FONT[1], "bold")).pack(pady=(20, 2))
     btn = ttk.Button(app.tab_test, text="Force KEEP (Real Logic)", command=app.keep_egg)
@@ -121,4 +127,11 @@ def clear_log(app):
         app.log_widget.configure(state="normal")
         app.log_widget.delete("1.0", "end")
         app.log_widget.configure(state="disabled")
+
+def run_calibration():
+    """Launch the calibration wizard inside the application."""
+    try:
+        calibration_wizard()
+    except Exception as e:
+        show_error("Error", str(e))
 
