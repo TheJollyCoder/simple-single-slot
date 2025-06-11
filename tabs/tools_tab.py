@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from utils.dialogs import show_error, show_warning, show_info
 import json
-import subprocess
+from utils.calibration import run_calibration as calibration_wizard
 from utils.helpers import refresh_species_dropdown, add_tooltip
 from copy import deepcopy
 
@@ -102,8 +102,9 @@ def build_tools_tab(app):
     add_tooltip(btn, "Persist these defaults for future species")
 
 def run_calibration():
+    """Launch the calibration wizard inside the application."""
     try:
-        subprocess.run(["python", "setup_positions.py"], check=True)
+        calibration_wizard()
     except Exception as e:
         show_error("Error", str(e))
 
