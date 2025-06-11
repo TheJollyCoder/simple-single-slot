@@ -28,7 +28,7 @@ Relevant excerpt from `adjust_rules_for_females`:
 
 ```python
 if "automated" in modes:
-    if count < 30:
+    if count < 15:
         modes.update({"mutations", "stat_merge", "all_females"})
         modes.discard("top_stat_females")
     elif count < 96:
