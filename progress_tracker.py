@@ -237,7 +237,7 @@ def apply_automated_modes(female_count, modes):
     if "automated" not in modes:
         return modes
 
-    if female_count < 30:
+    if female_count < 15:
         modes.update({"mutations", "stat_merge", "all_females"})
         modes.discard("top_stat_females")
     elif female_count < 96:

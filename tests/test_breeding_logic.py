@@ -123,7 +123,7 @@ class ShouldKeepEggTests(TestCase):
         self.assertEqual(decision, "rescan")
         self.assertEqual(res["_debug"]["final"], "rescan")
 
-    def test_automated_all_females_under_30(self):
+    def test_automated_all_females_under_15(self):
         scan = {"egg": "CS Test Female", "sex": "female", "stats": {}}
         rules = {"modes": ["automated"]}
         progress = {"TestDino": {"female_count": 10}}
