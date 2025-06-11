@@ -37,6 +37,27 @@ def build_species_tab(app):
 
     # Automatic breeding toggle
     app.auto_var = tk.BooleanVar()
+    app.female_count_var = tk.IntVar()
+
+    def on_count_change(*_):
+        if getattr(app, "_updating_fcount", False):
+            return
+        species = app.selected_species.get()
+        if not species:
+            return
+        app.progress.setdefault(species, {}).setdefault("female_count", 0)
+        app.progress[species]["female_count"] = app.female_count_var.get()
+        progress_tracker.save_progress(app.progress, app.settings.get("current_wipe", "default"))
+        changed = progress_tracker.adjust_rules_for_females(species, app.progress, app.rules)
+        if changed:
+            with open("rules.json", "w", encoding="utf-8") as f:
+                json.dump(app.rules, f, indent=2)
+            app._updating_fcount = True
+            load_species_config(app)
+            app._updating_fcount = False
+
+    app.female_count_var.trace_add("write", on_count_change)
+
     def on_auto_toggle():
         species = app.selected_species.get()
         if not species:
@@ -53,9 +74,7 @@ def build_species_tab(app):
             if count is None:
                 app.auto_var.set(False)
                 return
-            app.progress.setdefault(species, {}).setdefault("female_count", 0)
-            app.progress[species]["female_count"] = count
-            progress_tracker.save_progress(app.progress, app.settings.get("current_wipe", "default"))
+            app.female_count_var.set(count)
             app.mode_vars["automated"].set(True)
         else:
             app.mode_vars["automated"].set(False)
@@ -67,8 +86,18 @@ def build_species_tab(app):
         variable=app.auto_var,
         command=on_auto_toggle,
     )
-    auto_cb.grid(row=row, column=0, columnspan=2, sticky="w", padx=5, pady=2)
+    auto_cb.grid(row=row, column=0, sticky="w", padx=5, pady=2)
     add_tooltip(auto_cb, "Enable automated rule adjustments")
+
+    count_spin = ttk.Spinbox(
+        app.tab_species,
+        textvariable=app.female_count_var,
+        from_=0,
+        to=999,
+        width=5,
+    )
+    count_spin.grid(row=row, column=1, sticky="w", padx=5, pady=2)
+    add_tooltip(count_spin, "Current female count")
     row += 1
 
     # Checkbox vars
@@ -158,6 +187,10 @@ def load_species_config(app):
     for mode in DEFAULT_MODES:
         app.mode_vars[mode].set(mode in rule.get("modes", []))
     app.auto_var.set("automated" in rule.get("modes", []))
+    count = app.progress.get(s, {}).get("female_count", 0)
+    app._updating_fcount = True
+    app.female_count_var.set(count)
+    app._updating_fcount = False
     for stat in ALL_STATS:
         app.stat_vars[stat].set(stat in rule.get("stat_merge_stats", []))
         app.mutation_stat_vars[stat].set(stat in rule.get("mutation_stats", []))
