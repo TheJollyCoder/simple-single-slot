@@ -49,6 +49,10 @@ def build_test_tab(app):
     app.log_widget = scrolledtext.ScrolledText(app.tab_test, height=15, state="disabled")
     app.log_widget.pack(fill="both", expand=True, padx=5, pady=5)
 
+    btn_clear = ttk.Button(app.tab_test, text="Clear Log", command=lambda: clear_log(app))
+    btn_clear.pack(pady=(0, 10))
+    add_tooltip(btn_clear, "Erase all entries from the log viewer")
+
     ttk.Label(app.tab_test, text="Testing Utilities", font=(FONT[0], FONT[1], "bold")).pack(pady=(20, 2))
     btn = ttk.Button(app.tab_test, text="Force KEEP (Real Logic)", command=app.keep_egg)
     btn.pack(pady=5)
@@ -109,4 +113,12 @@ def test_scan_egg(app):
         import pyautogui
         pyautogui.doubleClick(app.settings["slot_x"], app.settings["slot_y"])
         print("✔ Egg auto-kept via double-click")
+
+
+def clear_log(app):
+    """Remove all text from the on-screen log widget."""
+    if hasattr(app, "log_widget"):
+        app.log_widget.configure(state="normal")
+        app.log_widget.delete("1.0", "end")
+        app.log_widget.configure(state="disabled")
 
