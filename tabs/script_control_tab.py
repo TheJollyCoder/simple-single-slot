@@ -88,20 +88,22 @@ def test_scan_egg(app):
     wipe = app.settings.get("current_wipe", "default")
     progress = load_progress(wipe)
 
-    update_top_stats(egg, stats, progress, wipe)
-    update_mutation_thresholds(egg, stats, config, progress, sex, wipe)
+    updated_stats = update_top_stats(egg, stats, progress, wipe)
+    updated_thresholds = update_mutation_thresholds(egg, stats, config, progress, sex, wipe)
+    updated_stud = False
+    updated_mutation_stud = False
     if sex == "male":
-        update_stud(egg, stats, config, progress)
-        update_mutation_stud(egg, stats, config, progress)
+        updated_stud = update_stud(egg, stats, config, progress)
+        updated_mutation_stud = update_mutation_stud(egg, stats, config, progress)
 
     scan.update({
         "egg": egg,
         "sex": sex,
         "stats": stats,
-        "updated_stats": update_top_stats(egg, stats, progress, wipe),
-        "updated_thresholds": update_mutation_thresholds(egg, stats, config, progress, sex, wipe),
-        "updated_stud": update_stud(egg, stats, config, progress) if sex == "male" else False,
-        "updated_mutation_stud": update_mutation_stud(egg, stats, config, progress) if sex == "male" else False
+        "updated_stats": updated_stats,
+        "updated_thresholds": updated_thresholds,
+        "updated_stud": updated_stud,
+        "updated_mutation_stud": updated_mutation_stud,
     })
 
     decision, reasons = should_keep_egg(scan, config, progress)
