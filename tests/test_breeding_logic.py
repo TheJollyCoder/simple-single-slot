@@ -34,7 +34,9 @@ class ShouldKeepEggTests(TestCase):
             decision, res = breeding_logic.should_keep_egg(scan, rules, progress)
         self.assertEqual(decision, "keep")
         self.assertTrue(res["mutations"])
-        self.assertIn("KEPT", self.keep_stream.getvalue())
+        log_msg = self.keep_stream.getvalue()
+        self.assertIn("KEPT", log_msg)
+        self.assertIn("mutations:", log_msg)
         self.assertEqual("", self.destroy_stream.getvalue())
 
     def test_mutations_keep_better_base_same_mut(self):
@@ -54,7 +56,9 @@ class ShouldKeepEggTests(TestCase):
             decision, res = breeding_logic.should_keep_egg(scan, rules, progress)
         self.assertEqual(decision, "keep")
         self.assertTrue(res["mutations"])
-        self.assertIn("KEPT", self.keep_stream.getvalue())
+        log_msg = self.keep_stream.getvalue()
+        self.assertIn("KEPT", log_msg)
+        self.assertIn("mutations:", log_msg)
 
     def test_all_females_keep(self):
         scan = {"egg": "CS Test Female", "sex": "female", "stats": {}}
@@ -64,7 +68,9 @@ class ShouldKeepEggTests(TestCase):
             decision, res = breeding_logic.should_keep_egg(scan, rules, progress)
         self.assertEqual(decision, "keep")
         self.assertTrue(res["all_females"])
-        self.assertIn("KEPT", self.keep_stream.getvalue())
+        log_msg = self.keep_stream.getvalue()
+        self.assertIn("KEPT", log_msg)
+        self.assertIn("all_females:", log_msg)
 
     def test_stat_merge_keep(self):
         scan = {"egg": "CS Test Male", "sex": "male", "stats": {}, "updated_stud": True}
@@ -74,7 +80,9 @@ class ShouldKeepEggTests(TestCase):
             decision, res = breeding_logic.should_keep_egg(scan, rules, progress)
         self.assertEqual(decision, "keep")
         self.assertTrue(res["stat_merge"])
-        self.assertIn("KEPT", self.keep_stream.getvalue())
+        log_msg = self.keep_stream.getvalue()
+        self.assertIn("KEPT", log_msg)
+        self.assertIn("stat_merge:", log_msg)
 
     def test_top_stat_females_keep(self):
         scan = {
@@ -88,7 +96,9 @@ class ShouldKeepEggTests(TestCase):
             decision, res = breeding_logic.should_keep_egg(scan, rules, progress)
         self.assertEqual(decision, "keep")
         self.assertTrue(res["top_stat_females"])
-        self.assertIn("KEPT", self.keep_stream.getvalue())
+        log_msg = self.keep_stream.getvalue()
+        self.assertIn("KEPT", log_msg)
+        self.assertIn("top_stat_females:", log_msg)
 
     def test_war_keep(self):
         scan = {
@@ -102,7 +112,9 @@ class ShouldKeepEggTests(TestCase):
             decision, res = breeding_logic.should_keep_egg(scan, rules, progress)
         self.assertEqual(decision, "keep")
         self.assertTrue(res["war"])
-        self.assertIn("KEPT", self.keep_stream.getvalue())
+        log_msg = self.keep_stream.getvalue()
+        self.assertIn("KEPT", log_msg)
+        self.assertIn("war:", log_msg)
 
     def test_auto_destroy_female_without_modes(self):
         scan = {"egg": "CS Test Female", "sex": "female", "stats": {}}
@@ -131,6 +143,8 @@ class ShouldKeepEggTests(TestCase):
             decision, res = breeding_logic.should_keep_egg(scan, rules, progress)
         self.assertEqual(decision, "keep")
         self.assertTrue(res["all_females"])
+        log_msg = self.keep_stream.getvalue()
+        self.assertIn("all_females:", log_msg)
 
     def test_automated_top_stat_range(self):
         scan = {
@@ -144,6 +158,8 @@ class ShouldKeepEggTests(TestCase):
             decision, res = breeding_logic.should_keep_egg(scan, rules, progress)
         self.assertEqual(decision, "keep")
         self.assertTrue(res["top_stat_females"])
+        log_msg = self.keep_stream.getvalue()
+        self.assertIn("top_stat_females:", log_msg)
 
     def test_automated_high_count_no_female_modes(self):
         scan = {"egg": "CS Test Female", "sex": "female", "stats": {}}
