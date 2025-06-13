@@ -354,7 +354,13 @@ class SettingsEditor(tk.Tk):
                 for k, v in reasons.items():
                     if k != "_debug" and v:
                         self.log_message(f"  ✔ {k}")
-                if "_debug" in reasons:
+                debug_cfg = self.settings.get("debug_mode", False)
+                debug_enabled = (
+                    debug_cfg.get("breeding_logic", False)
+                    if isinstance(debug_cfg, dict)
+                    else bool(debug_cfg)
+                )
+                if debug_enabled and "_debug" in reasons:
                     for k, v in reasons["_debug"].items():
                         self.log_message(f"    debug[{k}]: {v}")
 
