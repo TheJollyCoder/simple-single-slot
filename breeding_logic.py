@@ -186,8 +186,13 @@ def should_keep_egg(scan, rules, progress):
     result["_debug"]["final"] = decision
 
     if decision == "keep":
-        triggers = [k for k, v in result.items() if k != "_debug" and v]
-        kept_log.info(f"Egg {egg} KEPT | reasons: {', '.join(triggers)}")
+        details = []
+        for rule, passed in result.items():
+            if rule == "_debug" or not passed:
+                continue
+            reason = result["_debug"].get(rule, "")
+            details.append(f"{rule}: {reason}")
+        kept_log.info(f"Egg {egg} KEPT | {'; '.join(details)}")
     else:
         details = [f"{k}:{v}" for k, v in result["_debug"].items() if k != "final"]
         destroyed_log.info(f"Egg {egg} DESTROYED | details: {'; '.join(details)}")
