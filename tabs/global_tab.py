@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from utils.dialogs import show_info
+import keyboard
 from progress_tracker import ensure_wipe_dir, load_progress
 import os
 
@@ -43,6 +44,23 @@ def build_global_tab(app):
     entry = ttk.Entry(app.tab_global, textvariable=app.hotkey_var, width=10)
     entry.grid(row=row, column=1, sticky="w", padx=5, pady=2)
     add_tooltip(entry, "Keyboard key that triggers the live scan loop")
+
+    def record_hotkey():
+        win = tk.Toplevel(app)
+        win.title("Record Hotkey")
+        ttk.Label(win, text="Press a key...", padding=20).pack()
+        win.attributes("-topmost", True)
+        win.update()
+        key = keyboard.read_key()
+        win.destroy()
+        app.hotkey_var.set(key)
+        app.settings["hotkey_scan"] = key
+        if hasattr(app, "update_hotkeys"):
+            app.update_hotkeys()
+
+    btn_rec = ttk.Button(app.tab_global, text="Record Hotkey", command=record_hotkey)
+    btn_rec.grid(row=row, column=2, sticky="w", padx=5, pady=2)
+    add_tooltip(btn_rec, "Click then press a key to set the scan hotkey")
     row += 1
 
     for delay_key in ["popup_delay", "action_delay", "scan_loop_delay"]:

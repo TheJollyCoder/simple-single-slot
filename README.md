@@ -32,6 +32,8 @@ pytest
 - **`setup_positions.py`** – Interactive helper to record screen coordinates and regions of interest.
 - **`dump_structure.py`** – Writes a text representation of the repository tree for debugging.
 
+The Global Settings tab also provides a **Record Hotkey** button next to the scan hotkey field to capture a key press automatically.
+
 Other modules implement breeding logic and progress tracking used by these scripts.
 
 ## Discord Bot

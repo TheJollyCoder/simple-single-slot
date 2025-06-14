@@ -32,6 +32,15 @@ def wait_and_record_gui(prompt: str, root: tk.Tk | None = None):
     return x, y
 
 
+def record_hotkey_gui(prompt: str, root: tk.Tk | None = None) -> str:
+    """Display ``prompt`` and return the key pressed."""
+    win = _popup(prompt, root)
+    key = keyboard.read_key()
+    win.destroy()
+    time.sleep(0.2)
+    return key
+
+
 def draw_roi(prompt: str, img):
     """Display ``img`` and let the user draw a rectangle."""
     cv2.namedWindow(prompt, cv2.WINDOW_NORMAL)
@@ -83,7 +92,10 @@ def run_calibration(root: tk.Tk | None = None) -> dict:
         r["y"] += py_
         stat_rois[stat] = r
 
-    hk = simpledialog.askstring("Hotkey", "Enter scan hotkey:", parent=root) or "F8"
+    if messagebox.askyesno("Hotkey", "Record scan hotkey now?", parent=root):
+        hk = record_hotkey_gui("Press desired hotkey", root)
+    else:
+        hk = simpledialog.askstring("Hotkey", "Enter scan hotkey:", parent=root) or "F8"
     pd = simpledialog.askstring("Popup Delay", "Popup delay sec:", parent=root)
     popup_delay = float(pd) if pd else 0.25
     ad = simpledialog.askstring("Action Delay", "Action delay sec:", parent=root)
