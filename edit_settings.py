@@ -211,8 +211,16 @@ class SettingsEditor(tk.Tk):
         if hasattr(self, "status_lbl"):
             self.status_lbl["text"] = msg
         if hasattr(self, "status_icon"):
-            colors = {"Running": "green", "Paused": "orange", "Stopped": "red"}
+            colors = {"Running": "green", "Paused": "orange", "Stopped": "red", "Saved": "blue"}
             self.status_icon.config(fg=colors.get(msg, "gray"))
+
+    def flash_status(self, msg: str, duration: int = 2) -> None:
+        """Temporarily show a status message then revert to Idle."""
+        self.update_status(msg)
+        try:
+            self.after(int(duration * 1000), lambda: self.update_status("Idle"))
+        except Exception:
+            pass
 
     def update_hotkeys(self, initial: bool = False):
         """Refresh global hotkeys based on current settings."""

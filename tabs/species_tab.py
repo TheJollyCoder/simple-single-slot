@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 from tkinter import simpledialog
-from utils.dialogs import show_error, show_warning, show_info
+from utils.dialogs import show_error, show_warning
 
 from utils.helpers import refresh_species_dropdown, add_tooltip
 
@@ -245,7 +245,8 @@ def save_species_config(app):
     }
     with open("rules.json", "w", encoding="utf-8") as f:
         json.dump(app.rules, f, indent=2)
-    show_info("Saved", f"Settings for {s} updated.")
+    if hasattr(app, "flash_status"):
+        app.flash_status("Saved")
 
 def delete_species(app):
     s = app.selected_species.get()
