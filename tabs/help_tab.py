@@ -4,7 +4,7 @@ from tkinter import ttk
 HELP_TEXT = (
     "1. Use 'Run Calibration' on the Tools tab to set screen positions.\n"
     "2. Configure global options and delays in Global Settings.\n"
-    "3. Define per-species rules on the Species Config tab.\n"
+    "3. Use the search box on the Species Config tab to filter and define per-species rules.\n"
     "4. Press the configured hotkey or click Start to begin scanning.\n"
     "5. Script Control provides manual tests and logs."
 )
