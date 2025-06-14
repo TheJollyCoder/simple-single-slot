@@ -1,6 +1,5 @@
 import tkinter as tk
 from tkinter import ttk
-from utils.dialogs import show_info
 from progress_tracker import ensure_wipe_dir, load_progress
 import os
 
@@ -120,9 +119,10 @@ def build_global_tab(app):
             progress_tracker.log = logger.get_logger("progress_tracker")
         except Exception:
             pass
-        show_info("Saved", "Global settings saved.")
         if hasattr(app, "update_hotkeys"):
             app.update_hotkeys()
+        if hasattr(app, "flash_status"):
+            app.flash_status("Saved")
 
     ttk.Button(app.tab_global, text="Save Settings", command=save_all).grid(
         row=row, column=0, columnspan=3, pady=10
