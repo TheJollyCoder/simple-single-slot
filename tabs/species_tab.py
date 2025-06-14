@@ -16,6 +16,15 @@ ALL_STATS = ["health", "stamina", "weight", "melee", "oxygen", "food"]
 
 def build_species_tab(app):
     row = 0
+    ttk.Label(app.tab_species, text="Search:", font=FONT).grid(
+        row=row, column=0, sticky="w", padx=5, pady=2
+    )
+    app.search_var = tk.StringVar()
+    search_entry = ttk.Entry(app.tab_species, textvariable=app.search_var, width=30)
+    search_entry.grid(row=row, column=1, sticky="w", padx=5, pady=2)
+    add_tooltip(search_entry, "Filter the species list")
+    row += 1
+
     ttk.Label(app.tab_species, text="Select Species:", font=FONT).grid(
         row=row, column=0, sticky="w", padx=5, pady=2
     )
@@ -34,7 +43,19 @@ def build_species_tab(app):
         width=30,
     )
     app.species_dropdown.grid(row=row, column=1, sticky="w", padx=5, pady=2)
-    add_tooltip(app.species_dropdown, "Select the species whose rules you want to edit")
+    add_tooltip(app.species_dropdown, "Select the species whose rules you want to edit. Use search to filter")
+
+    def update_species_dropdown(_=None):
+        query = app.search_var.get().lower()
+        if query:
+            values = [s for s in app.species_list if query in s.lower()]
+        else:
+            values = list(app.species_list)
+        app.species_dropdown["values"] = values
+
+    app.update_species_dropdown = update_species_dropdown
+    search_entry.bind("<KeyRelease>", update_species_dropdown)
+    update_species_dropdown()
     row += 1
 
     # ---- Sub-tabs for rules vs automation ----

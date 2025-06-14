@@ -8,10 +8,13 @@ def refresh_species_dropdown(app):
     if hasattr(app, "settings"):
         app.progress = load_progress(app.settings.get("current_wipe", "default"))
     species = sorted(app.progress.keys())
-    if hasattr(app, "species_dropdown"):
-        app.species_dropdown["values"] = species
+    app.species_list = species
     if hasattr(app, "progress_dropdown"):
         app.progress_dropdown["values"] = species
+    if hasattr(app, "update_species_dropdown"):
+        app.update_species_dropdown()
+    elif hasattr(app, "species_dropdown"):
+        app.species_dropdown["values"] = species
 
 
 def add_tooltip(widget, text: str) -> None:
