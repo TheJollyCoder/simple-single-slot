@@ -7,10 +7,25 @@ from collections import Counter
 from logger import get_logger
 log = get_logger("scanner")
 
-import cv2
+try:
+    import cv2  # type: ignore
+except Exception:  # pragma: no cover - handled via OCR_AVAILABLE
+    cv2 = None
+    log.warning("OpenCV (cv2) not available; scanning disabled.")
+
 import numpy as np
-import pytesseract
+
+try:
+    import pytesseract  # type: ignore
+except Exception:  # pragma: no cover - handled via OCR_AVAILABLE
+    pytesseract = None
+    log.warning("pytesseract not available; scanning disabled.")
+
 import pyautogui
+
+OCR_AVAILABLE = cv2 is not None and pytesseract is not None
+if not OCR_AVAILABLE:
+    log.warning("OCR libraries missing. Scanning features will be unavailable.")
 
 def normalize_stat_text(text: str) -> str:
     """Cleanup OCR text for numeric parsing."""
@@ -95,6 +110,9 @@ def ocr_number(img, oem, psm):
 
 def scan_once(settings, debug=False):
     log.debug("scan_once: start")
+    if not OCR_AVAILABLE:
+        log.error("scan_once called but OCR libraries are unavailable")
+        return "ocr_unavailable"
     x, y = settings["slot_x"], settings["slot_y"]
     if not pyautogui.onScreen(x, y):
         log.warning("Slot off-screen, skipping scan.")
@@ -181,9 +199,13 @@ def is_invalid(scan):
 
 def scan_slot(settings, debug=False):
     """OCR a single slot with validation and optional re-scans."""
+    if not OCR_AVAILABLE:
+        log.error("scan_slot called but OCR libraries are unavailable")
+        return "ocr_unavailable"
+
     result = scan_once(settings, debug)
-    if result == "no_egg":
-        return "no_egg"
+    if result in ("no_egg", "ocr_unavailable"):
+        return result
 
     if not is_invalid(result):
         return result

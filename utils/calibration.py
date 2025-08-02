@@ -3,7 +3,12 @@ import time
 import tkinter as tk
 from tkinter import messagebox, simpledialog
 
-import cv2
+try:
+    import cv2  # type: ignore
+except Exception:  # pragma: no cover - calibration not run in tests
+    cv2 = None
+    print("OpenCV (cv2) not available. Calibration features disabled.")
+
 import numpy as np
 import pyautogui
 import keyboard
@@ -34,6 +39,8 @@ def wait_and_record_gui(prompt: str, root: tk.Tk | None = None):
 
 def draw_roi(prompt: str, img):
     """Display ``img`` and let the user draw a rectangle."""
+    if cv2 is None:
+        raise RuntimeError("OpenCV (cv2) is required for ROI drawing")
     cv2.namedWindow(prompt, cv2.WINDOW_NORMAL)
     cv2.setWindowProperty(prompt, cv2.WND_PROP_TOPMOST, 1)
     sw, sh = pyautogui.size()
@@ -46,6 +53,8 @@ def draw_roi(prompt: str, img):
 
 def run_calibration(root: tk.Tk | None = None) -> dict:
     """Interactive calibration with GUI prompts."""
+    if cv2 is None:
+        raise RuntimeError("OpenCV (cv2) is required for calibration")
     messagebox.showinfo(
         "Calibration",
         "Follow the prompts. Move your mouse to the requested location and press F9",
