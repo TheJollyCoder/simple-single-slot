@@ -16,6 +16,7 @@
   "webhook_url": "",
   "bot_token": "",
   "debug_mode": false,
+  "monitored_scan": true,
   "drop_all_button": [
     495,
     196

@@ -24,7 +24,7 @@ from progress_tracker import (
 from tabs.global_tab import build_global_tab
 from tabs.species_tab import build_species_tab
 from tabs.tools_tab import build_tools_tab
-from tabs.script_control_tab import build_test_tab
+from tabs.script_control_tab import build_test_tab, prompt_new_species
 from tabs.progress_tab import build_stats_tab
 from utils.config_validator import validate_configs
 from utils.helpers import refresh_species_dropdown
@@ -280,24 +280,31 @@ class SettingsEditor(tk.Tk):
                 sex = "female" if "female" in egg.lower() else "male"
                 normalized = normalize_species_name(egg)
 
-                config = self.rules.get(
-                    normalized, self.settings.get("default_species_template", {})
-                )
+                config = self.rules.get(normalized)
                 wipe = self.settings.get("current_wipe", "default")
                 progress = load_progress(wipe)
                 new_species = False
-                if normalized not in progress:
+                if config is None:
                     new_species = True
-                    # initialize rules entry from the default template and
-                    # ensure automated mode is always enabled
-                    template = deepcopy(self.settings.get("default_species_template", {}))
-                    modes = set(template.get("modes", []))
+                    if self.settings.get("monitored_scan", True):
+                        self.log_message(f"⏸ New species detected: {normalized}")
+                        self.scanning_paused = True
+                        self.update_status("Paused")
+                        cfg = prompt_new_species(self, normalized)
+                        self.scanning_paused = False
+                        self.update_status("Running")
+                        if cfg is None:
+                            cfg = deepcopy(self.settings.get("default_species_template", {}))
+                    else:
+                        cfg = deepcopy(self.settings.get("default_species_template", {}))
+                    modes = set(cfg.get("modes", []))
                     modes.add("automated")
-                    template["modes"] = list(modes)
-                    self.rules[normalized] = template
-                    config = self.rules[normalized]
+                    cfg["modes"] = list(modes)
+                    self.rules[normalized] = cfg
+                    config = cfg
                     with open(RULES_FILE, "w", encoding="utf-8") as f:
                         json.dump(self.rules, f, indent=2)
+                    self.log_message(f"✔ Added {normalized} to rules")
 
                 # Step 1: decide keep/destroy
                 decision, reasons = should_keep_egg(

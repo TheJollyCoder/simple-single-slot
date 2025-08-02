@@ -34,6 +34,15 @@ pytest
 
 Other modules implement breeding logic and progress tracking used by these scripts.
 
+## Monitored Scan
+
+The `settings.json` file includes a `monitored_scan` option. When enabled, the live
+scan loop pauses upon encountering a species not listed in `rules.json` and asks
+which modes and stats to track. The chosen configuration is saved and scanning
+resumes. If disabled, new species are added automatically using the default
+species template without interrupting the loop. The setting can be toggled from
+the Global tab of the settings editor.
+
 ## Discord Bot
 
 `discord_bot.py` implements a small Discord bot that can control the game and report breeding progress. Set your bot token in `settings.json` under the `bot_token` key or provide it via the `DISCORD_BOT_TOKEN` environment variable. Start the bot with:

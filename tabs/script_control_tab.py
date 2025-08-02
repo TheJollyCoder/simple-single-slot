@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk, scrolledtext
+from tkinter import ttk, scrolledtext, simpledialog
 import time
 from scanner import scan_slot
 from utils.helpers import add_tooltip
@@ -17,6 +17,32 @@ from progress_tracker import (
     update_stud, update_mutation_stud,
     normalize_species_name
 )
+
+
+def prompt_new_species(app, species):
+    """Ask user for modes and stats for a newly discovered species."""
+    default = app.settings.get("default_species_template", {})
+    modes_init = ",".join(default.get("modes", []))
+    stats_init = ",".join(default.get("mutation_stats", []))
+    modes_str = simpledialog.askstring(
+        "New Species", f"Enter modes for {species} (comma separated):", initialvalue=modes_init
+    )
+    if modes_str is None:
+        return None
+    stats_str = simpledialog.askstring(
+        "New Species", f"Stats to track for {species} (comma separated):", initialvalue=stats_init
+    )
+    if stats_str is None:
+        return None
+    stats_list = [s.strip() for s in stats_str.split(',') if s.strip()]
+    config = {
+        "modes": [m.strip() for m in modes_str.split(',') if m.strip()],
+        "mutation_stats": stats_list,
+        "stat_merge_stats": stats_list,
+        "top_stat_females_stats": stats_list,
+        "war_stats": stats_list,
+    }
+    return config
 
 def build_test_tab(app):
     ttk.Label(app.tab_test, text="Main Scripts", font=(FONT[0], FONT[1], "bold")).pack(pady=(10, 2))
