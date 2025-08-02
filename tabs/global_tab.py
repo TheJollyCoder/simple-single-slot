@@ -75,6 +75,12 @@ def build_global_tab(app):
     add_tooltip(cb_auto, "Automatically consume food periodically")
     row += 1
 
+    app.monitored_scan_var = tk.BooleanVar(value=app.settings.get("monitored_scan", True))
+    cb_mon = ttk.Checkbutton(app.tab_global, text="Monitored Scan", variable=app.monitored_scan_var)
+    cb_mon.grid(row=row, column=2, sticky="w", padx=5, pady=2)
+    add_tooltip(cb_mon, "Pause on unknown species to configure rules")
+    row += 1
+
     ttk.Label(app.tab_global, text="Per-Module Debug:", font=FONT).grid(
         row=row, column=0, sticky="w", padx=5, pady=(10, 2)
     )
@@ -101,6 +107,7 @@ def build_global_tab(app):
         app.settings["action_delay"] = app.action_delay_var.get()
         app.settings["scan_loop_delay"] = app.scan_loop_delay_var.get()
         app.settings["auto_eat_enabled"] = app.auto_eat_var.get()
+        app.settings["monitored_scan"] = app.monitored_scan_var.get()
         app.settings["debug_mode"] = {k: v.get() for k, v in app.debug_vars.items()}
         app.settings["current_wipe"] = app.wipe_var.get() or "default"
         ensure_wipe_dir(app.settings["current_wipe"])

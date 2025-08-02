@@ -105,6 +105,7 @@ def run_calibration(root: tk.Tk | None = None) -> dict:
         "popup_delay": popup_delay,
         "action_delay": action_delay,
         "hotkey_scan": hk,
+        "monitored_scan": True,
         "debug_mode": debug_mode,
         "drop_all_button": drop_all_button,
         "food_slots": food_slots,

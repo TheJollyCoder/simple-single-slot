@@ -20,6 +20,7 @@ def validate_settings(settings: Dict[str, Any]) -> List[str]:
         "popup_delay": (int, float),
         "action_delay": (int, float),
         "hotkey_scan": str,
+        "monitored_scan": bool,
         "debug_mode": (bool, dict),
         "webhook_url": str,
         "bot_token": str,
