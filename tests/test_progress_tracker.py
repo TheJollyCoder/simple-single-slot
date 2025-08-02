@@ -48,7 +48,16 @@ def test_adjust_rules_for_females_high_count():
     with patch('progress_tracker.log'):
         changed = progress_tracker.adjust_rules_for_females('Rex', progress, rules)
     assert changed is True
-    assert set(rules['Rex']['modes']) == {'mutations', 'stat_merge'}
+    assert set(rules['Rex']['modes']) == set()
+
+
+def test_adjust_rules_for_females_high_count_war():
+    progress = {'Rex': {'female_count': 150}}
+    rules = {'Rex': {'modes': ['automated', 'war']}}
+    with patch('progress_tracker.log'):
+        changed = progress_tracker.adjust_rules_for_females('Rex', progress, rules)
+    assert changed is True
+    assert set(rules['Rex']['modes']) == {'war'}
 
 
 def test_update_mutation_stud_updates_value():
@@ -107,7 +116,7 @@ def test_update_stud_replaces_top_stats():
 
 
 def test_apply_automated_modes_low_count():
-    modes = progress_tracker.apply_automated_modes(10, {'automated'})
+    modes = progress_tracker.apply_automated_modes(4, {'automated'})
     assert modes == {'automated', 'mutations', 'stat_merge', 'all_females'}
 
 
@@ -118,7 +127,12 @@ def test_apply_automated_modes_mid_count():
 
 def test_apply_automated_modes_high_count():
     modes = progress_tracker.apply_automated_modes(120, {'all_females', 'top_stat_females', 'automated'})
-    assert modes == {'mutations', 'stat_merge'}
+    assert modes == set()
+
+
+def test_apply_automated_modes_high_count_war():
+    modes = progress_tracker.apply_automated_modes(120, {'automated', 'war'})
+    assert modes == {'war'}
 
 
 def test_record_history_custom_wipe(tmp_path):
