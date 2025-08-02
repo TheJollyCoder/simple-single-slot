@@ -91,7 +91,23 @@ class ShouldKeepEggTests(TestCase):
             "stats": {"health": {"base": 10}},
         }
         rules = {"modes": ["top_stat_females"], "top_stat_females_stats": ["health"]}
-        progress = {"TestDino": {"top_stats": {"health": 10}}}
+        progress = {"TestDino": {"stud": {"health": 10}}}
+        with patch("breeding_logic.normalize_species_name", return_value="TestDino"):
+            decision, res = breeding_logic.should_keep_egg(scan, rules, progress)
+        self.assertEqual(decision, "keep")
+        self.assertTrue(res["top_stat_females"])
+        log_msg = self.keep_stream.getvalue()
+        self.assertIn("KEPT", log_msg)
+        self.assertIn("top_stat_females:", log_msg)
+
+    def test_top_stat_females_improve_stat(self):
+        scan = {
+            "egg": "CS Test Female",
+            "sex": "female",
+            "stats": {"health": {"base": 12}},
+        }
+        rules = {"modes": ["top_stat_females"], "top_stat_females_stats": ["health"]}
+        progress = {"TestDino": {"stud": {"health": 10}}}
         with patch("breeding_logic.normalize_species_name", return_value="TestDino"):
             decision, res = breeding_logic.should_keep_egg(scan, rules, progress)
         self.assertEqual(decision, "keep")
