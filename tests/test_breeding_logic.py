@@ -107,7 +107,12 @@ class ShouldKeepEggTests(TestCase):
             "stats": {"melee": {"base": 5, "mutation": 1}},
         }
         rules = {"modes": ["war"], "war_stats": ["melee"]}
-        progress = {"TestDino": {"top_stats": {"melee": 5}}}
+        progress = {
+            "TestDino": {
+                "top_stats": {"melee": 5},
+                "mutation_thresholds": {"melee": 1},
+            }
+        }
         with patch("breeding_logic.normalize_species_name", return_value="TestDino"):
             decision, res = breeding_logic.should_keep_egg(scan, rules, progress)
         self.assertEqual(decision, "keep")
@@ -115,6 +120,26 @@ class ShouldKeepEggTests(TestCase):
         log_msg = self.keep_stream.getvalue()
         self.assertIn("KEPT", log_msg)
         self.assertIn("war:", log_msg)
+
+    def test_war_fail_low_mutation(self):
+        scan = {
+            "egg": "CS Test Male",
+            "sex": "male",
+            "stats": {"melee": {"base": 5, "mutation": 0}},
+        }
+        rules = {"modes": ["war"], "war_stats": ["melee"]}
+        progress = {
+            "TestDino": {
+                "top_stats": {"melee": 5},
+                "mutation_thresholds": {"melee": 1},
+            }
+        }
+        with patch("breeding_logic.normalize_species_name", return_value="TestDino"):
+            decision, res = breeding_logic.should_keep_egg(scan, rules, progress)
+        self.assertEqual(decision, "destroy")
+        self.assertFalse(res["war"])
+        self.assertIn("melee", res["_debug"].get("war", ""))
+        self.assertIn("mut 0<1", res["_debug"].get("war", ""))
 
     def test_auto_destroy_female_without_modes(self):
         scan = {"egg": "CS Test Female", "sex": "female", "stats": {}}

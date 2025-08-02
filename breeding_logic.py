@@ -164,22 +164,26 @@ def should_keep_egg(scan, rules, progress):
     if "war" in enabled:
         log.debug("Evaluating war rule")
         top = progress.get(species, {}).get("top_stats", {})
+        mut_thresh = progress.get(species, {}).get("mutation_thresholds", {})
         tracked = rules.get("war_stats", [])
         mismatch = []
-        match = True
         for stat in tracked:
             base = stats.get(stat, {}).get("base", 0)
             mut = stats.get(stat, {}).get("mutation", 0)
-            val = base + mut
             top_val = top.get(stat, 0)
-            if val < top_val:
-                mismatch.append(f"{stat}={val}<{top_val}")
-                match = False
-        if match:
+            th = mut_thresh.get(stat, 0)
+            failures = []
+            if base < top_val:
+                failures.append(f"base {base}<{top_val}")
+            if mut < th:
+                failures.append(f"mut {mut}<{th}")
+            if failures:
+                mismatch.append(f"{stat}: {' & '.join(failures)}")
+        if not mismatch:
             result["war"] = True
-            result["_debug"]["war"] = "all stats≥top"
+            result["_debug"]["war"] = "all stats≥top & muts≥thresh"
         else:
-            result["_debug"]["war"] = f"below top: {', '.join(mismatch)}"
+            result["_debug"]["war"] = f"failed: {', '.join(mismatch)}"
 
     # ─── Final decision & separate logs ──────────────────────────
     decision = "keep" if any(result[k] for k in result if k != "_debug") else "destroy"
