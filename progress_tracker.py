@@ -158,7 +158,7 @@ def update_mutation_thresholds(egg, scan_stats, config, progress, sex, wipe: str
 
     return updated
 
-def update_stud(egg, scan_stats, config, progress):
+def update_stud(egg, scan_stats, config, progress, wipe: str = "default"):
     s = normalize_species_name(egg)
     ensure_species(progress, s)
 
@@ -176,26 +176,35 @@ def update_stud(egg, scan_stats, config, progress):
         if stud.get(stat, 0) >= top_stats.get(stat, 0)
     )
 
-    if match_count > stud_count:
-        log.info(f"New stud accepted for {s} with {match_count} top stat matches")
-        progress[s]["stud"] = {
+    if match_count > stud_count or (
+        match_count == stud_count and match_count > 0 and any(
+            scan_stats.get(stat, {}).get("base", 0) > stud.get(stat, 0)
+            for stat in merge_stats
+        )
+    ):
+        if match_count > stud_count:
+            log.info(
+                f"New stud accepted for {s} with {match_count} top stat matches"
+            )
+        else:
+            for stat in merge_stats:
+                base = scan_stats.get(stat, {}).get("base", 0)
+                if base > stud.get(stat, 0):
+                    log.info(
+                        f"New stud accepted for {s}; {stat} base {base}>{stud.get(stat, 0)}"
+                    )
+                    break
+        new_stud = {
             stat: scan_stats.get(stat, {}).get("base", 0)
             for stat in merge_stats
         }
+        progress[s]["stud"] = new_stud
+        progress[s]["top_stats"] = {
+            stat: val for stat, val in new_stud.items() if val > 0
+        }
+        for stat, val in progress[s]["top_stats"].items():
+            record_history(s, "top_stats", stat, val, wipe)
         return True
-
-    if match_count == stud_count and match_count > 0:
-        for stat in merge_stats:
-            base = scan_stats.get(stat, {}).get("base", 0)
-            if base > stud.get(stat, 0):
-                log.info(
-                    f"New stud accepted for {s}; {stat} base {base}>{stud.get(stat, 0)}"
-                )
-                progress[s]["stud"] = {
-                    st: scan_stats.get(st, {}).get("base", 0)
-                    for st in merge_stats
-                }
-                return True
 
     return False
 

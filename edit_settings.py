@@ -15,7 +15,7 @@ from scanner import scan_slot
 from breeding_logic import should_keep_egg
 from progress_tracker import (
     load_progress, save_progress,
-    update_top_stats, update_mutation_thresholds,
+    update_mutation_thresholds,
     update_stud, update_mutation_stud,
     increment_female_count, adjust_rules_for_females,
     normalize_species_name
@@ -299,10 +299,7 @@ class SettingsEditor(tk.Tk):
                     with open(RULES_FILE, "w", encoding="utf-8") as f:
                         json.dump(self.rules, f, indent=2)
 
-                # Step 1: update top‐stats
-                updated_stats = update_top_stats(egg, stats, progress, wipe)
-
-                # Step 2: decide keep/destroy
+                # Step 1: decide keep/destroy
                 decision, reasons = should_keep_egg(
                     {"egg": egg, "sex": sex, "stats": stats},
                     config,
@@ -317,7 +314,7 @@ class SettingsEditor(tk.Tk):
                             json.dump(self.rules, f, indent=2)
                         self.log_message(f"⚙ Rules updated for {normalized} (females={count})")
 
-                # Step 3: update thresholds only if mutations rule passed
+                # Step 2: update thresholds only if mutations rule passed
                 if reasons.get("mutations"):
                     updated_thresholds = update_mutation_thresholds(
                         egg, stats, config, progress, sex, wipe
@@ -327,7 +324,7 @@ class SettingsEditor(tk.Tk):
 
                 # and only then update stud logic
                 updated_stud = (
-                    update_stud(egg, stats, config, progress)
+                    update_stud(egg, stats, config, progress, wipe)
                     if sex == "male"
                     else False
                 )
@@ -344,12 +341,11 @@ class SettingsEditor(tk.Tk):
                 if updated_stud:
                     self._summary["studs"].append((normalized, stats))
 
-                # Step 4: save progress & UI feedback
+                # Step 3: save progress & UI feedback
                 scan.update({
                     "egg": egg,
                     "sex": sex,
                     "stats": stats,
-                    "updated_stats": updated_stats,
                     "updated_thresholds": updated_thresholds,
                     "updated_stud": updated_stud,
                     "updated_mutation_stud": updated_mstud

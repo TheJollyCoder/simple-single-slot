@@ -7,27 +7,6 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")
 
 import progress_tracker
 
-
-def test_update_top_stats_records_new_value():
-    progress = {}
-    with patch('progress_tracker.normalize_species_name', return_value='Rex'), \
-         patch('progress_tracker.record_history') as rec:
-        updated = progress_tracker.update_top_stats('egg', {'melee': {'base': 5}}, progress, 'wipe1')
-    assert updated is True
-    assert progress['Rex']['top_stats']['melee'] == 5
-    rec.assert_called_once_with('Rex', 'top_stats', 'melee', 5, 'wipe1')
-
-
-def test_update_top_stats_no_change():
-    progress = {'Rex': {'top_stats': {'melee': 5}, 'mutation_thresholds': {}, 'stud': {}, 'female_count': 0}}
-    with patch('progress_tracker.normalize_species_name', return_value='Rex'), \
-         patch('progress_tracker.record_history') as rec:
-        updated = progress_tracker.update_top_stats('egg', {'melee': {'base': 4}}, progress, 'wipe1')
-    assert updated is False
-    assert progress['Rex']['top_stats']['melee'] == 5
-    rec.assert_not_called()
-
-
 def test_increment_female_count_when_female():
     progress = {}
     with patch('progress_tracker.normalize_species_name', return_value='Rex'):
@@ -87,7 +66,7 @@ def test_update_mutation_stud_updates_value():
     assert progress['Rex']['mutation_stud']['melee'] == 6
 
 
-def test_update_stud_equal_match_better_base():
+def test_update_stud_updates_top_stats_and_history():
     progress = {
         'Rex': {
             'top_stats': {'melee': 5},
@@ -99,10 +78,32 @@ def test_update_stud_equal_match_better_base():
     }
     config = {'stat_merge_stats': ['melee']}
     stats = {'melee': {'base': 6}}
-    with patch('progress_tracker.normalize_species_name', return_value='Rex'), patch('progress_tracker.log'):
-        updated = progress_tracker.update_stud('egg', stats, config, progress)
+    with patch('progress_tracker.normalize_species_name', return_value='Rex'), \
+         patch('progress_tracker.record_history') as rec:
+        updated = progress_tracker.update_stud('egg', stats, config, progress, 'wipe1')
     assert updated is True
     assert progress['Rex']['stud']['melee'] == 6
+    assert progress['Rex']['top_stats']['melee'] == 6
+    rec.assert_called_once_with('Rex', 'top_stats', 'melee', 6, 'wipe1')
+
+
+def test_update_stud_replaces_top_stats():
+    progress = {
+        'Rex': {
+            'top_stats': {'melee': 5, 'health': 10},
+            'stud': {'melee': 5, 'health': 10},
+            'mutation_thresholds': {},
+            'mutation_stud': {},
+            'female_count': 0
+        }
+    }
+    config = {'stat_merge_stats': ['melee']}
+    stats = {'melee': {'base': 7}}
+    with patch('progress_tracker.normalize_species_name', return_value='Rex'), \
+         patch('progress_tracker.record_history'):
+        updated = progress_tracker.update_stud('egg', stats, config, progress, 'wipe1')
+    assert updated is True
+    assert progress['Rex']['top_stats'] == {'melee': 7}
 
 
 def test_apply_automated_modes_low_count():
