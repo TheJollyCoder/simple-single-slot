@@ -123,10 +123,29 @@ def scan_once(settings, debug=False):
     time.sleep(settings.get("popup_delay", 0.0))
     log.debug("Clicked slot at (%d,%d)", x, y)
 
-    full = cv2.cvtColor(np.array(pyautogui.screenshot()), cv2.COLOR_RGB2BGR)
+    # Calculate the bounding rectangle containing the species ROI and all stat ROIs
+    sx, sy, sw, sh = settings["species_roi"].values()
+    bounds = [
+        (sx, sy, sx + sw, sy + sh),
+    ]
+    for roi in settings["stat_rois"].values():
+        x0, y0, w0, h0 = roi.values()
+        bounds.append((x0, y0, x0 + w0, y0 + h0))
+
+    min_x = min(b[0] for b in bounds)
+    min_y = min(b[1] for b in bounds)
+    max_x = max(b[2] for b in bounds)
+    max_y = max(b[3] for b in bounds)
+
+    region = (min_x, min_y, max_x - min_x, max_y - min_y)
+    full = cv2.cvtColor(
+        np.array(pyautogui.screenshot(region=region)), cv2.COLOR_RGB2BGR
+    )
 
     # Species OCR
     sx, sy, sw, sh = settings["species_roi"].values()
+    sx -= min_x
+    sy -= min_y
     crop_sp = full[sy:sy+sh, sx:sx+sw]
     sp_txt = pytesseract.image_to_string(
         cv2.cvtColor(crop_sp, cv2.COLOR_BGR2GRAY),
@@ -143,6 +162,8 @@ def scan_once(settings, debug=False):
     stats = {}
     for stat, roi in settings["stat_rois"].items():
         x0, y0, w0, h0 = roi.values()
+        x0 -= min_x
+        y0 -= min_y
         crop = full[y0:y0+h0, x0:x0+w0]
 
         prim = baseline_up(crop)
