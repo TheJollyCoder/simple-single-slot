@@ -240,17 +240,14 @@ def apply_automated_modes(female_count, modes):
     if "automated" not in modes:
         return modes
 
-    if female_count < 15:
+    if female_count < 5:
         modes.update({"mutations", "stat_merge", "all_females"})
         modes.discard("top_stat_females")
     elif female_count < 96:
         modes.update({"mutations", "stat_merge", "top_stat_females"})
         modes.discard("all_females")
     else:
-        modes.update({"mutations", "stat_merge"})
-        modes.discard("all_females")
-        modes.discard("top_stat_females")
-        modes.discard("automated")
+        modes = {"war"} if "war" in modes else set()
 
     return modes
 

@@ -135,10 +135,10 @@ class ShouldKeepEggTests(TestCase):
         self.assertEqual(decision, "rescan")
         self.assertEqual(res["_debug"]["final"], "rescan")
 
-    def test_automated_all_females_under_15(self):
+    def test_automated_all_females_under_threshold(self):
         scan = {"egg": "CS Test Female", "sex": "female", "stats": {}}
         rules = {"modes": ["automated"]}
-        progress = {"TestDino": {"female_count": 10}}
+        progress = {"TestDino": {"female_count": 4}}
         with patch("breeding_logic.normalize_species_name", return_value="TestDino"):
             decision, res = breeding_logic.should_keep_egg(scan, rules, progress)
         self.assertEqual(decision, "keep")
@@ -168,3 +168,12 @@ class ShouldKeepEggTests(TestCase):
         with patch("breeding_logic.normalize_species_name", return_value="TestDino"):
             decision, res = breeding_logic.should_keep_egg(scan, rules, progress)
         self.assertEqual(decision, "destroy")
+
+    def test_automated_high_count_keeps_war(self):
+        scan = {"egg": "CS Test Male", "sex": "male", "stats": {"melee": {"base": 5}}}
+        rules = {"modes": ["automated", "war"], "war_stats": ["melee"]}
+        progress = {"TestDino": {"female_count": 120, "top_stats": {"melee": 5}}}
+        with patch("breeding_logic.normalize_species_name", return_value="TestDino"):
+            decision, res = breeding_logic.should_keep_egg(scan, rules, progress)
+        self.assertEqual(decision, "keep")
+        self.assertTrue(res["war"])
