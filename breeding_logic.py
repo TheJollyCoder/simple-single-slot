@@ -140,25 +140,31 @@ def should_keep_egg(scan, rules, progress):
                         result["_debug"]["stat_merge"] = f"{stat} base {base}>{stud.get(stat, 0)}"
                         break
 
-    # ─── Top Stat Females ────────────────────────────────────────
+    # ─── Top Stat Females (equal or higher than current stud) ───
     if "top_stat_females" in enabled and sex == "female":
         log.debug(f"RAW STATS passed into logic: {stats}")
-        log.debug("Evaluating top_stat_females rule")
-        top = progress.get(species, {}).get("top_stats", {})
-        required = rules.get("top_stat_females_stats", [])
+        log.debug("Evaluating top_stat_females rule against stud stats")
+        stud = progress.get(species, {}).get("stud", {})
+        tracked = rules.get("top_stat_females_stats", [])
         mismatched = []
-        match = True
-        for stat in required:
-            top_val = top.get(stat, -999)
+        has_tracked = False
+        for stat in tracked:
+            stud_val = stud.get(stat, 0)
             base_val = stats.get(stat, {}).get("base", 0)
-            if base_val != top_val:
-                match = False
-                mismatched.append(f"{stat}={base_val}≠{top_val}")
-        if match:
+            if base_val < stud_val:
+                mismatched.append(f"{stat}={base_val}<{stud_val}")
+            else:
+                has_tracked = True
+        if has_tracked and not mismatched:
             result["top_stat_females"] = True
-            result["_debug"]["top_stat_females"] = "all matched"
+            result["_debug"]["top_stat_females"] = ">= current stud"
         else:
-            result["_debug"]["top_stat_females"] = f"mismatched: {', '.join(mismatched)}"
+            reason = (
+                f"mismatched: {', '.join(mismatched)}"
+                if mismatched
+                else "no tracked stats"
+            )
+            result["_debug"]["top_stat_females"] = reason
 
     # ─── War Tames ───────────────────────────────────────────────
     if "war" in enabled:
