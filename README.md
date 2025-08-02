@@ -24,6 +24,14 @@ Execute all unit tests with:
 pytest
 ```
 
+## OCR Configuration
+
+The scanner uses [PyTesseract](https://pypi.org/project/pytesseract/) for optical character
+recognition. If the `tesseract` executable is not on your `PATH`, set the
+`ocr.tesseract_cmd` option in `settings.json` to point to it. `scanner.scan_once`
+copies this value to `pytesseract.pytesseract.tesseract_cmd` before performing
+any OCR calls.
+
 ## Main Scripts
 
 - **`edit_settings.py`** – Tkinter GUI for editing configuration and viewing a summary of tracked stats.

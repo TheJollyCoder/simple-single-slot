@@ -95,6 +95,12 @@ def ocr_number(img, oem, psm):
 
 def scan_once(settings, debug=False):
     log.debug("scan_once: start")
+    tess_cmd = (
+        settings.get("ocr", {}).get("tesseract_cmd")
+        or settings.get("tesseract_cmd")
+    )
+    if tess_cmd:
+        pytesseract.pytesseract.tesseract_cmd = tess_cmd
     x, y = settings["slot_x"], settings["slot_y"]
     if not pyautogui.onScreen(x, y):
         log.warning("Slot off-screen, skipping scan.")
